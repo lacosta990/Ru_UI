@@ -4,7 +4,7 @@
 # it has to, otherwise we'd be running a docker in a docker and oof
 
 ifeq (,$(PLATFORMS))
-PLATFORMS = tg5040 rgb30 miyoomini trimuismart m17 rg35xx rg35xxplus gkdpixel
+PLATFORMS = rg35xx
 endif
 
 ###########################################################
