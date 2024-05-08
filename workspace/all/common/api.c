@@ -145,6 +145,7 @@ SDL_Surface* GFX_init(int mode) {
 	
 	char asset_path[MAX_PATH];
 	sprintf(asset_path, RES_PATH "/assets@%ix.png", FIXED_SCALE);
+	if (!exists(asset_path)) LOG_info("missing assets, you're about to segfault dummy!\n");
 	gfx.assets = IMG_Load(asset_path);
 	
 	TTF_Init();
@@ -551,12 +552,13 @@ void GFX_blitRect(int asset, SDL_Surface* dst, SDL_Rect* dst_rect) {
 }
 void GFX_blitBattery(SDL_Surface* dst, SDL_Rect* dst_rect) {
 	// LOG_info("dst: %p\n", dst);
-	
-	if (!dst_rect) dst_rect = &(SDL_Rect){0,0,0,0};
-	
+	int x = 0;
+	int y = 0;
+	if (dst_rect) {
+		x = dst_rect->x;
+		y = dst_rect->y;
+	}
 	SDL_Rect rect = asset_rects[ASSET_BATTERY];
-	int x = dst_rect->x;
-	int y = dst_rect->y;
 	x += (SCALE1(PILL_SIZE) - (rect.w + FIXED_SCALE)) / 2;
 	y += (SCALE1(PILL_SIZE) - rect.h) / 2;
 	
@@ -1033,7 +1035,7 @@ void SND_init(double sample_rate, double frame_rate) { // plat_sound_init
 	LOG_info("SND_init\n");
 	
 	SDL_InitSubSystem(SDL_INIT_AUDIO);
-	
+
 	snd.frame_rate = frame_rate;
 
 	SDL_AudioSpec spec_in;
