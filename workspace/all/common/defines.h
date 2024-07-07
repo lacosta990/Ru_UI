@@ -23,7 +23,7 @@
 #define AUTO_RESUME_PATH SHARED_USERDATA_PATH "/.minui/auto_resume.txt"
 #define AUTO_RESUME_SLOT 9
 
-#define FAUX_RECENT_PATH SDCARD_PATH "/Recently Played"
+#define FAUX_RECENT_PATH SDCARD_PATH "/Недавние"
 #define COLLECTIONS_PATH SDCARD_PATH "/Collections"
 
 #define LAST_PATH "/tmp/last.txt" // transient
@@ -62,7 +62,7 @@
 #define PADDING 10 // PILL_SIZE / 3 (or non-integer part of the previous calculatiom divided by three)
 #endif
 
-#define FONT_LARGE 16 	// menu
+#define FONT_LARGE 18 	// menu
 #define FONT_MEDIUM 14 	// single char button label
 #define FONT_SMALL 12 	// button hint
 #define FONT_TINY 10  	// multi char button label

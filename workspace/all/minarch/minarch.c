@@ -2534,11 +2534,11 @@ static struct {
 	.preview_exists = 0,
 	
 	.items = {
-		[ITEM_CONT] = "Continue",
-		[ITEM_SAVE] = "Save",
-		[ITEM_LOAD] = "Load",
+		[ITEM_CONT] = "Продолжить",
+		[ITEM_SAVE] = "Сохранить",
+		[ITEM_LOAD] = "Загрузить",
 		[ITEM_OPTS] = "Options",
-		[ITEM_QUIT] = "Quit",
+		[ITEM_QUIT] = "Выйти",
 	}
 };
 
@@ -2554,7 +2554,7 @@ void Menu_init(void) {
 
 	sprintf(menu.slot_path, "%s/%s.txt", menu.minui_dir, game.name);
 	
-	if (simple_mode) menu.items[ITEM_OPTS] = "Reset";
+	if (simple_mode) menu.items[ITEM_OPTS] = "Перезагрузить";
 	
 	if (game.m3u_path[0]) {
 		char* tmp;
@@ -2981,7 +2981,7 @@ static int OptionSaveChanges_onConfirm(MenuList* list, int i) {
 			break;
 		}
 	}
-	Menu_message(message, (char*[]){ "A","OKAY", NULL });
+	Menu_message(message, (char*[]){ "A","Выбрать", NULL });
 	OptionSaveChanges_updateDesc();
 	return MENU_CALLBACK_EXIT;
 }
@@ -3859,9 +3859,11 @@ static void Menu_loop(void) {
 			});
 			SDL_FreeSurface(text);
 			
-			if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-			else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
-			GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OKAY", NULL }, 1, screen, 1);
+			//Disable Power/Sleep in game menu
+
+			//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+			//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
+			GFX_blitButtonGroup((char*[]){ "B","Назад", "A","Выбрать", NULL }, 1, screen, 1);
 			
 			// list
 			oy = (((DEVICE_HEIGHT / FIXED_SCALE) - PADDING * 2) - (MENU_ITEM_COUNT * PILL_SIZE)) / 2;
@@ -3951,7 +3953,7 @@ static void Menu_loop(void) {
 					SDL_Rect preview_rect = {ox,oy,hw,hh};
 					SDL_FillRect(screen, &preview_rect, 0);
 					if (menu.save_exists) GFX_blitMessage(font.large, "No Preview", screen, &preview_rect);
-					else GFX_blitMessage(font.large, "Empty Slot", screen, &preview_rect);
+					else GFX_blitMessage(font.large, "Новой слот", screen, &preview_rect);
 				}
 				
 				// pagination

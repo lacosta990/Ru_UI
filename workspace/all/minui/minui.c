@@ -1479,12 +1479,13 @@ int main (int argc, char *argv[]) {
 					tmp[0] = '\0';
 					
 					// TODO: not sure if I want bare PLAT_* calls here
-					char* extra_key = "Model";
-					char* extra_val = PLAT_getModel(); 
+					char* extra_key = "Модель";
+					char* extra_val = "Фаренгейт_001"; 
 					
-					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Release", COLOR_DARK_TEXT);
-					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, release, COLOR_WHITE);
-					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Commit", COLOR_DARK_TEXT);
+					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Релиз", COLOR_DARK_TEXT);
+					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "001", COLOR_WHITE);
+					
+					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Коммит", COLOR_DARK_TEXT);
 					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, commit, COLOR_WHITE);
 					
 					SDL_Surface* key_txt = TTF_RenderUTF8_Blended(font.large, extra_key, COLOR_DARK_TEXT);
@@ -1525,10 +1526,10 @@ int main (int argc, char *argv[]) {
 				SDL_BlitSurface(version, NULL, screen, &(SDL_Rect){(screen->w-version->w)/2,(screen->h-version->h)/2});
 				
 				// buttons (duped and trimmed from below)
-				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-				else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
+				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
+				GFX_blitButtonGroup((char*[]){ "B","Назад",  NULL }, 0, screen, 1);
 			}
 			else {
 				// list
@@ -1590,28 +1591,29 @@ int main (int argc, char *argv[]) {
 				}
 				else {
 					// TODO: for some reason screen's dimensions end up being 0x0 in GFX_blitMessage...
-					GFX_blitMessage(font.large, "Empty folder", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
+					GFX_blitMessage(font.large, "Сохранить", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
 				}
 			
-				// buttons
+				// buttons in main menu
+
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
 				else GFX_blitButtonGroup((char*[]){ 
-					BTN_SLEEP==BTN_POWER?"POWER":"MENU",
-					BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
+					BTN_SLEEP==BTN_POWER?"ƺ":"MENU",
+					BTN_SLEEP==BTN_POWER||simple_mode?"ƺ":"INFO",  
 					NULL }, 0, screen, 0);
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "B","Назад",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OPEN", NULL }, 1, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "B","Назад", "A","Открыть", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){ "A","OPEN", NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "A","Открыть", NULL }, 0, screen, 1);
 					}
 				}
 			}

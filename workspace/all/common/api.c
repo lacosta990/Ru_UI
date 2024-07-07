@@ -1544,8 +1544,8 @@ void PWR_powerOff(void) {
 		gfx.screen = GFX_resize(w,h,p);
 		
 		char* msg;
-		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
-		else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
+		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Быстрое сохранение,\nВыключение" : "Выключение";
+		else msg = exists(AUTO_RESUME_PATH) ? "Быстрое сохранение,\nВыключение" : "Выключение";
 		
 		// LOG_info("PWR_powerOff %s (%ix%i)\n", gfx.screen, gfx.screen->w, gfx.screen->h);
 		
