@@ -618,7 +618,7 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 		SDL_FreeSurface(text);
 	}
 	else {
-		text = TTF_RenderUTF8_Blended(special_case ? font.large : font.tiny, button, COLOR_BUTTON_TEXT);
+		text = TTF_RenderUTF8_Blended(special_case ? font.large : font.medium, button, COLOR_BUTTON_TEXT);
 		GFX_blitPill(ASSET_BUTTON, dst, &(SDL_Rect){dst_rect->x,dst_rect->y,SCALE1(BUTTON_SIZE)/2+text->w,SCALE1(BUTTON_SIZE)});
 		ox += SCALE1(BUTTON_SIZE)/4;
 		
@@ -771,12 +771,12 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 }
 void GFX_blitHardwareHints(SDL_Surface* dst, int show_setting) {
 	if (BTN_MOD_VOLUME==BTN_SELECT && BTN_MOD_BRIGHTNESS==BTN_START) {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "SELECT","VOLUME",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "START","BRIGHTNESS",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "SELECT","Громкость",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "START","Яркость",  NULL }, 0, dst, 0);
 	}
 	else {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ BRIGHTNESS_BUTTON_LABEL,"BRIGHTNESS",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "MENU","BRIGHTNESS",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "ƺ","Вниз",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "ƺ","Вниз",  NULL }, 0, dst, 0);
 	}
 	
 }

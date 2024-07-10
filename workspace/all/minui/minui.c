@@ -1327,7 +1327,7 @@ int main (int argc, char *argv[]) {
 		was_online = is_online;
 		
 		if (show_version) {
-			if (PAD_justPressed(BTN_B) || PAD_tappedMenu(now)) {
+			if (PAD_justPressed(BTN_X) || PAD_tappedMenu(now)) {
 				show_version = 0;
 				dirty = 1;
 				if (!HAS_POWER_BUTTON && !simple_mode) PWR_disableSleep();
@@ -1443,14 +1443,14 @@ int main (int argc, char *argv[]) {
 				Entry_open(top->entries->items[top->selected]);
 				dirty = 1;
 			}
-			else if (total>0 && PAD_justPressed(BTN_A)) {
+			else if (total>0 && PAD_justPressed(BTN_B)) {
 				Entry_open(top->entries->items[top->selected]);
 				total = top->entries->count;
 				dirty = 1;
 
 				if (total>0) readyResume(top->entries->items[top->selected]);
 			}
-			else if (PAD_justPressed(BTN_B) && stack->count>1) {
+			else if (PAD_justPressed(BTN_X) && stack->count>1) {
 				closeDirectory();
 				total = top->entries->count;
 				dirty = 1;
@@ -1529,7 +1529,7 @@ int main (int argc, char *argv[]) {
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){ "B","Назад",  NULL }, 0, screen, 1);
+				GFX_blitButtonGroup((char*[]){"Δ","Назад", NULL }, 0, screen, 1);
 			}
 			else {
 				// list
@@ -1596,24 +1596,29 @@ int main (int argc, char *argv[]) {
 			
 				// buttons in main menu
 
+				// if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+				// else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
+				// else GFX_blitButtonGroup((char*[]){ 
+				// 	BTN_SLEEP==BTN_POWER?"ƺ":"MENU",
+				// 	BTN_SLEEP==BTN_POWER||simple_mode?".":"INFO",  
+				// 	NULL }, 0, screen, 0);
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-				else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
-				else GFX_blitButtonGroup((char*[]){ 
-					BTN_SLEEP==BTN_POWER?"ƺ":"MENU",
-					BTN_SLEEP==BTN_POWER||simple_mode?"ƺ":"INFO",  
-					NULL }, 0, screen, 0);
+				else {
+					GFX_blitButtonGroup((char*[]){"ƺ","Вниз", NULL }, 0, screen, 0);
+				}
+				
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","Назад",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){"Δ","Назад",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","Назад", "A","Открыть", NULL }, 1, screen, 1);
+						GFX_blitButtonGroup((char*[]){"Δ","Назад", "X","Открыть", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){ "A","Открыть", NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){"X","Открыть", NULL }, 0, screen, 1);
 					}
 				}
 			}
