@@ -1207,6 +1207,7 @@ static void saveLast(char* path) {
 	}
 	putFile(LAST_PATH, path);
 }
+
 static void loadLast(void) { // call after loading root directory
 	if (!exists(LAST_PATH)) return;
 
@@ -1264,6 +1265,7 @@ static void loadLast(void) { // call after loading root directory
 			}
 		}
 		free(path); // we took ownership when we popped it
+
 	}
 	
 	StringArray_free(last);
