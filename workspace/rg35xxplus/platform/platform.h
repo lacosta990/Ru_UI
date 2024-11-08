@@ -7,9 +7,6 @@
 
 #include "sdl.h"
 
-#define PAD_poll PLAT_pollInput
-#define PAD_wake PLAT_shouldWake
-
 ///////////////////////////////
 
 #define	BUTTON_UP		BUTTON_NA
@@ -104,9 +101,11 @@
 
 ///////////////////////////////
 
+extern int is_cubexx;
+
 #define FIXED_SCALE 	2
-#define FIXED_WIDTH		640
-#define FIXED_HEIGHT	480
+#define FIXED_WIDTH		(is_cubexx?720:640)
+#define FIXED_HEIGHT	(is_cubexx?720:480)
 #define FIXED_BPP		2
 #define FIXED_DEPTH		(FIXED_BPP * 8)
 #define FIXED_PITCH		(FIXED_WIDTH * FIXED_BPP)
@@ -122,11 +121,18 @@
 
 // TODO: if HDMI_HEIGHT > FIXED_HEIGHT then MAIN_ROW_COUNT will be insufficient
 
+
+///////////////////////////////
+
+#define MAIN_ROW_COUNT (is_cubexx?8:6)
+#define PADDING (is_cubexx?40:10)
+
 ///////////////////////////////
 
 #define SDCARD_PATH "/mnt/sdcard"
 #define MUTE_VOLUME_RAW 0
 #define HAS_NEON
+#define SAMPLES 400 // fix for (most) fceumm underruns
 
 ///////////////////////////////
 

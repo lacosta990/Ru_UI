@@ -3,15 +3,22 @@
 # NOTE: this runs on the host system (eg. macOS) not in a docker image
 # it has to, otherwise we'd be running a docker in a docker and oof
 
+# prevent accidentally triggering a full build with invalid calls
+ifneq (,$(PLATFORM))
+ifeq (,$(MAKECMDGOALS))
+$(error found PLATFORM arg but no target, did you mean "make PLATFORM=$(PLATFORM) shell"?)
+endif
+endif
+
 ifeq (,$(PLATFORMS))
-PLATFORMS = rg35xx
+PLATFORMS = miyoomini trimuismart rg35xx rg35xxplus tg5040 tg3040 rgb30 m17 gkdpixel my282 magicmini
 endif
 
 ###########################################################
 
 BUILD_HASH:=$(shell git rev-parse --short HEAD)
 RELEASE_TIME:=$(shell TZ=GMT date +%Y%m%d)
-RELEASE_BETA=b
+RELEASE_BETA=
 RELEASE_BASE=MinUI-$(RELEASE_TIME)$(RELEASE_BETA)
 RELEASE_DOT:=$(shell find -E ./releases/. -regex ".*/${RELEASE_BASE}-[0-9]+-base\.zip" | wc -l | sed 's/ //g')
 RELEASE_NAME=$(RELEASE_BASE)-$(RELEASE_DOT)
@@ -42,6 +49,7 @@ system:
 	cp ./workspace/$(PLATFORM)/libmsettings/libmsettings.so ./build/SYSTEM/$(PLATFORM)/lib
 	cp ./workspace/all/minui/build/$(PLATFORM)/minui.elf ./build/SYSTEM/$(PLATFORM)/bin/
 	cp ./workspace/all/minarch/build/$(PLATFORM)/minarch.elf ./build/SYSTEM/$(PLATFORM)/bin/
+	cp ./workspace/all/syncsettings/build/$(PLATFORM)/syncsettings.elf ./build/SYSTEM/$(PLATFORM)/bin/
 	cp ./workspace/all/clock/build/$(PLATFORM)/clock.elf ./build/EXTRAS/Tools/$(PLATFORM)/Clock.pak/
 	cp ./workspace/all/minput/build/$(PLATFORM)/minput.elf ./build/EXTRAS/Tools/$(PLATFORM)/Input.pak/
 
@@ -51,7 +59,6 @@ cores: # TODO: can't assume every platform will have the same stock cores (platf
 	cp ./workspace/$(PLATFORM)/cores/output/gambatte_libretro.so ./build/SYSTEM/$(PLATFORM)/cores
 	cp ./workspace/$(PLATFORM)/cores/output/gpsp_libretro.so ./build/SYSTEM/$(PLATFORM)/cores
 	cp ./workspace/$(PLATFORM)/cores/output/picodrive_libretro.so ./build/SYSTEM/$(PLATFORM)/cores
-ifneq ($(PLATFORM),trimui)
 	cp ./workspace/$(PLATFORM)/cores/output/snes9x2005_plus_libretro.so ./build/SYSTEM/$(PLATFORM)/cores
 	cp ./workspace/$(PLATFORM)/cores/output/pcsx_rearmed_libretro.so ./build/SYSTEM/$(PLATFORM)/cores
 	
@@ -73,14 +80,13 @@ ifneq ($(PLATFORM),gkdpixel)
 	cp ./workspace/$(PLATFORM)/cores/output/mednafen_supafaust_libretro.so ./build/EXTRAS/Emus/$(PLATFORM)/SUPA.pak
 	cp ./workspace/$(PLATFORM)/cores/output/mednafen_vb_libretro.so ./build/EXTRAS/Emus/$(PLATFORM)/VB.pak
 endif
-endif
 
 common: build system cores
 	
 clean:
 	rm -rf ./build
 
-setup:
+setup: name
 	# ----------------------------------------------------
 	# make sure we're running in an input device
 	tty -s 
@@ -101,7 +107,7 @@ setup:
 	cp ./skeleton/EXTRAS/README.txt ./workspace/readmes/EXTRAS-in.txt
 	
 done:
-	say "done"
+	say "done" 2>/dev/null || true
 
 special:
 	# ----------------------------------------------------
@@ -115,11 +121,17 @@ special:
 
 tidy:
 	# ----------------------------------------------------
-	# remove systems we're not ready to support yet
-	
-	# TODO: tmp, figure out a cleaner way to do this
-	rm -rf ./build/SYSTEM/trimui
-	rm -rf ./build/EXTRAS/Tools/trimui
+	# copy rg40xxcube from rg35xxplus
+	-cp -Rn ./build/SYSTEM/rg35xxplus/ ./build/SYSTEM/rg40xxcube/
+	-cp -Rn ./build/EXTRAS/Emus/rg35xxplus/ ./build/EXTRAS/Emus/rg40xxcube/
+	-cp -Rn ./build/EXTRAS/Tools/rg35xxplus/ ./build/EXTRAS/Tools/rg40xxcube/
+	# then patch the binaries
+	LC_ALL=C find ./build/SYSTEM/rg40xxcube/ -type f -name "*.elf" -exec sed -i '' 's/rg35xxplus/rg40xxcube/g' {} +
+	LC_ALL=C find ./build/EXTRAS/Emus/rg40xxcube/ -type f -name "*.elf" -exec sed -i '' 's/rg35xxplus/rg40xxcube/g' {} +
+	LC_ALL=C find ./build/EXTRAS/Tools/rg40xxcube/ -type f -name "*.elf" -exec sed -i '' 's/rg35xxplus/rg40xxcube/g' {} +	
+
+	# remove various detritus
+	rm -rf ./build/EXTRAS/Tools/tg5040/Developer.pak
 
 package: tidy
 	# ----------------------------------------------------
@@ -171,11 +183,6 @@ trimuismart:
 	make common PLATFORM=$@
 	# ----------------------------------------------------
 
-trimui:
-	# ----------------------------------------------------
-	make common PLATFORM=$@
-	# ----------------------------------------------------
-
 rgb30:
 	# ----------------------------------------------------
 	make common PLATFORM=$@
@@ -192,6 +199,21 @@ m17:
 	# ----------------------------------------------------
 
 gkdpixel:
+	# ----------------------------------------------------
+	make common PLATFORM=$@
+	# ----------------------------------------------------
+
+my282:
+	# ----------------------------------------------------
+	make common PLATFORM=$@
+	# ----------------------------------------------------
+
+magicmini:
+	# ----------------------------------------------------
+	make common PLATFORM=$@
+	# ----------------------------------------------------
+
+tg3040:
 	# ----------------------------------------------------
 	make common PLATFORM=$@
 	# ----------------------------------------------------

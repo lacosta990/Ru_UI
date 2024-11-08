@@ -36,6 +36,7 @@ static struct VID_Context {
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Texture* texture;
+	SDL_Texture* effect;
 	SDL_Surface* buffer;
 	SDL_Surface* screen;
 	
@@ -167,11 +168,89 @@ void PLAT_setNearestNeighbor(int enabled) {
 void PLAT_setSharpness(int sharpness) {
 	// buh
 }
+static int effect_scale = 1;
+static int effect_type = EFFECT_NONE;
+static int next_scale = 1;
+static int next_effect = EFFECT_NONE;
+static void updateEffect(void) {
+	if (next_scale==effect_scale && next_effect==effect_type) return; // unchanged
+	
+	effect_scale = next_scale;
+	effect_type = next_effect;
+	
+	if (vid.effect) SDL_DestroyTexture(vid.effect);
+	if (effect_type==EFFECT_NONE) return;
+	
+	char* effect_path;
+	int opacity = 128; // 1 - 1/2 = 50%
+	if (effect_type==EFFECT_LINE) {
+		if (effect_scale<3) {
+			effect_path = RES_PATH "/line-2.png";
+		}
+		else if (effect_scale<4) {
+			effect_path = RES_PATH "/line-3.png";
+		}
+		else if (effect_scale<5) {
+			effect_path = RES_PATH "/line-4.png";
+		}
+		else if (effect_scale<6) {
+			effect_path = RES_PATH "/line-5.png";
+		}
+		else if (effect_scale<8) {
+			effect_path = RES_PATH "/line-6.png";
+		}
+		else {
+			effect_path = RES_PATH "/line-8.png";
+		}
+	}
+	else if (effect_type==EFFECT_GRID) {
+		if (effect_scale<3) {
+			effect_path = RES_PATH "/grid-2.png";
+			opacity = 64; // 1 - 3/4 = 25%
+		}
+		else if (effect_scale<4) {
+			effect_path = RES_PATH "/grid-3.png";
+			opacity = 112; // 1 - 5/9 = ~44%
+		}
+		else if (effect_scale<5) {
+			effect_path = RES_PATH "/grid-4.png";
+			opacity = 144; // 1 - 7/16 = ~56%
+		}
+		else if (effect_scale<6) {
+			effect_path = RES_PATH "/grid-5.png";
+			opacity = 160; // 1 - 9/25 = ~64%
+		}
+		else if (effect_scale<8) {
+			effect_path = RES_PATH "/grid-6.png";
+			opacity = 112; // 1 - 5/9 = ~44%
+		}
+		else if (effect_scale<11) {
+			effect_path = RES_PATH "/grid-8.png";
+			opacity = 144; // 1 - 7/16 = ~56%
+		}
+		else {
+			effect_path = RES_PATH "/grid-11.png";
+			opacity = 136; // 1 - 57/121 = ~52%
+		}
+	}
+	LOG_info("load effect: %s (opacity: %i)\n", effect_path, opacity);
+	SDL_Surface* tmp = IMG_Load(effect_path);
+	if (tmp) {
+		vid.effect = SDL_CreateTextureFromSurface(vid.renderer, tmp);
+		SDL_SetTextureAlphaMod(vid.effect, opacity);
+		SDL_FreeSurface(tmp);
+	}
+}
+void PLAT_setEffect(int effect) {
+	next_effect = effect;
+}
 void PLAT_vsync(int remaining) {
 	if (remaining>0) SDL_Delay(remaining);
 }
 
 scaler_t PLAT_getScaler(GFX_Renderer* renderer) {
+	LOG_info("getScaler for scale: %i\n", renderer->scale);
+	next_scale = renderer->scale;
 	return scale1x1_c16;
 }
 
@@ -236,6 +315,13 @@ void PLAT_flip(SDL_Surface* IGNORED, int ignored) {
 		}
 	}
 	SDL_RenderCopy(vid.renderer, vid.texture, src_rect, dst_rect);
+	
+	updateEffect();
+	if (vid.blit && vid.effect) {
+		if (!dst_rect) dst_rect = &dst_r;
+		SDL_RenderCopy(vid.renderer, vid.effect, &(SDL_Rect){0,0,FIXED_WIDTH,FIXED_HEIGHT},&(SDL_Rect){dst_rect->x%effect_scale,dst_rect->y%effect_scale,FIXED_WIDTH,FIXED_HEIGHT});
+	}
+
 	SDL_RenderPresent(vid.renderer);
 	vid.blit = NULL;
 }
@@ -289,14 +375,15 @@ void PLAT_getBatteryStatus(int* is_charging, int* charge) {
 	online = prefixMatch("up", status);
 }
 
+#define LED_PATH "/sys/class/led_anim/max_scale"
 void PLAT_enableBacklight(int enable) {
 	if (enable) {
 		SetBrightness(GetBrightness());
-		system("echo 0 > /sys/class/led_anim/max_scale");
+		putInt(LED_PATH,0);
 	}
 	else {
 		SetRawBrightness(0);
-		system("echo 52 > /sys/class/led_anim/max_scale"); // 52 seems to be the max brightness
+		putInt(LED_PATH,52); // 52 seems to be the max brightness
 	}
 }
 
@@ -318,7 +405,6 @@ void PLAT_powerOff(void) {
 ///////////////////////////////
 
 #define GOVERNOR_PATH "/sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed"
-
 void PLAT_setCPUSpeed(int speed) {
 	int freq = 0;
 	switch (speed) {
@@ -327,18 +413,12 @@ void PLAT_setCPUSpeed(int speed) {
 		case CPU_SPEED_NORMAL: 		freq = 1608000; break;
 		case CPU_SPEED_PERFORMANCE: freq = 2000000; break;
 	}
-
-	char cmd[256];
-	sprintf(cmd,"echo %i > %s", freq, GOVERNOR_PATH);
-	system(cmd);
+	putInt(GOVERNOR_PATH, freq);
 }
 
 #define RUMBLE_PATH "/sys/class/gpio/gpio227/value"
-
 void PLAT_setRumble(int strength) {
-	char cmd[256];
-	sprintf(cmd,"echo %i > %s", strength?1:0, RUMBLE_PATH);
-	system(cmd);
+	putInt(RUMBLE_PATH, (strength && !GetMute())?1:0);
 }
 
 int PLAT_pickSampleRate(int requested, int max) {

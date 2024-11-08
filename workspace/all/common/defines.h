@@ -29,6 +29,7 @@
 #define LAST_PATH "/tmp/last.txt" // transient
 #define CHANGE_DISC_PATH "/tmp/change_disc.txt"
 #define RESUME_SLOT_PATH "/tmp/resume_slot.txt"
+#define NOUI_PATH "/tmp/noui"
 
 #define TRIAD_WHITE 		0xff,0xff,0xff
 #define TRIAD_BLACK 		0x00,0x00,0x00
@@ -112,6 +113,10 @@
 #define JOY_MENU_ALT JOY_NA
 #endif
 
+#ifndef JOY_MENU_ALT2
+#define JOY_MENU_ALT2 JOY_NA
+#endif
+
 #ifndef AXIS_L2
 #define AXIS_L2	AXIS_NA
 #define AXIS_R2	AXIS_NA
@@ -135,10 +140,10 @@
 // TODO: doesn't this belong in api.h? it's meaningless without PAD_*
 enum {
 	BTN_ID_NONE = -1,
-	BTN_ID_UP,
-	BTN_ID_DOWN,
-	BTN_ID_LEFT,
-	BTN_ID_RIGHT,
+	BTN_ID_DPAD_UP,
+	BTN_ID_DPAD_DOWN,
+	BTN_ID_DPAD_LEFT,
+	BTN_ID_DPAD_RIGHT,
 	BTN_ID_A,
 	BTN_ID_B,
 	BTN_ID_X,
@@ -156,31 +161,47 @@ enum {
 	BTN_ID_MINUS,
 	BTN_ID_POWER,	
 	BTN_ID_POWEROFF,
+
+	BTN_ID_ANALOG_UP,
+	BTN_ID_ANALOG_DOWN,
+	BTN_ID_ANALOG_LEFT,
+	BTN_ID_ANALOG_RIGHT,
+
 	BTN_ID_COUNT,
 };
 enum {
-	BTN_NONE	= 0,
-	BTN_UP 		= 1 << BTN_ID_UP,
-	BTN_DOWN	= 1 << BTN_ID_DOWN,
-	BTN_LEFT	= 1 << BTN_ID_LEFT,
-	BTN_RIGHT	= 1 << BTN_ID_RIGHT,
-	BTN_A		= 1 << BTN_ID_A,
-	BTN_B		= 1 << BTN_ID_B,
-	BTN_X		= 1 << BTN_ID_X,
-	BTN_Y		= 1 << BTN_ID_Y,
-	BTN_START	= 1 << BTN_ID_START,
-	BTN_SELECT	= 1 << BTN_ID_SELECT,
-	BTN_L1		= 1 << BTN_ID_L1,
-	BTN_R1		= 1 << BTN_ID_R1,
-	BTN_L2		= 1 << BTN_ID_L2,
-	BTN_R2		= 1 << BTN_ID_R2,
-	BTN_L3		= 1 << BTN_ID_L3,
-	BTN_R3		= 1 << BTN_ID_R3,
-	BTN_MENU	= 1 << BTN_ID_MENU,
-	BTN_PLUS	= 1 << BTN_ID_PLUS,
-	BTN_MINUS	= 1 << BTN_ID_MINUS,
-	BTN_POWER	= 1 << BTN_ID_POWER,
-	BTN_POWEROFF= 1 << BTN_ID_POWEROFF,
+	BTN_NONE		= 0,
+	BTN_DPAD_UP 	= 1 << BTN_ID_DPAD_UP,
+	BTN_DPAD_DOWN	= 1 << BTN_ID_DPAD_DOWN,
+	BTN_DPAD_LEFT	= 1 << BTN_ID_DPAD_LEFT,
+	BTN_DPAD_RIGHT	= 1 << BTN_ID_DPAD_RIGHT,
+	BTN_A			= 1 << BTN_ID_A,
+	BTN_B			= 1 << BTN_ID_B,
+	BTN_X			= 1 << BTN_ID_X,
+	BTN_Y			= 1 << BTN_ID_Y,
+	BTN_START		= 1 << BTN_ID_START,
+	BTN_SELECT		= 1 << BTN_ID_SELECT,
+	BTN_L1			= 1 << BTN_ID_L1,
+	BTN_R1			= 1 << BTN_ID_R1,
+	BTN_L2			= 1 << BTN_ID_L2,
+	BTN_R2			= 1 << BTN_ID_R2,
+	BTN_L3			= 1 << BTN_ID_L3,
+	BTN_R3			= 1 << BTN_ID_R3,
+	BTN_MENU		= 1 << BTN_ID_MENU,
+	BTN_PLUS		= 1 << BTN_ID_PLUS,
+	BTN_MINUS		= 1 << BTN_ID_MINUS,
+	BTN_POWER		= 1 << BTN_ID_POWER,
+	BTN_POWEROFF	= 1 << BTN_ID_POWEROFF,
+
+	BTN_ANALOG_UP 	= 1 << BTN_ID_ANALOG_UP,
+	BTN_ANALOG_DOWN	= 1 << BTN_ID_ANALOG_DOWN,
+	BTN_ANALOG_LEFT	= 1 << BTN_ID_ANALOG_LEFT,
+	BTN_ANALOG_RIGHT= 1 << BTN_ID_ANALOG_RIGHT,
+	
+	BTN_UP 		= BTN_DPAD_UP | BTN_ANALOG_UP,
+	BTN_DOWN 	= BTN_DPAD_DOWN | BTN_ANALOG_DOWN,
+	BTN_LEFT	= BTN_DPAD_LEFT | BTN_ANALOG_LEFT,
+	BTN_RIGHT	= BTN_DPAD_RIGHT | BTN_ANALOG_RIGHT,
 };
 #endif
 

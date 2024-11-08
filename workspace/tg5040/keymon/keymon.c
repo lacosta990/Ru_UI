@@ -23,6 +23,7 @@
 #define CODE_MENU		316
 #define CODE_PLUS		115
 #define CODE_MINUS		114
+#define CODE_MUTE		1
 #define CODE_JACK		2
 
 // keymon and api might need different codes
@@ -70,16 +71,23 @@ int main (int argc, char *argv[]) {
 	while (1) {
 		gettimeofday(&tod, NULL);
 		now = tod.tv_sec * 1000 + tod.tv_usec / 1000;
-		if (now-then>100) ignore = 1; // ignore input that arrived during sleep
+		if (now-then>1000) ignore = 1; // ignore input that arrived during sleep
 		
 		for (int i=0; i<INPUT_COUNT; i++) {
 			input = inputs[i];
 			while(read(input, &ev, sizeof(ev))==sizeof(ev)) {
 				if (ignore) continue;
 				val = ev.value;
-				if (ev.type==EV_SW && ev.code==CODE_JACK) {
+				if (ev.type==EV_SW) {
+					printf("switch: %i\n", ev.code);
+					if (ev.code==CODE_JACK) {
 					printf("jack: %i\n", val);
 					SetJack(val);
+				}
+					else if (ev.code==CODE_MUTE) {
+						printf("mute: %i\n", val);
+						SetMute(val);
+					}
 				}
 				if (( ev.type != EV_KEY ) || ( val > REPEAT )) continue;
 				printf("code: %i (%i)\n", ev.code, val); fflush(stdout);
@@ -100,6 +108,14 @@ int main (int argc, char *argv[]) {
 					break;
 				}
 			}
+		}
+		
+		if (ignore) {
+			menu_pressed = 0;
+			up_pressed = up_just_pressed = 0;
+			down_pressed = down_just_pressed = 0;
+			up_repeat_at = 0;
+			down_repeat_at = 0;
 		}
 		
 		if (up_just_pressed || (up_pressed && now>=up_repeat_at)) {

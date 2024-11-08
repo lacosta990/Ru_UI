@@ -1,9 +1,8 @@
 # MinUI
 
-MinUI is a focused, custom launcher and libretro frontend for the RGB30, M17 (early revs), Trimui Smart (and Pro), Miyoo Mini (and Plus), the Anbernic RG*XX family, and the GKD Pixel.
+MinUI is a focused, custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
 
-<img src="github/minui-main.png" width=320 /> <img src="github/minui-menu-gbc.png" width=320 />  
-See [more screenshots](github/).
+<img src="github/minui-main.png" width=320 /> <img src="github/minui-menu-gbc.png" width=320 /> 
 
 ## Features
 
@@ -63,11 +62,38 @@ Extras:
 - TurboGrafx-16 (and TurboGrafx-CD)
 - Virtual Boy
 
+## Supported Devices
+
+| Device | Added | Status |
+| -- | -- | -- |
+| Anbernic RG28xx | MinUI-20240429b-2 | Maintained |
+| Anbernic RG35xx | MinUI-20230922b-2 | Maintained |
+| Anbernic RG35xx Plus | MinUI-20240106b-0 | Maintained |
+| Anbernic RG35xxH | MinUI-20240120b-1 | Maintained |
+| Anbernic RG35xxSP | MinUI-20240525-0 | Maintained |
+| Anbernic RG40xxH | MinUI-20240717-1 | Maintained |
+| Anbernic RG40xxV | MinUI-20240831-0 | Maintained | 
+| Anbernic RG CubeXX | MinUI-202401028-0 | Active | 
+| GKD Pixel | MinUI-20240120b-1 | Maintained |
+| M17 | MinUI-20231126b-2 | Maintained |
+| MagicX XU Mini M | MinUI-20240831-0 | Maintained | 
+| Miyoo A30 | MinUI-20240705-0 | Maintained |
+| Miyoo Mini | MinUI-20230922b-2 | Maintained |
+| Miyoo Mini Plus | MinUI-20230922b-2 | Maintained |
+| Powkiddy RGB30 | MinUI-20231014b-1 | Maintained |
+| Trimui Brick | MinUI-20241028-0 | Active |
+| Trimui Smart | MinUI-20230922b-2 | Maintained |
+| Trimui Smart Pro | MinUI-20231111b-2 | Maintained |
+
+> [!NOTE]
+> **Active** actively working on compatibility and improvements specific to this device  
+> **Maintained** inheriting improvements to common functionality  
+> **Retired** removed from repo, no longer updated or packaged with new releases  
 
 ## Legacy versions
 
-The original Trimui Model S version of MinUI has been archived [here](https://github.com/shauninman/MinUI-Legacy-Trimui-Model-S).
+The original Trimui Model S version of MinUI (2021/04/03-2021/08/06) has been archived [here](https://github.com/shauninman/MinUI-Legacy-Trimui-Model-S).
 
-The sequel, MiniUI for the Miyoo Mini, has been archived [here](https://github.com/shauninman/MiniUI-Legacy-Miyoo-Mini).
+The sequel, MiniUI for the Miyoo Mini (2022/04/20-2022/10/23), has been archived [here](https://github.com/shauninman/MiniUI-Legacy-Miyoo-Mini).
 
-The return of MinUI for the original Anbernic RG35XX has been archived [here](https://github.com/shauninman/MinUI-Legacy-RG35XX).
+The return of MinUI for the original Anbernic RG35XX (2023/02/26-2023/03/26) has been archived [here](https://github.com/shauninman/MinUI-Legacy-RG35XX).

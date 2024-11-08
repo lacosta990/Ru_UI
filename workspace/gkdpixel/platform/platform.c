@@ -1,4 +1,4 @@
-// trimui
+// gkdpixel
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/fb.h>
@@ -73,6 +73,9 @@ void PLAT_setNearestNeighbor(int enabled) {
 	// buh
 }
 void PLAT_setSharpness(int sharpness) {
+	// buh
+}
+void PLAT_setEffect(int effect) {
 	// buh
 }
 void PLAT_vsync(int remaining) {

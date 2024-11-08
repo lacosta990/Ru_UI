@@ -47,6 +47,10 @@ void LOG_note(int level, const char* fmt, ...);
 
 ///////////////////////////////
 
+#define FALLBACK_IMPLEMENTATION __attribute__((weak)) // used if platform doesn't provide an implementation
+
+///////////////////////////////
+
 extern uint32_t RGB_WHITE;
 extern uint32_t RGB_BLACK;
 extern uint32_t RGB_LIGHT_GRAY;
@@ -100,6 +104,13 @@ enum {
 	SHARPNESS_SOFT,
 };
 
+enum {
+	EFFECT_NONE,
+	EFFECT_LINE,
+	EFFECT_GRID,
+	EFFECT_COUNT,
+};
+
 typedef struct GFX_Renderer {
 	void* src;
 	void* dst;
@@ -135,6 +146,7 @@ SDL_Surface* GFX_init(int mode);
 #define GFX_setScaleClip PLAT_setVideoScaleClip // (int x, int y, int width, int height)
 #define GFX_setNearestNeighbor PLAT_setNearestNeighbor // (int enabled)
 #define GFX_setSharpness PLAT_setSharpness // (int sharpness)
+#define GFX_setEffect PLAT_setEffect // (int effect)
 void GFX_setMode(int mode);
 int GFX_hdmiChanged(void);
 
@@ -143,6 +155,7 @@ int GFX_hdmiChanged(void);
 
 void GFX_startFrame(void);
 void GFX_flip(SDL_Surface* screen);
+#define GFX_supportsOverscan PLAT_supportsOverscan // (void)
 void GFX_sync(void); // call this to maintain 60fps when not calling GFX_flip() this frame
 void GFX_quit(void);
 
@@ -193,12 +206,18 @@ void SND_quit(void);
 
 ///////////////////////////////
 
+typedef struct PAD_Axis {
+		int x;
+		int y;
+} PAD_Axis;
 typedef struct PAD_Context {
 	int is_pressed;
 	int just_pressed;
 	int just_released;
 	int just_repeated;
 	uint32_t repeat_at[BTN_ID_COUNT];
+	PAD_Axis laxis;
+	PAD_Axis raxis;
 } PAD_Context;
 extern PAD_Context pad;
 
@@ -207,13 +226,10 @@ extern PAD_Context pad;
 
 #define PAD_init PLAT_initInput
 #define PAD_quit PLAT_quitInput
+#define PAD_poll PLAT_pollInput
+#define PAD_wake PLAT_shouldWake
 
-#ifndef PAD_poll
-#define PAD_poll PAD_poll_SDL
-#define PAD_wake PAD_wake_SDL
-void PAD_poll_SDL(void);
-int PAD_wake_SDL(void);
-#endif
+void PAD_setAnalog(int neg, int pos, int value, int repeat_at); // internal
 
 void PAD_reset(void);
 int PAD_anyJustPressed(void);
@@ -286,10 +302,12 @@ SDL_Surface* PLAT_resizeVideo(int w, int h, int pitch);
 void PLAT_setVideoScaleClip(int x, int y, int width, int height);
 void PLAT_setNearestNeighbor(int enabled);
 void PLAT_setSharpness(int sharpness);
+void PLAT_setEffect(int effect);
 void PLAT_vsync(int remaining);
 scaler_t PLAT_getScaler(GFX_Renderer* renderer);
 void PLAT_blitRenderer(GFX_Renderer* renderer);
 void PLAT_flip(SDL_Surface* screen, int sync);
+int PLAT_supportsOverscan(void);
 
 SDL_Surface* PLAT_initOverlay(void);
 void PLAT_quitOverlay(void);
@@ -306,5 +324,6 @@ int PLAT_pickSampleRate(int requested, int max);
 
 char* PLAT_getModel(void);
 int PLAT_isOnline(void);
+int PLAT_setDateTime(int y, int m, int d, int h, int i, int s);
 
 #endif

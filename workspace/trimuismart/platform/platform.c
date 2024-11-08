@@ -190,7 +190,7 @@ SDL_Surface* PLAT_initVideo(void) {
 	ion_alloc(vid.ion_fd, &vid.screen_info);
 	vid.screen = SDL_CreateRGBSurfaceFrom(vid.screen_info.vadd, vid.width, vid.height, FIXED_DEPTH, vid.pitch, RGBA_MASK_565);
 	
-	// setup ch1 screeb layer (RGB565, DOUBLEBUF) ch0/1 can use scaler, but cannot use alpha
+	// setup ch1 screen layer (RGB565, DOUBLEBUF) ch0/1 can use scaler, but cannot use alpha
 	vid.buffer_info.size = PAGE_SIZE * PAGE_COUNT;
 	ion_alloc(vid.ion_fd, &vid.buffer_info);
 
@@ -303,6 +303,9 @@ void PLAT_setNearestNeighbor(int enabled) {
 	// buh
 }
 void PLAT_setSharpness(int sharpness) {
+	// buh
+}
+void PLAT_setEffect(int effect) {
 	// buh
 }
 void PLAT_vsync(int remaining) {

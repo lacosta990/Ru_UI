@@ -103,9 +103,9 @@
 
 ///////////////////////////////
 
-#define FIXED_SCALE 	2
-#define FIXED_WIDTH		1280
-#define FIXED_HEIGHT	720
+#define FIXED_SCALE 	3
+#define FIXED_WIDTH		1024
+#define FIXED_HEIGHT	768
 #define FIXED_BPP		2
 #define FIXED_DEPTH		(FIXED_BPP * 8)
 #define FIXED_PITCH		(FIXED_WIDTH * FIXED_BPP)
@@ -119,14 +119,13 @@
 
 ///////////////////////////////
 
-#define MAIN_ROW_COUNT 8
-#define PADDING 40
+#define MAIN_ROW_COUNT 7
+#define PADDING 5
 
 ///////////////////////////////
 
 #define SDCARD_PATH "/Users/shauninman/Projects/Personal/MinUI/workspace/macos/FAKESD"
 #define MUTE_VOLUME_RAW 63 // 0 unintuitively is 100% volume
-// #define CROP_OVERSCAN
 
 ///////////////////////////////
 

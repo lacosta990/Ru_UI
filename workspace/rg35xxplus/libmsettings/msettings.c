@@ -118,19 +118,19 @@ void SetBrightness(int value) {
 	
 	int raw;
 	switch (value) {
-		// TODO: redo, range is 0-255
-		case 0: raw=4; break; 		//  0
-		case 1: raw=6; break; 		//  2
-		case 2: raw=10; break; 		//  4
-		case 3: raw=16; break; 		//  6
-		case 4: raw=32; break;		// 16
-		case 5: raw=48; break;		// 16
-		case 6: raw=64; break;		// 16
-		case 7: raw=96; break;		// 32
-		case 8: raw=128; break;		// 32
-		case 9: raw=192; break;		// 64
+		case  0: raw=  4; break;	//  0
+		case  1: raw=  6; break;	//  2
+		case  2: raw= 10; break;	//  4
+		case  3: raw= 16; break;	//  6
+		case  4: raw= 32; break;	// 16
+		case  5: raw= 48; break;	// 16
+		case  6: raw= 64; break;	// 16
+		case  7: raw= 96; break;	// 32
+		case  8: raw=128; break;	// 32
+		case  9: raw=192; break;	// 64
 		case 10: raw=255; break;	// 64
 	}
+	
 	SetRawBrightness(raw);
 	settings->brightness = value;
 	SaveSettings();
@@ -198,3 +198,6 @@ void SetHDMI(int value) {
 	if (value) SetRawVolume(100); // max
 	else SetVolume(GetVolume()); // restore
 }
+
+int GetMute(void) { return 0; }
+void SetMute(int value) {}

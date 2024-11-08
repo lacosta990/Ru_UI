@@ -48,6 +48,8 @@ There's no need to edit anything below the line of hash marks. The rest is boile
 
 That's it! Feel free to experiement with cores from the stock firmware, other compatible devices, or building your own.
 
+Oh, if you're creating a pak for Anbernic's RG*XX line you'll need to change the last part of the last line from ` &> "$LOGS_PATH/$EMU_TAG.txt"` to ` > "$LOGS_PATH/$EMU_TAG.txt" 2>&1` because its default shell is whack.
+
 # Option defaults and button bindings
 
 Copy your new pak and some roms to your SD card and launch a game. Press the MENU button and select Options. Configure the Frontend, Emulator, and Controls. MinUI standard practice is to only bind controls present on the physical controller of the original system (eg. no turbo buttons or core-specific features like palette or disk switching). Let the player dig into that if they want to, the same goes for Shortcuts. Finally select Save Changes > Save for Console. Then quit and pop your SD card back into your computer. 
@@ -79,6 +81,24 @@ to
 
 	bind More Sun = NONE:L3
 
+# Brightness and Volume
+
+Some binaries insist on resetting brightness (eg. DinguxCommander on the 40xxH stock firmware) or volume (eg. ppssppSDL everywhere) on every launch. To keep this in sync with MinUI's global settings there's syncsettings.elf. It waits one second then restores MinUI's current brightness and volume settings. In most cases you can just launch it as a daemon before launching the binary:
+
+	syncsettings.elf &
+	./DinguxCommander
+
+But if a binary takes more than one second to initialize you might need to just let it run in a loop the entire time the binary is running:
+
+	while :; do
+	    syncsettings.elf
+	done &
+	LOOP_PID=$!
+	
+	./PPSSPPSDL --pause-menu-exit "$ROM_PATH"
+	
+	kill $LOOP_PID
+
 # Caveats
 
-MinUI currently only supports the RGB565 pixel format. This may prevent otherwize compatible cores from working at all.
+MinUI currently only supports the RGB565 pixel format and does not implement the OpenGL libretro APIs. It may be possible to use the stock firmware's retroarch instead of MinUI's minarch to run certain cores but that is left as an exercise for the reader.

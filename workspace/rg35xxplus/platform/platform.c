@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <pthread.h>
 
 #include <msettings.h>
 
@@ -17,6 +18,8 @@
 #include "utils.h"
 
 #include "scaler.h"
+
+int is_cubexx = 0;
 
 ///////////////////////////////
 
@@ -40,8 +43,12 @@
 #define RAW_PLUS	115
 #define RAW_MINUS	114
 #define RAW_POWER	116
-#define RAW_YAXIS	17
-#define RAW_XAXIS	16
+#define RAW_HATY	17
+#define RAW_HATX	16
+#define RAW_LSY		3
+#define RAW_LSX		2
+#define RAW_RSY		5
+#define RAW_RSX		4
 
 #define RAW_MENU1	RAW_L3
 #define RAW_MENU2	RAW_R3
@@ -49,13 +56,30 @@
 #define INPUT_COUNT 2
 static int inputs[INPUT_COUNT];
 
+#define LID_PATH "/sys/class/power_supply/axp2202-battery/hallkey"
+static int check_lid = 0;
+static int lid_open = 1;
+int PLAT_lidChanged(int* state) {
+	if (check_lid) {
+		int lid = getInt(LID_PATH);
+		if (lid!=lid_open) {
+			lid_open = lid;
+			if (state) *state = lid;
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void PLAT_initInput(void) {
 	inputs[0] = open("/dev/input/event0", O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 	inputs[1] = open("/dev/input/event1", O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+	check_lid = exists(LID_PATH);
 }
 void PLAT_quitInput(void) {
-	close(inputs[1]);
-	close(inputs[0]);
+	for (int i=0; i<INPUT_COUNT; i++) {
+		close(inputs[i]);
+	}
 }
 
 // from <linux/input.h> which has BTN_ constants that conflict with platform.h
@@ -89,7 +113,6 @@ void PLAT_pollInput(void) {
 	for (int i=0; i<INPUT_COUNT; i++) {
 		input = inputs[i];
 		while (read(input, &event, sizeof(event))==sizeof(event)) {
-			if (event.value>1) continue; // ignore repeats
 			if (event.type!=EV_KEY && event.type!=EV_ABS) continue;
 
 			int btn = BTN_NONE;
@@ -101,12 +124,14 @@ void PLAT_pollInput(void) {
 			
 			// TODO: tmp, hardcoded, missing some buttons
 			if (type==EV_KEY) {
+				if (value>1) continue; // ignore repeats
+			
 				pressed = value;
 				// LOG_info("key event: %i (%i)\n", code,pressed);
-					 if (code==RAW_UP) 	{ btn = BTN_UP; 		id = BTN_ID_UP; }
-	 			else if (code==RAW_DOWN)	{ btn = BTN_DOWN; 		id = BTN_ID_DOWN; }
-				else if (code==RAW_LEFT)	{ btn = BTN_LEFT; 		id = BTN_ID_LEFT; }
-				else if (code==RAW_RIGHT)	{ btn = BTN_RIGHT; 		id = BTN_ID_RIGHT; }
+					 if (code==RAW_UP) 		{ btn = BTN_DPAD_UP; 	id = BTN_ID_DPAD_UP; }
+	 			else if (code==RAW_DOWN)	{ btn = BTN_DPAD_DOWN; 	id = BTN_ID_DPAD_DOWN; }
+				else if (code==RAW_LEFT)	{ btn = BTN_DPAD_LEFT; 	id = BTN_ID_DPAD_LEFT; }
+				else if (code==RAW_RIGHT)	{ btn = BTN_DPAD_RIGHT; id = BTN_ID_DPAD_RIGHT; }
 				else if (code==RAW_A)		{ btn = BTN_A; 			id = BTN_ID_A; }
 				else if (code==RAW_B)		{ btn = BTN_B; 			id = BTN_ID_B; }
 				else if (code==RAW_X)		{ btn = BTN_X; 			id = BTN_ID_X; }
@@ -129,31 +154,40 @@ void PLAT_pollInput(void) {
 			else if (type==EV_ABS) {
 				// LOG_info("abs event: %i (%i)\n", code,value);
 				// { up, down, left, right }
-				int hats[4] = {-1,-1,-1,-1}; // -1=no change,1=pressed,0=released
-				if (code==RAW_YAXIS) {
-					hats[0] = value==-1; // up
-					hats[1] = value==1; // down
-				}
-				else if (code==RAW_XAXIS) { // left/right
-					hats[2] = value==-1; // left
-					hats[3] = value==1; // right
-				}
+				if (code==RAW_HATY || code==RAW_HATX) {
+					if (value>1) continue; // ignore repeats
+			
+					int hats[4] = {-1,-1,-1,-1}; // -1=no change,1=pressed,0=released
+					if (code==RAW_HATY) {
+						hats[0] = value==-1; // up
+						hats[1] = value==1; // down
+					}
+					else if (code==RAW_HATX) { // left/right
+						hats[2] = value==-1; // left
+						hats[3] = value==1; // right
+					}
 				
-				for (id=0; id<4; id++) {
-					int state = hats[id];
-					btn = 1 << id;
-					if (state==0) {
-						pad.is_pressed		&= ~btn; // unset
-						pad.just_repeated	&= ~btn; // unset
-						pad.just_released	|= btn; // set
-					}
-					else if (state==1 && (pad.is_pressed & btn)==BTN_NONE) {
-						pad.just_pressed	|= btn; // set
-						pad.just_repeated	|= btn; // set
-						pad.is_pressed		|= btn; // set
-						pad.repeat_at[id]	= tick + PAD_REPEAT_DELAY;
+					for (id=0; id<4; id++) {
+						int state = hats[id];
+						btn = 1 << id;
+						if (state==0) {
+							pad.is_pressed		&= ~btn; // unset
+							pad.just_repeated	&= ~btn; // unset
+							pad.just_released	|= btn; // set
+						}
+						else if (state==1 && (pad.is_pressed & btn)==BTN_NONE) {
+							pad.just_pressed	|= btn; // set
+							pad.just_repeated	|= btn; // set
+							pad.is_pressed		|= btn; // set
+							pad.repeat_at[id]	= tick + PAD_REPEAT_DELAY;
+						}
 					}
 				}
+				else if (code==RAW_LSX) { pad.laxis.x = (value / 4096) * 32767; PAD_setAnalog(BTN_ID_ANALOG_LEFT, BTN_ID_ANALOG_RIGHT, pad.laxis.x, tick+PAD_REPEAT_DELAY); }
+				else if (code==RAW_LSY) { pad.laxis.y = (value / 4096) * 32767; PAD_setAnalog(BTN_ID_ANALOG_UP,   BTN_ID_ANALOG_DOWN,  pad.laxis.y, tick+PAD_REPEAT_DELAY); }
+				else if (code==RAW_RSX) pad.raxis.x = (value / 4096) * 32767;
+				else if (code==RAW_RSY) pad.raxis.y = (value / 4096) * 32767;
+				
 				btn = BTN_NONE; // already handled, force continue
 			}
 			
@@ -172,15 +206,24 @@ void PLAT_pollInput(void) {
 			}
 		}
 	}
+	
+	if (check_lid && PLAT_lidChanged(NULL)) pad.just_released |= BTN_SLEEP;
 }
 
 int PLAT_shouldWake(void) {
+	int lid = 1; // assume open by default
+	if (check_lid && PLAT_lidChanged(&lid) && lid) return 1;
+	
 	int input;
 	static struct input_event event;
 	for (int i=0; i<INPUT_COUNT; i++) {
 		input = inputs[i];
 		while (read(input, &event, sizeof(event))==sizeof(event)) {
-			if (event.type==EV_KEY && event.code==RAW_POWER && event.value==0) return 1;
+			if (event.type==EV_KEY && event.code==RAW_POWER && event.value==0) {
+				// ignore input while lid is closed
+				if (check_lid && !lid_open) return 0;  // do it here so we eat the input
+				return 1;
+			}
 		}
 	}
 	return 0;
@@ -196,6 +239,8 @@ static struct VID_Context {
 	SDL_Renderer* renderer;
 	SDL_Texture* texture;
 	SDL_Texture* target;
+	SDL_Texture* effect;
+
 	SDL_Surface* buffer;
 	SDL_Surface* screen;
 	
@@ -207,12 +252,15 @@ static struct VID_Context {
 	int sharpness;
 } vid;
 
-
 static int device_width;
 static int device_height;
 static int device_pitch;
 static int rotate = 0;
 SDL_Surface* PLAT_initVideo(void) {
+	// LOG_info("PLAT_initVideo\n");
+	
+	is_cubexx = exactMatch("RGcubexx", getenv("RGXX_MODEL"));
+	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	SDL_ShowCursor(0);
 	
@@ -220,8 +268,8 @@ SDL_Surface* PLAT_initVideo(void) {
 	// SDL_version linked;
 	// SDL_VERSION(&compiled);
 	// SDL_GetVersion(&linked);
-	// LOG_info("We compiled against SDL version %d.%d.%d ...\n", compiled.major, compiled.minor, compiled.patch);
-	// LOG_info("But we linked against SDL version %d.%d.%d.\n", linked.major, linked.minor, linked.patch);
+	// LOG_info("Compiled SDL version %d.%d.%d ...\n", compiled.major, compiled.minor, compiled.patch);
+	// LOG_info("Linked SDL version %d.%d.%d.\n", linked.major, linked.minor, linked.patch);
 	//
 	// int num_displays = SDL_GetNumVideoDisplays();
 	// LOG_info("SDL_GetNumVideoDisplays(): %i\n", num_displays);
@@ -248,13 +296,7 @@ SDL_Surface* PLAT_initVideo(void) {
 	// SDL_GetCurrentDisplayMode(0, &mode);
 	// LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
 
-	// LOG_info("Available audio drivers:\n");
-	// for (int i=0; i<SDL_GetNumAudioDrivers(); i++) {
-	// 	LOG_info("- %s\n", SDL_GetAudioDriver(i));
-	// }
-	// LOG_info("Current audio driver: %s\n", SDL_GetCurrentAudioDriver());
-
-	// SDL_SetHint(SDL_HINT_RENDER_VSYNC,"0");
+	// SDL_SetHint(SDL_HINT_RENDER_VSYNC,"0"); // ignored
 
 	int w = FIXED_WIDTH;
 	int h = FIXED_HEIGHT;
@@ -265,11 +307,11 @@ SDL_Surface* PLAT_initVideo(void) {
 		p = HDMI_PITCH;
 	}
 	vid.window   = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w,h, SDL_WINDOW_SHOWN);
-	LOG_info("window size: %ix%i\n", w,h);
+	// LOG_info("window size: %ix%i\n", w,h);
 	
 	SDL_DisplayMode mode;
 	SDL_GetCurrentDisplayMode(0, &mode);
-	LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
+	// LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
 	if (mode.h>mode.w) rotate = 3;
 	vid.renderer = SDL_CreateRenderer(vid.window,-1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
 	// SDL_RenderSetLogicalSize(vid.renderer, w,h); // TODO: wrong, but without and with the below it's even wrong-er
@@ -294,7 +336,7 @@ SDL_Surface* PLAT_initVideo(void) {
 	// 	SDL_RenderClear(vid.renderer);
 	// 	SDL_RenderPresent(vid.renderer);
 	// }
-	
+	//
 	// SDL_RendererInfo info;
 	// SDL_GetRendererInfo(vid.renderer, &info);
 	// LOG_info("Current render driver: %s\n", info.name);
@@ -344,6 +386,7 @@ void PLAT_quitVideo(void) {
 	SDL_FreeSurface(vid.screen);
 	SDL_FreeSurface(vid.buffer);
 	if (vid.target) SDL_DestroyTexture(vid.target);
+	if (vid.effect) SDL_DestroyTexture(vid.effect);
 	SDL_DestroyTexture(vid.texture);
 	SDL_DestroyRenderer(vid.renderer);
 	SDL_DestroyWindow(vid.window);
@@ -368,7 +411,6 @@ static int hard_scale = 4; // TODO: base src size, eg. 160x144 can be 4
 
 static void resizeVideo(int w, int h, int p) {
 	if (w==vid.width && h==vid.height && p==vid.pitch) return;
-	
 	
 	// TODO: minarch disables crisp (and nn upscale before linear downscale) when native
 	
@@ -418,11 +460,88 @@ void PLAT_setSharpness(int sharpness) {
 	vid.sharpness = sharpness;
 	resizeVideo(vid.width,vid.height,p);
 }
+static int effect_scale = 1;
+static int effect_type = EFFECT_NONE;
+static int next_scale = 1;
+static int next_effect = EFFECT_NONE;
+static void updateEffect(void) {
+	if (next_scale==effect_scale && next_effect==effect_type) return; // unchanged
+	
+	effect_scale = next_scale;
+	effect_type = next_effect;
+	
+	if (vid.effect) SDL_DestroyTexture(vid.effect);
+	if (effect_type==EFFECT_NONE) return;
+	
+	char* effect_path;
+	int opacity = 128; // 1 - 1/2 = 50%
+	if (effect_type==EFFECT_LINE) {
+		if (effect_scale<3) {
+			effect_path = RES_PATH "/line-2.png";
+		}
+		else if (effect_scale<4) {
+			effect_path = RES_PATH "/line-3.png";
+		}
+		else if (effect_scale<5) {
+			effect_path = RES_PATH "/line-4.png";
+		}
+		else if (effect_scale<6) {
+			effect_path = RES_PATH "/line-5.png";
+		}
+		else if (effect_scale<8) {
+			effect_path = RES_PATH "/line-6.png";
+		}
+		else {
+			effect_path = RES_PATH "/line-8.png";
+		}
+	}
+	else if (effect_type==EFFECT_GRID) {
+		if (effect_scale<3) {
+			effect_path = RES_PATH "/grid-2.png";
+			opacity = 64; // 1 - 3/4 = 25%
+		}
+		else if (effect_scale<4) {
+			effect_path = RES_PATH "/grid-3.png";
+			opacity = 112; // 1 - 5/9 = ~44%
+		}
+		else if (effect_scale<5) {
+			effect_path = RES_PATH "/grid-4.png";
+			opacity = 144; // 1 - 7/16 = ~56%
+		}
+		else if (effect_scale<6) {
+			effect_path = RES_PATH "/grid-5.png";
+			opacity = 160; // 1 - 9/25 = ~64%
+		}
+		else if (effect_scale<8) {
+			effect_path = RES_PATH "/grid-6.png";
+			opacity = 112; // 1 - 5/9 = ~44%
+		}
+		else if (effect_scale<11) {
+			effect_path = RES_PATH "/grid-8.png";
+			opacity = 144; // 1 - 7/16 = ~56%
+		}
+		else {
+			effect_path = RES_PATH "/grid-11.png";
+			opacity = 136; // 1 - 57/121 = ~52%
+		}
+	}
+	LOG_info("load effect: %s (opacity: %i)\n", effect_path, opacity);
+	SDL_Surface* tmp = IMG_Load(effect_path);
+	if (tmp) {
+		vid.effect = SDL_CreateTextureFromSurface(vid.renderer, tmp);
+		SDL_SetTextureAlphaMod(vid.effect, opacity);
+		SDL_FreeSurface(tmp);
+	}
+}
+void PLAT_setEffect(int effect) {
+	next_effect = effect;
+}
 void PLAT_vsync(int remaining) {
 	if (remaining>0) SDL_Delay(remaining);
 }
 
 scaler_t PLAT_getScaler(GFX_Renderer* renderer) {
+	next_scale = renderer->scale;
 	return scale1x1_c16;
 }
 
@@ -436,44 +555,48 @@ void PLAT_blitRenderer(GFX_Renderer* renderer) {
 void PLAT_flip(SDL_Surface* IGNORED, int ignored) {
 	if (!vid.blit) {
 		resizeVideo(device_width,device_height,FIXED_PITCH); // !!!???
-		SDL_LockTexture(vid.texture,NULL,&vid.buffer->pixels,&vid.buffer->pitch);
-		SDL_BlitSurface(vid.screen, NULL, vid.buffer, NULL);
-		SDL_UnlockTexture(vid.texture);
+		SDL_UpdateTexture(vid.texture,NULL,vid.screen->pixels,vid.screen->pitch);
 		if (rotate) SDL_RenderCopyEx(vid.renderer,vid.texture,NULL,&(SDL_Rect){0,device_width,device_width,device_height},rotate*90,&(SDL_Point){0,0},SDL_FLIP_NONE);
 		else SDL_RenderCopy(vid.renderer, vid.texture, NULL,NULL);
 		SDL_RenderPresent(vid.renderer);
 		return;
 	}
 	
-	SDL_LockTexture(vid.texture,NULL,&vid.buffer->pixels,&vid.buffer->pitch);
-	((scaler_t)vid.blit->blit)(
-		vid.blit->src,vid.buffer->pixels,
-		// vid.blit->src_w,vid.blit->src_h,vid.blit->src_p,
-		vid.blit->true_w,vid.blit->true_h,vid.blit->src_p, // TODO: fix to be confirmed, issue may not present on this platform
-		vid.buffer->w,vid.buffer->h,vid.buffer->pitch
-	);
-	SDL_UnlockTexture(vid.texture);
+	// uint32_t then = SDL_GetTicks();
+	SDL_UpdateTexture(vid.texture,NULL,vid.blit->src,vid.blit->src_p);
+	// LOG_info("blit blocked for %ims (%i,%i)\n", SDL_GetTicks()-then,vid.buffer->w,vid.buffer->h);
 	
 	SDL_Texture* target = vid.texture;
+	int x = vid.blit->src_x;
+	int y = vid.blit->src_y;
 	int w = vid.blit->src_w;
 	int h = vid.blit->src_h;
 	if (vid.sharpness==SHARPNESS_CRISP) {
 		SDL_SetRenderTarget(vid.renderer,vid.target);
 		SDL_RenderCopy(vid.renderer, vid.texture, NULL,NULL);
 		SDL_SetRenderTarget(vid.renderer,NULL);
+		x *= hard_scale;
+		y *= hard_scale;
 		w *= hard_scale;
 		h *= hard_scale;
 		target = vid.target;
 	}
 	
-	SDL_Rect* src_rect = &(SDL_Rect){0,0,w,h};
-	SDL_Rect* dst_rect = NULL;
+	SDL_Rect* src_rect = &(SDL_Rect){x,y,w,h};
+	SDL_Rect* dst_rect = &(SDL_Rect){0,0,device_width,device_height};
 	if (vid.blit->aspect==0) { // native or cropped
+		// LOG_info("src_rect %i,%i %ix%i\n",src_rect->x,src_rect->y,src_rect->w,src_rect->h);
+
 		int w = vid.blit->src_w * vid.blit->scale;
 		int h = vid.blit->src_h * vid.blit->scale;
 		int x = (device_width - w) / 2;
 		int y = (device_height - h) / 2;
-		dst_rect = &(SDL_Rect){x,y,w,h};
+		dst_rect->x = x;
+		dst_rect->y = y;
+		dst_rect->w = w;
+		dst_rect->h = h;
+		
+		// LOG_info("dst_rect %i,%i %ix%i\n",dst_rect->x,dst_rect->y,dst_rect->w,dst_rect->h);
 	}
 	else if (vid.blit->aspect>0) { // aspect
 		int h = device_height;
@@ -485,7 +608,11 @@ void PLAT_flip(SDL_Surface* IGNORED, int ignored) {
 		}
 		int x = (device_width - w) / 2;
 		int y = (device_height - h) / 2;
-		dst_rect = &(SDL_Rect){x,y,w,h};
+		// dst_rect = &(SDL_Rect){x,y,w,h};
+		dst_rect->x = x;
+		dst_rect->y = y;
+		dst_rect->w = w;
+		dst_rect->h = h;
 	}
 	
 	int ox,oy;
@@ -493,9 +620,24 @@ void PLAT_flip(SDL_Surface* IGNORED, int ignored) {
 	ox = -oy;
 	if (rotate) SDL_RenderCopyEx(vid.renderer,target,src_rect,&(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y,dst_rect->w,dst_rect->h},rotate*90,NULL,SDL_FLIP_NONE);
 	else SDL_RenderCopy(vid.renderer, target, src_rect, dst_rect);
+	
+	updateEffect();
+	if (vid.effect) {
+		ox = effect_scale - (dst_rect->x % effect_scale);
+		oy = effect_scale - (dst_rect->y % effect_scale);
+		if (ox==effect_scale) ox = 0;
+		if (oy==effect_scale) oy = 0;
+		if (rotate) SDL_RenderCopyEx(vid.renderer,vid.effect,&(SDL_Rect){0,0,device_width,device_height},&(SDL_Rect){oy,ox+device_width,device_width,device_height},rotate*90,&(SDL_Point){0,0},SDL_FLIP_NONE);
+		else SDL_RenderCopy(vid.renderer, vid.effect, &(SDL_Rect){0,0,device_width,device_height},&(SDL_Rect){ox,oy,device_width,device_height});
+	}
+	
+	// uint32_t then = SDL_GetTicks();
 	SDL_RenderPresent(vid.renderer);
+	// LOG_info("SDL_RenderPresent blocked for %ims\n", SDL_GetTicks()-then);
 	vid.blit = NULL;
 }
+
+int PLAT_supportsOverscan(void) { return is_cubexx; }
 
 ///////////////////////////////
 
@@ -546,14 +688,18 @@ void PLAT_getBatteryStatus(int* is_charging, int* charge) {
 	online = prefixMatch("up", status);
 }
 
+#define BLANK_PATH "/sys/class/graphics/fb0/blank"
+#define LED_PATH "/sys/class/power_supply/axp2202-battery/work_led"
 void PLAT_enableBacklight(int enable) {
 	if (enable) {
+		putInt(BLANK_PATH, FB_BLANK_UNBLANK); // wake
 		SetBrightness(GetBrightness());
-		system("echo 0 > /sys/class/power_supply/axp2202-battery/work_led");
+		putInt(LED_PATH,0);
 	}
 	else {
+		putInt(BLANK_PATH, FB_BLANK_POWERDOWN); // sleep
 		SetRawBrightness(0);
-		system("echo 1 > /sys/class/power_supply/axp2202-battery/work_led");
+		putInt(LED_PATH,1);
 	}
 }
 
@@ -581,15 +727,13 @@ void PLAT_powerOff(void) {
 ///////////////////////////////
 
 void PLAT_setCPUSpeed(int speed) {
-	// buh
+	// TODO: why wasn't this ever implemented?
 }
 
 #define RUMBLE_PATH "/sys/class/power_supply/axp2202-battery/moto"
 
 void PLAT_setRumble(int strength) {
-	char cmd[256];
-	sprintf(cmd,"echo %i > %s", strength?1:0, RUMBLE_PATH);
-	system(cmd);
+	putInt(RUMBLE_PATH, strength?1:0);
 }
 
 int PLAT_pickSampleRate(int requested, int max) {
@@ -598,8 +742,17 @@ int PLAT_pickSampleRate(int requested, int max) {
 
 static char model[256];
 char* PLAT_getModel(void) {
-	// sadly there is nothing distinguishable about the hardware...
-	return "RG*XX Family";
+	// firmware "strings /mnt/vendor/bin/dmenu.bin | grep ^20"
+	char* _model = getenv("RGXX_MODEL");
+	if (_model!=NULL) {
+		if (exactMatch(_model,"RGcubexx")) _model = "RG CubeXX";
+		
+		sprintf(model, "Anbernic %s", _model);
+		char* tmp = strrchr(model, '_');
+		if (tmp) *tmp = '\0';
+		return model;
+	}
+	return "Anbernic RG*XX";
 }
 
 int PLAT_isOnline(void) {

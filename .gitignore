@@ -13,12 +13,17 @@ libretro-common
 **/cores/src
 **/cores/output
 **/boot/output
+**/squashfs/output
 
 **/other/evtest
+**/other/jstest
+**/other/dtc
 **/other/sdl
+**/other/sdl2
 **/other/sdl12-compat
 **/other/unzip60
 **/other/DinguxCommander
+**/other/351files
 
 **/tmp
 
