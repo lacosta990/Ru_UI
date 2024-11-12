@@ -2,14 +2,27 @@ Changes
 
 BASE
 
+- tg3040+tg5040: improved mute switch responsiveness
+- tg3040+tg5040: fixed screen effect-related crashes
+- tg3040: revised brightness ramp
 - tg3040: fixed led install/update/sleep behaviour on 20241020 ofw
 	
 
 EXTRAS
 
-- tg3040: updated Bootlogo.pak for 20241101 ofw
+- tg3040+tg5040: updated Bootlogo.pak
 
 ---
+
+it's time to retire some supported devices
+	devices running SDL1.2
+		gkdpixel
+		trimuismart
+		rg35xx (non-h700)
+		miyoomini (and plus)
+	devices that have been superceded
+		rgb30
+	finish updating README (don't forget BASE readme!)
 
 gambatte
 	can I write the lightest palette value to /tmp so I can use it for gridlines for GB?
@@ -18,25 +31,23 @@ rgcubexx
 	test native pico8
 		sdl2 is missing haptic support
 		and unzip
+		sigh
 
 tg3040
+	update toolchain's SDL2 headers to 2.30.8?
+		non-aarch64 platforms are already using Trimui's provided (mostly updated) SDL2
+		I can `./configure && make install` the smart pro's version (at least on tg5040, need to test with tg3040)
+		need to add  -L/usr/local/lib/ to platform/makefile.env to use that version
+
 	redo Bootlogo.pak
 		done
 		can similar tactics be employed on other devices?
 			eg. smart pro?
 	
-	mute switch is polled at 1fps in trimui_inputd
-		you can feel that latency
-		should keymon poll /sys/class/gpio/gpio243/value directly?
-		
-	might have dpad hatswitch issue with default SDL2 input
-		confirmed :sob:
-		can't find dtb, hopefully this isn't a custom (closed source) driver issue
-		reported to trimui
-		
 	clock has gmt issue
-	randomly get black screen when exiting menu after changing screen effect
-		mali driver not freeing memory?
+		I think I fixed this but the change will affect all platforms 
+		so I may need to update MinUI.pak/launch.sh across the board
+		
 rpmini
 	evaluating batocera and rocknix as a base
 	requires ota update to enable booting direct
