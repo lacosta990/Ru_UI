@@ -4311,7 +4311,7 @@ static void Menu_loop(void) {
 
 			//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 			//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
-			GFX_blitButtonGroup((char*[]){ "Δ","Назад", "X","Выбрать", NULL }, 1, screen, 1);
+			GFX_blitButtonGroup((char*[]){ "¢","Назад", "£","Выбрать", NULL }, 1, screen, 1);
 			
 			
 			// list

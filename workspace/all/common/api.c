@@ -142,7 +142,8 @@ SDL_Surface* GFX_init(int mode) {
 	asset_rgbs[ASSET_BAR_BG]		= RGB_BLACK;
 	asset_rgbs[ASSET_BAR_BG_MENU]	= RGB_DARK_GRAY;
 	asset_rgbs[ASSET_UNDERLINE]		= RGB_GRAY;
-	asset_rgbs[ASSET_DOT]			= RGB_LIGHT_GRAY;
+	// asset_rgbs[ASSET_DOT]			= RGB_LIGHT_GRAY;
+	asset_rgbs[ASSET_DOT]			= RGB_DARK_GRAY;
 	asset_rgbs[ASSET_HOLE]			= RGB_BLACK;
 	
 	char asset_path[MAX_PATH];
@@ -779,8 +780,8 @@ void GFX_blitHardwareHints(SDL_Surface* dst, int show_setting) {
 		else GFX_blitButtonGroup((char*[]){ "START","Яркость",  NULL }, 0, dst, 0);
 	}
 	else {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "ƺ","Вниз",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "ƺ","Вниз",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "¤","Вниз",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "¤","Вниз",  NULL }, 0, dst, 0);
 	}
 	
 }

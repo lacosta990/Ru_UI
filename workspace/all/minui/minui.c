@@ -1523,10 +1523,11 @@ int main (int argc, char *argv[]) {
 					
 					// TODO: not sure if I want bare PLAT_* calls here
 					char* extra_key = "Модель";
-					char* extra_val = "Фаренгейт_001"; 
+					char* extra_val = "Dogma.ru"; 
 					
-					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Релиз", COLOR_DARK_TEXT);
-					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "001", COLOR_WHITE);
+					//SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Релиз", COLOR_DARK_TEXT);
+					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, ".", COLOR_DARK_TEXT);
+					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "EVO", COLOR_WHITE);
 					
 					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Коммит", COLOR_DARK_TEXT);
 					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, commit, COLOR_WHITE);
@@ -1572,7 +1573,7 @@ int main (int argc, char *argv[]) {
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){"Δ","Назад", NULL }, 0, screen, 1);
+				GFX_blitButtonGroup((char*[]){"¢","Назад", NULL }, 0, screen, 1);
 			}
 			else {
 				// list
@@ -1647,21 +1648,21 @@ int main (int argc, char *argv[]) {
 				// 	NULL }, 0, screen, 0);
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				else {
-					GFX_blitButtonGroup((char*[]){"ƺ","Вниз", NULL }, 0, screen, 0);
+					GFX_blitButtonGroup((char*[]){"¤","Вниз", NULL }, 0, screen, 0);
 				}
 				
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){"Δ","Назад",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){"¢","Назад",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){"Δ","Назад", "X","Открыть", NULL }, 1, screen, 1);
+						GFX_blitButtonGroup((char*[]){"¢","Назад", "£","Открыть", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){"X","Открыть", NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){"£","Открыть", NULL }, 0, screen, 1);
 					}
 				}
 			}
