@@ -142,8 +142,7 @@ SDL_Surface* GFX_init(int mode) {
 	asset_rgbs[ASSET_BAR_BG]		= RGB_BLACK;
 	asset_rgbs[ASSET_BAR_BG_MENU]	= RGB_DARK_GRAY;
 	asset_rgbs[ASSET_UNDERLINE]		= RGB_GRAY;
-	// asset_rgbs[ASSET_DOT]			= RGB_LIGHT_GRAY;
-	asset_rgbs[ASSET_DOT]			= RGB_DARK_GRAY;
+	asset_rgbs[ASSET_DOT]			= RGB_LIGHT_GRAY;
 	asset_rgbs[ASSET_HOLE]			= RGB_BLACK;
 	
 	char asset_path[MAX_PATH];
@@ -157,10 +156,10 @@ SDL_Surface* GFX_init(int mode) {
 	font.small 	= TTF_OpenFont(FONT_PATH, SCALE1(FONT_SMALL));
 	font.tiny 	= TTF_OpenFont(FONT_PATH, SCALE1(FONT_TINY));
 	
-	TTF_SetFontStyle(font.large, TTF_STYLE_NORMAL);
-	TTF_SetFontStyle(font.medium, TTF_STYLE_NORMAL);
-	TTF_SetFontStyle(font.small, TTF_STYLE_NORMAL);
-	TTF_SetFontStyle(font.tiny, TTF_STYLE_NORMAL);
+	TTF_SetFontStyle(font.large, TTF_STYLE_BOLD);
+	TTF_SetFontStyle(font.medium, TTF_STYLE_BOLD);
+	TTF_SetFontStyle(font.small, TTF_STYLE_BOLD);
+	TTF_SetFontStyle(font.tiny, TTF_STYLE_BOLD);
 	
 	return gfx.screen;
 }
@@ -623,7 +622,7 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 		SDL_FreeSurface(text);
 	}
 	else {
-		text = TTF_RenderUTF8_Blended(special_case ? font.large : font.medium, button, COLOR_BUTTON_TEXT);
+		text = TTF_RenderUTF8_Blended(special_case ? font.large : font.tiny, button, COLOR_BUTTON_TEXT);
 		GFX_blitPill(ASSET_BUTTON, dst, &(SDL_Rect){dst_rect->x,dst_rect->y,SCALE1(BUTTON_SIZE)/2+text->w,SCALE1(BUTTON_SIZE)});
 		ox += SCALE1(BUTTON_SIZE)/4;
 		
@@ -776,12 +775,12 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 }
 void GFX_blitHardwareHints(SDL_Surface* dst, int show_setting) {
 	if (BTN_MOD_VOLUME==BTN_SELECT && BTN_MOD_BRIGHTNESS==BTN_START) {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "SELECT","Громкость",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "START","Яркость",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "SELECT","VOLUME",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "START","BRIGHTNESS",  NULL }, 0, dst, 0);
 	}
 	else {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "¤","Вниз",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "¤","Вниз",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ BRIGHTNESS_BUTTON_LABEL,"BRIGHTNESS",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "MENU","BRIGHTNESS",  NULL }, 0, dst, 0);
 	}
 	
 }
@@ -1601,8 +1600,8 @@ void PWR_powerOff(void) {
 		gfx.screen = GFX_resize(w,h,p);
 		
 		char* msg;
-		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Быстрое сохранение,\nВыключение" : "Выключение";
-		else msg = exists(AUTO_RESUME_PATH) ? "Быстрое сохранение,\nВыключение" : "Выключение";
+		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
+		else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
 		
 		// LOG_info("PWR_powerOff %s (%ix%i)\n", gfx.screen, gfx.screen->w, gfx.screen->h);
 		
