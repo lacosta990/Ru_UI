@@ -222,6 +222,7 @@ void GFX_sync(void) {
 }
 
 FALLBACK_IMPLEMENTATION int PLAT_supportsOverscan(void) { return 0; }
+FALLBACK_IMPLEMENTATION void PLAT_setEffectColor(int next_color) { }
 
 int GFX_truncateText(TTF_Font* font, const char* in_name, char* out_name, int max_width, int padding) {
 	int text_width;
@@ -1116,6 +1117,7 @@ PAD_Context pad;
 
 #define AXIS_DEADZONE 0x4000
 void PAD_setAnalog(int neg_id,int pos_id,int value,int repeat_at) {
+	// LOG_info("neg %i pos %i value %i\n", neg_id, pos_id, value);
 	int neg = 1 << neg_id;
 	int pos = 1 << pos_id;	
 	if (value>AXIS_DEADZONE) { // pressing
@@ -1673,7 +1675,7 @@ void PWR_enableAutosleep(void) {
 	pwr.can_autosleep = 1;
 }
 int PWR_preventAutosleep(void) {
-	return pwr.is_charging || !pwr.can_autosleep;
+	return pwr.is_charging || !pwr.can_autosleep || GetHDMI();
 }
 
 // updated by PWR_updateBatteryStatus()
@@ -1689,8 +1691,6 @@ int PWR_getBattery(void) { // 10-100 in 10-20% fragments
 // TODO: tmp? move to individual platforms or allow overriding like PAD_poll/PAD_wake?
 int PLAT_setDateTime(int y, int m, int d, int h, int i, int s) {
 	char cmd[512];
-	sprintf(cmd, "date -u -s '%d-%d-%d %d:%d:%d'; hwclock --utc -w", y,m,d,h,i,s);
+	sprintf(cmd, "date -s '%d-%d-%d %d:%d:%d'; hwclock --utc -w", y,m,d,h,i,s);
 	system(cmd);
 }
-
-

@@ -2,17 +2,35 @@ Changes
 
 BASE
 
-- tg3040+tg5040: improved mute switch responsiveness
-- tg3040+tg5040: fixed screen effect-related crashes
-- tg3040: revised brightness ramp
-- tg3040: fixed led install/update/sleep behaviour on 20241020 ofw
-	
+- tg_040: fixed rtc bug in MinUI.pak
+- all: GB.pak now uses the first/lightest palette color for the Grid effect (SDL2 only) 
 
 EXTRAS
 
-- tg3040+tg5040: updated Bootlogo.pak
+- tg_040: fixed rtc bug in Clock.pak
+- all: Super Game Boy borders are now optional
 
 ---
+
+gambatte
+	light grid that matches palette
+	proof of concept added to tg5040 with patch for gambatte core
+		added patch
+		need to rebuild all gambatte cores (manually because building cores is disabled locally)
+		need to copy effect color changes to other sdl2 platforms
+			+ magicmini (took longer than expected because of faux-brightness)
+			+ my282
+			+ rg28xx (rotation/resolution is same as my282 but the math isn't adding up here?! fffffuuuuuu)
+			+ rgb30?
+	people are already asking for more
+		light grid for gbc (looks awful)
+		someone will ask for the same for ngp/ngpc
+	this is really entering shader territory...
+		started dabbling in OpenGL and shaders
+		hit a wall
+	
+minput
+	seems to be designed top,left aligned for 640x480
 
 it's time to retire some supported devices
 	devices running SDL1.2
@@ -24,41 +42,15 @@ it's time to retire some supported devices
 		rgb30
 	finish updating README (don't forget BASE readme!)
 
-gambatte
-	can I write the lightest palette value to /tmp so I can use it for gridlines for GB?
-	
-rgcubexx
-	test native pico8
-		sdl2 is missing haptic support
-		and unzip
-		sigh
+rg_xx
+	usb controller
+		look into SDL2 controller API
+		stock supports bluetooth right? how?
+			enabling bluetooth via stock breaks wifi on MinUI
 
 tg3040
-	update toolchain's SDL2 headers to 2.30.8?
-		non-aarch64 platforms are already using Trimui's provided (mostly updated) SDL2
-		I can `./configure && make install` the smart pro's version (at least on tg5040, need to test with tg3040)
-		need to add  -L/usr/local/lib/ to platform/makefile.env to use that version
-
-	redo Bootlogo.pak
-		done
-		can similar tactics be employed on other devices?
-			eg. smart pro?
-	
-	clock has gmt issue
-		I think I fixed this but the change will affect all platforms 
-		so I may need to update MinUI.pak/launch.sh across the board
+	- 
 		
-rpmini
-	evaluating batocera and rocknix as a base
-	requires ota update to enable booting direct
-		might also enable installing linux to emmc
-	currently seeing scaling artifacts (variable width pixel columns/rows) when blitting 1:1
-		suspect it's the sytem level rotation
-		hoping it's not the physical pixels in the panel
-		causes grid effects to look terrible
-		see rpmini/tmp/sdltest
-			not going to work on this anymore until it can be resolved
-
 next
 	standard show/say/confirm.elf?
 		sdl2 implementations require a delay arg 
@@ -171,7 +163,7 @@ next
 				PS: SDL_UnlockTexture blocked for 11ms (640,480) (CMR2)
 				try using SDL_UpdateTexture instead of Lock/Unlock
 					might be saving 1-2ms
-				could this slowness be related to ram speed? (DMC?)
+				could this slowness be related to vram speed? (DMC?)
 		
 		update all cores
 			call out breaking changes (gpsp save states) in release notes 
@@ -402,6 +394,7 @@ next
 		force aspect over hdmi? (or at least disable cropped?)
 	
 	rgb30
+		reboots with time offset by timezone offset
 		does jack detection work?
 		could wifi support more than one access point?
 			an additional two lines for each AP?
@@ -415,6 +408,18 @@ next
 		moss
 			build lib32 to try to fix snes9x save state compatibility
 				first attempt did not go well :sweat_smile:
+
+rpmini
+	dead in the water waiting for upstream fixes
+	evaluating batocera and rocknix as a base
+	requires ota update to enable booting direct
+		might also enable installing linux to emmc
+	currently seeing scaling artifacts (variable width pixel columns/rows) when blitting 1:1
+		causes grid effects to look terrible
+		suspect it's the sytem level rotation
+		hoping it's not the physical pixels in the panel
+		see rpmini/tmp/sdltest
+			not going to work on this anymore until kernel fix is released
 				
 known issues
 	all: race core (NGP/C.pak) doesn't restore audio state correctly

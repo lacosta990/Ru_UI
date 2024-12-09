@@ -1,4 +1,4 @@
-// rgb30
+// rg35xxplus
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/fb.h>
@@ -20,6 +20,7 @@
 #include "scaler.h"
 
 int is_cubexx = 0;
+int on_hdmi = 0;
 
 ///////////////////////////////
 
@@ -53,8 +54,60 @@ int is_cubexx = 0;
 #define RAW_MENU1	RAW_L3
 #define RAW_MENU2	RAW_R3
 
-#define INPUT_COUNT 2
+// TODO: thanks I hate it
+// RG P01
+#define RGP01_A			305
+#define RGP01_B			304
+#define RGP01_X			308
+#define RGP01_Y			307
+#define RGP01_START		315
+#define RGP01_SELECT	314
+#define RGP01_MENU		316
+#define RGP01_L1		310
+#define RGP01_L2		312
+#define RGP01_L3		317
+#define RGP01_R1		311
+#define RGP01_R2		313
+#define RGP01_R3		318
+#define RGP01_LSY		1
+#define RGP01_LSX		0
+#define RGP01_RSY		5
+#define RGP01_RSX		2
+#define RGP01_MENU1		RGP01_L3
+#define RGP01_MENU2		RGP01_R3
+
+// X-box (8BitDo SN30 Pro)
+#define XBOX_A		305
+#define XBOX_B		304
+#define XBOX_X		308
+#define XBOX_Y		307
+#define XBOX_START	315
+#define XBOX_SELECT	314
+#define XBOX_MENU	316
+#define XBOX_L1		310
+#define XBOX_L2		2
+#define XBOX_L3		317
+#define XBOX_R1		311
+#define XBOX_R2		5
+#define XBOX_R3		318
+#define XBOX_LSY	1
+#define XBOX_LSX	0
+#define XBOX_RSY	4
+#define XBOX_RSX	3
+#define XBOX_MENU1	XBOX_L3
+#define XBOX_MENU2	XBOX_R3
+
+typedef enum GamepadType {
+	kGamepadTypeUnknown,
+	kGamepadTypeRGP01,
+	kGamepadTypeXbox,
+} GamepadType;
+
+#define INPUT_COUNT 3
 static int inputs[INPUT_COUNT];
+
+#define kPadIndex 2
+static GamepadType pad_type = kGamepadTypeUnknown;
 
 #define LID_PATH "/sys/class/power_supply/axp2202-battery/hallkey"
 static int check_lid = 0;
@@ -71,9 +124,45 @@ int PLAT_lidChanged(int* state) {
 	return 0;
 }
 
+static void checkForGamepad(void) {
+	uint32_t now = SDL_GetTicks();
+	static uint32_t last_check = 0;
+	if (last_check==0 || now-last_check>2000) {
+		last_check = now;
+		int connected = exists("/dev/input/event3");
+		if (inputs[kPadIndex]<0 && connected) {
+			LOG_info("Connecting gamepad: ");
+			char pad_name[256];
+			getFile("/sys/class/input/event3/device/name", pad_name, 256);
+			if (containsString(pad_name,"Anbernic")) {
+				LOG_info("P01\n");
+				pad_type = kGamepadTypeRGP01;
+			}
+			else if (containsString(pad_name, "Microsoft")) {
+				LOG_info("Xbox\n");
+				pad_type = kGamepadTypeXbox;
+			}
+			else {
+				LOG_info("Unknown\n");
+				pad_type = kGamepadTypeUnknown;
+			}
+			
+			inputs[kPadIndex] = open("/dev/input/event3", O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+		}
+		else if (inputs[kPadIndex]>=0 && !connected) {
+			LOG_info("Gamepad disconnected\n");
+			close(inputs[kPadIndex]);
+			inputs[kPadIndex] = -1;
+			pad_type = kGamepadTypeUnknown;
+		}
+	}
+}
+
 void PLAT_initInput(void) {
 	inputs[0] = open("/dev/input/event0", O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 	inputs[1] = open("/dev/input/event1", O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+	inputs[kPadIndex] = -1; 
+	checkForGamepad();
 	check_lid = exists(LID_PATH);
 }
 void PLAT_quitInput(void) {
@@ -107,11 +196,14 @@ void PLAT_pollInput(void) {
 		}
 	}
 	
+	checkForGamepad();
+	
 	// the actual poll
 	int input;
 	static struct input_event event;
 	for (int i=0; i<INPUT_COUNT; i++) {
 		input = inputs[i];
+		if (input<0) continue;
 		while (read(input, &event, sizeof(event))==sizeof(event)) {
 			if (event.type!=EV_KEY && event.type!=EV_ABS) continue;
 
@@ -128,28 +220,64 @@ void PLAT_pollInput(void) {
 			
 				pressed = value;
 				// LOG_info("key event: %i (%i)\n", code,pressed);
-					 if (code==RAW_UP) 		{ btn = BTN_DPAD_UP; 	id = BTN_ID_DPAD_UP; }
-	 			else if (code==RAW_DOWN)	{ btn = BTN_DPAD_DOWN; 	id = BTN_ID_DPAD_DOWN; }
-				else if (code==RAW_LEFT)	{ btn = BTN_DPAD_LEFT; 	id = BTN_ID_DPAD_LEFT; }
-				else if (code==RAW_RIGHT)	{ btn = BTN_DPAD_RIGHT; id = BTN_ID_DPAD_RIGHT; }
-				else if (code==RAW_A)		{ btn = BTN_A; 			id = BTN_ID_A; }
-				else if (code==RAW_B)		{ btn = BTN_B; 			id = BTN_ID_B; }
-				else if (code==RAW_X)		{ btn = BTN_X; 			id = BTN_ID_X; }
-				else if (code==RAW_Y)		{ btn = BTN_Y; 			id = BTN_ID_Y; }
-				else if (code==RAW_START)	{ btn = BTN_START; 		id = BTN_ID_START; }
-				else if (code==RAW_SELECT)	{ btn = BTN_SELECT; 	id = BTN_ID_SELECT; }
-				else if (code==RAW_MENU)	{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
-				else if (code==RAW_MENU1)	{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
-				else if (code==RAW_MENU2)	{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
-				else if (code==RAW_L1)		{ btn = BTN_L1; 		id = BTN_ID_L1; }
-				else if (code==RAW_L2)		{ btn = BTN_L2; 		id = BTN_ID_L2; }
-				else if (code==RAW_L3)		{ btn = BTN_L3; 		id = BTN_ID_L3; }
-				else if (code==RAW_R1)		{ btn = BTN_R1; 		id = BTN_ID_R1; }
-				else if (code==RAW_R2)		{ btn = BTN_R2; 		id = BTN_ID_R2; }
-				else if (code==RAW_R3)		{ btn = BTN_R3; 		id = BTN_ID_R3; }
-				else if (code==RAW_PLUS)	{ btn = BTN_PLUS; 		id = BTN_ID_PLUS; }
-				else if (code==RAW_MINUS)	{ btn = BTN_MINUS; 		id = BTN_ID_MINUS; }
-				else if (code==RAW_POWER)	{ btn = BTN_POWER; 		id = BTN_ID_POWER; }
+				if (i==kPadIndex) {
+					if (pad_type==kGamepadTypeRGP01) {
+							 if (code==RGP01_A)			{ btn = BTN_A; 			id = BTN_ID_A; }
+						else if (code==RGP01_B)			{ btn = BTN_B; 			id = BTN_ID_B; }
+						else if (code==RGP01_X)			{ btn = BTN_X; 			id = BTN_ID_X; }
+						else if (code==RGP01_Y)			{ btn = BTN_Y; 			id = BTN_ID_Y; }
+						else if (code==RGP01_START)		{ btn = BTN_START; 		id = BTN_ID_START; }
+						else if (code==RGP01_SELECT)	{ btn = BTN_SELECT; 	id = BTN_ID_SELECT; }
+						else if (code==RGP01_MENU)		{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+						else if (code==RGP01_MENU1)		{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+						else if (code==RGP01_MENU2)		{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+						else if (code==RGP01_L1)		{ btn = BTN_L1; 		id = BTN_ID_L1; }
+						else if (code==RGP01_L2)		{ btn = BTN_L2; 		id = BTN_ID_L2; }
+						else if (code==RGP01_L3)		{ btn = BTN_L3; 		id = BTN_ID_L3; }
+						else if (code==RGP01_R1)		{ btn = BTN_R1; 		id = BTN_ID_R1; }
+						else if (code==RGP01_R2)		{ btn = BTN_R2; 		id = BTN_ID_R2; }
+						else if (code==RGP01_R3)		{ btn = BTN_R3; 		id = BTN_ID_R3; }
+					}
+					else if (pad_type==kGamepadTypeXbox) {
+							 if (code==XBOX_A)			{ btn = BTN_A; 			id = BTN_ID_A; }
+						else if (code==XBOX_B)			{ btn = BTN_B; 			id = BTN_ID_B; }
+						else if (code==XBOX_X)			{ btn = BTN_X; 			id = BTN_ID_X; }
+						else if (code==XBOX_Y)			{ btn = BTN_Y; 			id = BTN_ID_Y; }
+						else if (code==XBOX_START)		{ btn = BTN_START; 		id = BTN_ID_START; }
+						else if (code==XBOX_SELECT)		{ btn = BTN_SELECT; 	id = BTN_ID_SELECT; }
+						else if (code==XBOX_MENU)		{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+						else if (code==XBOX_MENU1)		{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+						else if (code==XBOX_MENU2)		{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+						else if (code==XBOX_L1)			{ btn = BTN_L1; 		id = BTN_ID_L1; }
+						else if (code==XBOX_L3)			{ btn = BTN_L3; 		id = BTN_ID_L3; }
+						else if (code==XBOX_R1)			{ btn = BTN_R1; 		id = BTN_ID_R1; }
+						else if (code==XBOX_R3)			{ btn = BTN_R3; 		id = BTN_ID_R3; }
+					}
+				}
+				else {
+						 if (code==RAW_UP) 		{ btn = BTN_DPAD_UP; 	id = BTN_ID_DPAD_UP; }
+		 			else if (code==RAW_DOWN)	{ btn = BTN_DPAD_DOWN; 	id = BTN_ID_DPAD_DOWN; }
+					else if (code==RAW_LEFT)	{ btn = BTN_DPAD_LEFT; 	id = BTN_ID_DPAD_LEFT; }
+					else if (code==RAW_RIGHT)	{ btn = BTN_DPAD_RIGHT; id = BTN_ID_DPAD_RIGHT; }
+					else if (code==RAW_A)		{ btn = BTN_A; 			id = BTN_ID_A; }
+					else if (code==RAW_B)		{ btn = BTN_B; 			id = BTN_ID_B; }
+					else if (code==RAW_X)		{ btn = BTN_X; 			id = BTN_ID_X; }
+					else if (code==RAW_Y)		{ btn = BTN_Y; 			id = BTN_ID_Y; }
+					else if (code==RAW_START)	{ btn = BTN_START; 		id = BTN_ID_START; }
+					else if (code==RAW_SELECT)	{ btn = BTN_SELECT; 	id = BTN_ID_SELECT; }
+					else if (code==RAW_MENU)	{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+					else if (code==RAW_MENU1)	{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+					else if (code==RAW_MENU2)	{ btn = BTN_MENU; 		id = BTN_ID_MENU; }
+					else if (code==RAW_L1)		{ btn = BTN_L1; 		id = BTN_ID_L1; }
+					else if (code==RAW_L2)		{ btn = BTN_L2; 		id = BTN_ID_L2; }
+					else if (code==RAW_L3)		{ btn = BTN_L3; 		id = BTN_ID_L3; }
+					else if (code==RAW_R1)		{ btn = BTN_R1; 		id = BTN_ID_R1; }
+					else if (code==RAW_R2)		{ btn = BTN_R2; 		id = BTN_ID_R2; }
+					else if (code==RAW_R3)		{ btn = BTN_R3; 		id = BTN_ID_R3; }
+					else if (code==RAW_PLUS)	{ btn = BTN_PLUS; 		id = BTN_ID_PLUS; }
+					else if (code==RAW_MINUS)	{ btn = BTN_MINUS; 		id = BTN_ID_MINUS; }
+					else if (code==RAW_POWER)	{ btn = BTN_POWER; 		id = BTN_ID_POWER; }
+				}
 			}
 			else if (type==EV_ABS) {
 				// LOG_info("abs event: %i (%i)\n", code,value);
@@ -182,13 +310,31 @@ void PLAT_pollInput(void) {
 							pad.repeat_at[id]	= tick + PAD_REPEAT_DELAY;
 						}
 					}
+					
+					btn = BTN_NONE; // already handled, force continue
 				}
-				else if (code==RAW_LSX) { pad.laxis.x = (value / 4096) * 32767; PAD_setAnalog(BTN_ID_ANALOG_LEFT, BTN_ID_ANALOG_RIGHT, pad.laxis.x, tick+PAD_REPEAT_DELAY); }
-				else if (code==RAW_LSY) { pad.laxis.y = (value / 4096) * 32767; PAD_setAnalog(BTN_ID_ANALOG_UP,   BTN_ID_ANALOG_DOWN,  pad.laxis.y, tick+PAD_REPEAT_DELAY); }
-				else if (code==RAW_RSX) pad.raxis.x = (value / 4096) * 32767;
-				else if (code==RAW_RSY) pad.raxis.y = (value / 4096) * 32767;
-				
-				btn = BTN_NONE; // already handled, force continue
+				else if (i==kPadIndex) {
+					if (pad_type==kGamepadTypeRGP01) {
+							 if (code==RGP01_LSX) { pad.laxis.x = ((value-128) * 32767) / 128; PAD_setAnalog(BTN_ID_ANALOG_LEFT, BTN_ID_ANALOG_RIGHT, pad.laxis.x, tick+PAD_REPEAT_DELAY); }
+						else if (code==RGP01_LSY) { pad.laxis.y = ((value-128) * 32767) / 128; PAD_setAnalog(BTN_ID_ANALOG_UP,   BTN_ID_ANALOG_DOWN,  pad.laxis.y, tick+PAD_REPEAT_DELAY); }
+						else if (code==RGP01_RSX) pad.raxis.x = ((value-128) * 32767) / 128;
+						else if (code==RGP01_RSY) pad.raxis.y = ((value-128) * 32767) / 128;
+					}
+					else if (pad_type==kGamepadTypeXbox) {
+							 if (code==XBOX_LSX) { pad.laxis.x = value; PAD_setAnalog(BTN_ID_ANALOG_LEFT, BTN_ID_ANALOG_RIGHT, pad.laxis.x, tick+PAD_REPEAT_DELAY); }
+						else if (code==XBOX_LSY) { pad.laxis.y = value; PAD_setAnalog(BTN_ID_ANALOG_UP,   BTN_ID_ANALOG_DOWN,  pad.laxis.y, tick+PAD_REPEAT_DELAY); }
+						else if (code==XBOX_RSX) pad.raxis.x = value;
+						else if (code==XBOX_RSY) pad.raxis.y = value;
+						else if (code==XBOX_L2) { pressed = value>0; btn = BTN_L2; id = BTN_ID_L2; }
+						else if (code==XBOX_R2) { pressed = value>0; btn = BTN_R2; id = BTN_ID_R2; }
+					}
+				}
+				else {
+						 if (code==RAW_LSX) { pad.laxis.x = (value * 32767) / 4096; PAD_setAnalog(BTN_ID_ANALOG_LEFT, BTN_ID_ANALOG_RIGHT, pad.laxis.x, tick+PAD_REPEAT_DELAY); }
+					else if (code==RAW_LSY) { pad.laxis.y = (value * 32767) / 4096; PAD_setAnalog(BTN_ID_ANALOG_UP,   BTN_ID_ANALOG_DOWN,  pad.laxis.y, tick+PAD_REPEAT_DELAY); }
+					else if (code==RAW_RSX) pad.raxis.x = (value * 32767) / 4096;
+					else if (code==RAW_RSY) pad.raxis.y = (value * 32767) / 4096;
+				}
 			}
 			
 			if (btn==BTN_NONE) continue;
@@ -233,6 +379,7 @@ int PLAT_shouldWake(void) {
 
 // based on rgb30 + tg5040 + m17
 #define HDMI_STATE_PATH "/sys/class/switch/hdmi/cable.0/state" // TODO: can detect but doesn't update automatically
+#define BLANK_PATH "/sys/class/graphics/fb0/blank"
 
 static struct VID_Context {
 	SDL_Window* window;
@@ -260,9 +407,6 @@ SDL_Surface* PLAT_initVideo(void) {
 	// LOG_info("PLAT_initVideo\n");
 	
 	is_cubexx = exactMatch("RGcubexx", getenv("RGXX_MODEL"));
-	
-	SDL_InitSubSystem(SDL_INIT_VIDEO);
-	SDL_ShowCursor(0);
 	
 	// SDL_version compiled;
 	// SDL_version linked;
@@ -301,18 +445,23 @@ SDL_Surface* PLAT_initVideo(void) {
 	int w = FIXED_WIDTH;
 	int h = FIXED_HEIGHT;
 	int p = FIXED_PITCH;
-	if (getInt(HDMI_STATE_PATH)) {
+	if (getInt(HDMI_STATE_PATH)) { // can't use getHDMI() from settings because it hasn't be initialized yet
 		w = HDMI_WIDTH;
 		h = HDMI_HEIGHT;
 		p = HDMI_PITCH;
+		on_hdmi = 1;
 	}
+	
+	SDL_InitSubSystem(SDL_INIT_VIDEO);
+	SDL_ShowCursor(0);
+	
 	vid.window   = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w,h, SDL_WINDOW_SHOWN);
 	// LOG_info("window size: %ix%i\n", w,h);
 	
 	SDL_DisplayMode mode;
 	SDL_GetCurrentDisplayMode(0, &mode);
-	// LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
-	if (mode.h>mode.w) rotate = 3;
+	LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
+	if (mode.h>mode.w) rotate = 3; // no longer set on 28xx (because of SDL2 rotation patch?)
 	vid.renderer = SDL_CreateRenderer(vid.window,-1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
 	// SDL_RenderSetLogicalSize(vid.renderer, w,h); // TODO: wrong, but without and with the below it's even wrong-er
 	
@@ -404,7 +553,7 @@ void PLAT_clearAll(void) {
 }
 
 void PLAT_setVsync(int vsync) {
-	
+	// buh
 }
 
 static int hard_scale = 4; // TODO: base src size, eg. 160x144 can be 4
@@ -415,7 +564,7 @@ static void resizeVideo(int w, int h, int p) {
 	// TODO: minarch disables crisp (and nn upscale before linear downscale) when native
 	
 	if (w>=device_width && h>=device_height) hard_scale = 1;
-	else if (h>=160) hard_scale = 2; // limits gba and up to 2x (seems sufficient)
+	else if (h>=160) hard_scale = 2; // limits gba and up to 2x (seems sufficient for 640x480)
 	else hard_scale = 4;
 
 	LOG_info("resizeVideo(%i,%i,%i) hard_scale: %i crisp: %i\n",w,h,p, hard_scale,vid.sharpness==SHARPNESS_CRISP);
@@ -460,63 +609,93 @@ void PLAT_setSharpness(int sharpness) {
 	vid.sharpness = sharpness;
 	resizeVideo(vid.width,vid.height,p);
 }
-static int effect_scale = 1;
-static int effect_type = EFFECT_NONE;
-static int next_scale = 1;
-static int next_effect = EFFECT_NONE;
+
+static struct FX_Context {
+	int scale;
+	int type;
+	int color;
+	int next_scale;
+	int next_type;
+	int next_color;
+	int live_type;
+} effect = {
+	.scale = 1,
+	.next_scale = 1,
+	.type = EFFECT_NONE,
+	.next_type = EFFECT_NONE,
+	.live_type = EFFECT_NONE,
+	.color = 0,
+	.next_color = 0,
+};
+static void rgb565_to_rgb888(uint32_t rgb565, uint8_t *r, uint8_t *g, uint8_t *b) {
+    // Extract the red component (5 bits)
+    uint8_t red = (rgb565 >> 11) & 0x1F;
+    // Extract the green component (6 bits)
+    uint8_t green = (rgb565 >> 5) & 0x3F;
+    // Extract the blue component (5 bits)
+    uint8_t blue = rgb565 & 0x1F;
+
+    // Scale the values to 8-bit range
+    *r = (red << 3) | (red >> 2);
+    *g = (green << 2) | (green >> 4);
+    *b = (blue << 3) | (blue >> 2);
+}
 static void updateEffect(void) {
-	if (next_scale==effect_scale && next_effect==effect_type) return; // unchanged
+	if (effect.next_scale==effect.scale && effect.next_type==effect.type && effect.next_color==effect.color) return; // unchanged
 	
-	effect_scale = next_scale;
-	effect_type = next_effect;
+	int live_scale = effect.scale;
+	int live_color = effect.color;
+	effect.scale = effect.next_scale;
+	effect.type = effect.next_type;
+	effect.color = effect.next_color;
 	
-	if (vid.effect) SDL_DestroyTexture(vid.effect);
-	if (effect_type==EFFECT_NONE) return;
+	if (effect.type==EFFECT_NONE) return; // disabled
+	if (effect.type==effect.live_type && effect.scale==live_scale && effect.color==live_color) return; // already loaded
 	
 	char* effect_path;
 	int opacity = 128; // 1 - 1/2 = 50%
-	if (effect_type==EFFECT_LINE) {
-		if (effect_scale<3) {
+	if (effect.type==EFFECT_LINE) {
+		if (effect.scale<3) {
 			effect_path = RES_PATH "/line-2.png";
 		}
-		else if (effect_scale<4) {
+		else if (effect.scale<4) {
 			effect_path = RES_PATH "/line-3.png";
 		}
-		else if (effect_scale<5) {
+		else if (effect.scale<5) {
 			effect_path = RES_PATH "/line-4.png";
 		}
-		else if (effect_scale<6) {
+		else if (effect.scale<6) {
 			effect_path = RES_PATH "/line-5.png";
 		}
-		else if (effect_scale<8) {
+		else if (effect.scale<8) {
 			effect_path = RES_PATH "/line-6.png";
 		}
 		else {
 			effect_path = RES_PATH "/line-8.png";
 		}
 	}
-	else if (effect_type==EFFECT_GRID) {
-		if (effect_scale<3) {
+	else if (effect.type==EFFECT_GRID) {
+		if (effect.scale<3) {
 			effect_path = RES_PATH "/grid-2.png";
 			opacity = 64; // 1 - 3/4 = 25%
 		}
-		else if (effect_scale<4) {
+		else if (effect.scale<4) {
 			effect_path = RES_PATH "/grid-3.png";
 			opacity = 112; // 1 - 5/9 = ~44%
 		}
-		else if (effect_scale<5) {
+		else if (effect.scale<5) {
 			effect_path = RES_PATH "/grid-4.png";
 			opacity = 144; // 1 - 7/16 = ~56%
 		}
-		else if (effect_scale<6) {
+		else if (effect.scale<6) {
 			effect_path = RES_PATH "/grid-5.png";
 			opacity = 160; // 1 - 9/25 = ~64%
 		}
-		else if (effect_scale<8) {
+		else if (effect.scale<8) {
 			effect_path = RES_PATH "/grid-6.png";
 			opacity = 112; // 1 - 5/9 = ~44%
 		}
-		else if (effect_scale<11) {
+		else if (effect.scale<11) {
 			effect_path = RES_PATH "/grid-8.png";
 			opacity = 144; // 1 - 7/16 = ~56%
 		}
@@ -525,23 +704,52 @@ static void updateEffect(void) {
 			opacity = 136; // 1 - 57/121 = ~52%
 		}
 	}
-	LOG_info("load effect: %s (opacity: %i)\n", effect_path, opacity);
+	
+	// LOG_info("effect: %s opacity: %i\n", effect_path, opacity);
 	SDL_Surface* tmp = IMG_Load(effect_path);
 	if (tmp) {
+		if (effect.type==EFFECT_GRID) {
+			if (effect.color) {
+				// LOG_info("dmg color grid...\n");
+			
+				uint8_t r,g,b;
+				rgb565_to_rgb888(effect.color,&r,&g,&b);
+				// LOG_info("rgb %i,%i,%i\n",r,g,b);
+				
+				uint32_t* pixels = (uint32_t*)tmp->pixels;
+				int width = tmp->w;
+				int height = tmp->h;
+				for (int y = 0; y < height; ++y) {
+				    for (int x = 0; x < width; ++x) {
+				        uint32_t pixel = pixels[y * width + x];
+				        uint8_t _,a;
+				        SDL_GetRGBA(pixel, tmp->format, &_, &_, &_, &a);
+				        if (a) pixels[y * width + x] = SDL_MapRGBA(tmp->format, r,g,b, a);
+				    }
+				}
+			}
+		}
+		
+		if (vid.effect) SDL_DestroyTexture(vid.effect);
 		vid.effect = SDL_CreateTextureFromSurface(vid.renderer, tmp);
 		SDL_SetTextureAlphaMod(vid.effect, opacity);
 		SDL_FreeSurface(tmp);
+		effect.live_type = effect.type;
 	}
+	}
+void PLAT_setEffect(int next_type) {
+	effect.next_type = next_type;
 }
-void PLAT_setEffect(int effect) {
-	next_effect = effect;
+void PLAT_setEffectColor(int next_color) {
+	effect.next_color = next_color;
 }
 void PLAT_vsync(int remaining) {
 	if (remaining>0) SDL_Delay(remaining);
 }
 
 scaler_t PLAT_getScaler(GFX_Renderer* renderer) {
-	next_scale = renderer->scale;
+	// LOG_info("getScaler for scale: %i\n", renderer->scale);
+	effect.next_scale = renderer->scale;
 	return scale1x1_c16;
 }
 
@@ -551,12 +759,14 @@ void PLAT_blitRenderer(GFX_Renderer* renderer) {
 	resizeVideo(vid.blit->true_w,vid.blit->true_h,vid.blit->src_p);
 }
 
-// TODO: should we be using true_* instead of src_* below?
 void PLAT_flip(SDL_Surface* IGNORED, int ignored) {
+	
+	on_hdmi = GetHDMI(); // use settings instead of getInt(HDMI_STATE_PATH)
+	
 	if (!vid.blit) {
 		resizeVideo(device_width,device_height,FIXED_PITCH); // !!!???
 		SDL_UpdateTexture(vid.texture,NULL,vid.screen->pixels,vid.screen->pitch);
-		if (rotate) SDL_RenderCopyEx(vid.renderer,vid.texture,NULL,&(SDL_Rect){0,device_width,device_width,device_height},rotate*90,&(SDL_Point){0,0},SDL_FLIP_NONE);
+		if (rotate && !on_hdmi) SDL_RenderCopyEx(vid.renderer,vid.texture,NULL,&(SDL_Rect){0,device_width,device_width,device_height},rotate*90,&(SDL_Point){0,0},SDL_FLIP_NONE);
 		else SDL_RenderCopy(vid.renderer, vid.texture, NULL,NULL);
 		SDL_RenderPresent(vid.renderer);
 		return;
@@ -618,17 +828,18 @@ void PLAT_flip(SDL_Surface* IGNORED, int ignored) {
 	int ox,oy;
 	oy = (device_width-device_height)/2;
 	ox = -oy;
-	if (rotate) SDL_RenderCopyEx(vid.renderer,target,src_rect,&(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y,dst_rect->w,dst_rect->h},rotate*90,NULL,SDL_FLIP_NONE);
+	if (rotate && !on_hdmi) SDL_RenderCopyEx(vid.renderer,target,src_rect,&(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y,dst_rect->w,dst_rect->h},rotate*90,NULL,SDL_FLIP_NONE);
 	else SDL_RenderCopy(vid.renderer, target, src_rect, dst_rect);
 	
 	updateEffect();
-	if (vid.effect) {
-		ox = effect_scale - (dst_rect->x % effect_scale);
-		oy = effect_scale - (dst_rect->y % effect_scale);
-		if (ox==effect_scale) ox = 0;
-		if (oy==effect_scale) oy = 0;
-		if (rotate) SDL_RenderCopyEx(vid.renderer,vid.effect,&(SDL_Rect){0,0,device_width,device_height},&(SDL_Rect){oy,ox+device_width,device_width,device_height},rotate*90,&(SDL_Point){0,0},SDL_FLIP_NONE);
-		else SDL_RenderCopy(vid.renderer, vid.effect, &(SDL_Rect){0,0,device_width,device_height},&(SDL_Rect){ox,oy,device_width,device_height});
+	if (vid.blit && effect.type!=EFFECT_NONE && vid.effect) {
+		// ox = effect.scale - (dst_rect->x % effect.scale);
+		// oy = effect.scale - (dst_rect->y % effect.scale);
+		// if (ox==effect.scale) ox = 0;
+		// if (oy==effect.scale) oy = 0;
+		// LOG_info("rotate: %i ox: %i oy: %i\n", rotate, ox,oy);
+		if (rotate && !on_hdmi) SDL_RenderCopyEx(vid.renderer,vid.effect,&(SDL_Rect){0,0,dst_rect->w,dst_rect->h},&(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y,dst_rect->w,dst_rect->h},rotate*90,NULL,SDL_FLIP_NONE);
+		else SDL_RenderCopy(vid.renderer, vid.effect, &(SDL_Rect){0,0,dst_rect->w,dst_rect->h},dst_rect);
 	}
 	
 	// uint32_t then = SDL_GetTicks();
@@ -688,7 +899,6 @@ void PLAT_getBatteryStatus(int* is_charging, int* charge) {
 	online = prefixMatch("up", status);
 }
 
-#define BLANK_PATH "/sys/class/graphics/fb0/blank"
 #define LED_PATH "/sys/class/power_supply/axp2202-battery/work_led"
 void PLAT_enableBacklight(int enable) {
 	if (enable) {
@@ -733,6 +943,7 @@ void PLAT_setCPUSpeed(int speed) {
 #define RUMBLE_PATH "/sys/class/power_supply/axp2202-battery/moto"
 
 void PLAT_setRumble(int strength) {
+	if (GetHDMI()) return; // assume we're using a controller?
 	putInt(RUMBLE_PATH, strength?1:0);
 }
 

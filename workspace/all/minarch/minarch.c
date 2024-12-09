@@ -987,7 +987,10 @@ static void Config_syncFrontend(char* key, int value) {
 	}
 	else if (exactMatch(key,config.frontend.options[FE_OPT_SHARPNESS].key)) {
 		screen_sharpness = value;
-		GFX_setSharpness(value);
+		
+		if (screen_scaling==SCALE_NATIVE) GFX_setSharpness(SHARPNESS_SHARP);
+		else GFX_setSharpness(screen_sharpness);
+
 		renderer.dst_p = 0;
 		i = FE_OPT_SHARPNESS;
 	}
@@ -1323,6 +1326,34 @@ static void Config_restore(void) {
 }
 
 ///////////////////////////////
+static struct Special {
+	int palette_updated;
+} special;
+static void Special_updatedDMGPalette(int frames) {
+	// LOG_info("Special_updatedDMGPalette(%i)\n", frames);
+	special.palette_updated = frames; // must wait a few frames
+}
+static void Special_refreshDMGPalette(void) {
+	special.palette_updated -= 1;
+	if (special.palette_updated>0) return;
+	
+	int rgb = getInt("/tmp/dmg_grid_color");
+	GFX_setEffectColor(rgb);
+}
+static void Special_init(void) {
+	if (special.palette_updated>1) special.palette_updated = 1;
+	// else if (exactMatch((char*)core.tag, "GBC"))  {
+	// 	putInt("/tmp/dmg_grid_color",0xF79E);
+	// 	special.palette_updated = 1;
+	// }
+}
+static void Special_render(void) {
+	if (special.palette_updated) Special_refreshDMGPalette();
+}
+static void Special_quit(void) {
+	system("rm /tmp/dmg_grid_color > /dev/null");
+}
+///////////////////////////////
 
 static  int Option_getValueIndex(Option* item, const char* value) {
 	if (!value) return 0;
@@ -1534,6 +1565,8 @@ static void OptionList_setOptionRawValue(OptionList* list, const char* key, int 
 		list->changed = 1;
 		// LOG_info("\tRAW SET %s (%s) TO %s (%s)\n", item->name, item->key, item->labels[item->value], item->values[item->value]);
 		// if (list->on_set) list->on_set(list, key);
+
+		if (exactMatch((char*)core.tag, "GB") && containsString(item->key, "palette")) Special_updatedDMGPalette(3); // from options
 	}
 	else LOG_info("unknown option %s \n", key);
 }
@@ -1542,8 +1575,10 @@ static void OptionList_setOptionValue(OptionList* list, const char* key, const c
 	if (item) {
 		Option_setValue(item, value);
 		list->changed = 1;
-		LOG_info("\tSET %s (%s) TO %s (%s)\n", item->name, item->key, item->labels[item->value], item->values[item->value]);
+		// LOG_info("\tSET %s (%s) TO %s (%s)\n", item->name, item->key, item->labels[item->value], item->values[item->value]);
 		// if (list->on_set) list->on_set(list, key);
+		
+		if (exactMatch((char*)core.tag, "GB") && containsString(item->key, "palette")) Special_updatedDMGPalette(2); // from core
 	}
 	else LOG_info("unknown option %s \n", key);
 }
@@ -2066,6 +2101,24 @@ static bool environment_callback(unsigned cmd, void *data) { // copied from pico
 		return false;
 	}
 	return true;
+}
+
+///////////////////////////////
+
+static void hdmimon(void) {
+	// handle HDMI change
+	static int had_hdmi = -1;
+	int has_hdmi = GetHDMI();
+	if (had_hdmi==-1) had_hdmi = has_hdmi;
+	if (has_hdmi!=had_hdmi) {
+		had_hdmi = has_hdmi;
+
+		LOG_info("restarting after HDMI change...\n");
+		Menu_beforeSleep();
+		sleep(4);
+		show_menu = 0;
+		quit = 1;
+	}
 }
 
 ///////////////////////////////
@@ -2662,6 +2715,8 @@ static void selectScaler(int src_w, int src_h, int src_p) {
 static void video_refresh_callback_main(const void *data, unsigned width, unsigned height, size_t pitch) {
 	// return;
 	
+	Special_render();
+	
 	// static int tmp_frameskip = 0;
 	// if ((tmp_frameskip++)%2) return;
 	
@@ -3064,6 +3119,8 @@ static int Menu_message(char* message, char** pairs) {
 			dirty = 0;
 		}
 		else GFX_sync();
+		
+		hdmimon();
 	}
 	GFX_setMode(MODE_MENU);
 	return MENU_CALLBACK_NOP; // TODO: this should probably be an arg
@@ -3232,6 +3289,7 @@ int OptionControls_bind(MenuList* list, int i) {
 			}
 		}
 		GFX_sync();
+		hdmimon();
 	}
 	return MENU_CALLBACK_NEXT_ITEM;
 }
@@ -3344,6 +3402,7 @@ static int OptionShortcuts_bind(MenuList* list, int i) {
 			}
 		}
 		GFX_sync();
+		hdmimon();
 	}
 	return MENU_CALLBACK_NEXT_ITEM;
 }
@@ -3843,6 +3902,7 @@ static int Menu_options(MenuList* list) {
 			dirty = 0;
 		}
 		else GFX_sync();
+		hdmimon();
 	}
 	
 	// GFX_clearAll();
@@ -4415,6 +4475,7 @@ static void Menu_loop(void) {
 			dirty = 0;
 		}
 		else GFX_sync();
+		hdmimon();
 	}
 	
 	SDL_FreeSurface(preview);
@@ -4625,6 +4686,8 @@ int main(int argc , char* argv[]) {
 	GFX_clearAll();
 	GFX_flip(screen);
 	
+	Special_init(); // after config
+	
 	sec_start = SDL_GetTicks();
 	while (!quit) {
 		GFX_startFrame();
@@ -4677,6 +4740,8 @@ int main(int argc , char* argv[]) {
 			}
 		}
 		// LOG_info("frame duration: %ims\n", SDL_GetTicks()-frame_start);
+		
+		hdmimon();
 	}
 	
 	Menu_quit();
@@ -4692,6 +4757,8 @@ finish:
 	
 	Config_quit();
 	
+	Special_quit();
+
 	MSG_quit();
 	PWR_quit();
 	VIB_quit();
