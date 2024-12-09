@@ -109,7 +109,7 @@ sync && reboot -p
 exit 0
 
 BINARY
-begin 644 data
+begin 664 data
 M4$L#!!0````(`"R@?%:^4$7P80D```A@"0`*`!P`:6YS=&%L;&EN9U54"0`#
 MTW\C9-)_(V1U>`L``00`````!`````#MW3]2*DL;!^`;NA$#=T!L;FARBAT8
 M&;L%-T`5Y0X,=0DDIXHED!(:$!@8<*NKO_[>GIX9013QG/L\)Y$!AI>A^G>Z

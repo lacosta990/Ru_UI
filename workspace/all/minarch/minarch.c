@@ -3052,7 +3052,7 @@ static int Menu_message(char* message, char** pairs) {
 		GFX_startFrame();
 		PAD_poll();
 
-		if (PAD_justPressed(BTN_A) || PAD_justPressed(BTN_B)) break;
+		if (PAD_justPressed(BTN_B) || PAD_justPressed(BTN_X)) break;
 		
 		PWR_update(&dirty, NULL, Menu_beforeSleep, Menu_afterSleep);
 		
@@ -3420,7 +3420,7 @@ static int OptionSaveChanges_onConfirm(MenuList* list, int i) {
 			break;
 		}
 	}
-	Menu_message(message, (char*[]){ "A","OKAY", NULL });
+	Menu_message(message, (char*[]){ "X","Выбрать", NULL });
 	OptionSaveChanges_updateDesc();
 	return MENU_CALLBACK_EXIT;
 }
@@ -3565,10 +3565,10 @@ static int Menu_options(MenuList* list) {
 		}
 		
 		// uint32_t now = SDL_GetTicks();
-		if (PAD_justPressed(BTN_B)) { // || PAD_tappedMenu(now)
+		if (PAD_justPressed(BTN_X)) { // || PAD_tappedMenu(now)
 			show_options = 0;
 		}
-		else if (PAD_justPressed(BTN_A)) {
+		else if (PAD_justPressed(BTN_B)) {
 			MenuItem* item = &items[selected];
 			int result = MENU_CALLBACK_NOP;
 			if (item->on_confirm) result = item->on_confirm(list, selected); // item-specific action, eg. Save for all games
@@ -4209,11 +4209,11 @@ static void Menu_loop(void) {
 			Menu_updateState();
 		}
 		
-		if (PAD_justPressed(BTN_B) || (BTN_WAKE!=BTN_MENU && PAD_tappedMenu(now))) {
+		if (PAD_justPressed(BTN_X) || (BTN_WAKE!=BTN_MENU && PAD_tappedMenu(now))) {
 			status = STATUS_CONT;
 			show_menu = 0;
 		}
-		else if (PAD_justPressed(BTN_A)) {
+		else if (PAD_justPressed(BTN_B)) {
 			switch(selected) {
 				case ITEM_CONT:
 				if (menu.total_discs && rom_disc!=menu.disc) {
@@ -4285,7 +4285,7 @@ static void Menu_loop(void) {
 			int max_width = screen->w - SCALE1(PADDING * 2) - ow;
 			
 			char display_name[256];
-			int text_width = GFX_truncateText(font.large, rom_name, display_name, max_width, SCALE1(BUTTON_PADDING*2));
+			int text_width = GFX_truncateText(font.large, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			max_width = MIN(max_width, text_width);
 
 			SDL_Surface* text;
