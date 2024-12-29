@@ -90,7 +90,11 @@ enum {
 	ASSET_WIFI,
 };
 
+//yar_edit added 2 fonts 
+
 typedef struct GFX_Fonts {
+	TTF_Font* epic;		// new
+	TTF_Font* greate;	// new
 	TTF_Font* large; 	// menu
 	TTF_Font* medium; 	// single char button label
 	TTF_Font* small; 	// button hint

@@ -1218,7 +1218,6 @@ static void saveLast(char* path) {
 	}
 	putFile(LAST_PATH, path);
 }
-
 static void loadLast(void) { // call after loading root directory
 	if (!exists(LAST_PATH)) return;
 
@@ -1276,7 +1275,6 @@ static void loadLast(void) { // call after loading root directory
 			}
 		}
 		free(path); // we took ownership when we popped it
-
 	}
 	
 	StringArray_free(last);
@@ -1340,7 +1338,7 @@ int main (int argc, char *argv[]) {
 		was_online = is_online;
 		
 		if (show_version) {
-			if (PAD_justPressed(BTN_X) || PAD_tappedMenu(now)) {
+			if (PAD_justPressed(BTN_B) || PAD_tappedMenu(now)) {
 				show_version = 0;
 				dirty = 1;
 				if (!HAS_POWER_BUTTON && !simple_mode) PWR_disableSleep();
@@ -1456,7 +1454,6 @@ int main (int argc, char *argv[]) {
 				Entry_open(top->entries->items[top->selected]);
 				dirty = 1;
 			}
-
 			else if (total>0 && PAD_justPressed(BTN_A)) {
 				Entry_open(top->entries->items[top->selected]);
 				total = top->entries->count;
@@ -1471,23 +1468,6 @@ int main (int argc, char *argv[]) {
 				// can_resume = 0;
 				if (total>0) readyResume(top->entries->items[top->selected]);
 			}
-
-			//kids edition
-			// else if (total>0 && PAD_justPressed(BTN_B)) {
-			// 	Entry_open(top->entries->items[top->selected]);
-			// 	total = top->entries->count;
-			// 	dirty = 1;
-
-			// 	if (total>0) readyResume(top->entries->items[top->selected]);
-			// }
-			// else if (PAD_justPressed(BTN_X) && stack->count>1) {
-			// 	closeDirectory();
-			// 	total = top->entries->count;
-			// 	dirty = 1;
-			// 	// can_resume = 0;
-			// 	if (total>0) readyResume(top->entries->items[top->selected]);
-			// }
-
 		}
 		
 		if (dirty) {
@@ -1540,14 +1520,18 @@ int main (int argc, char *argv[]) {
 					tmp[0] = '\0';
 					
 					// TODO: not sure if I want bare PLAT_* calls here
-					char* extra_key = "Model";
-					char* extra_val = PLAT_getModel(); 
+					//char* extra_key = "Model";
+					//char* extra_val = PLAT_getModel(); 
+
+					//yar_edit 
+
+					char* extra_key = "Автор";
+					char* extra_val = "Yaremko.ru"; 
 					
-					//SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Релиз", COLOR_DARK_TEXT);
-					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Консоль", COLOR_DARK_TEXT);
+					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Платформа", COLOR_DARK_TEXT);
 					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "Фаренгейт", COLOR_WHITE);
 					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Модель", COLOR_DARK_TEXT);
-					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "001", COLOR_WHITE);
+					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "451", COLOR_WHITE);
 					
 					SDL_Surface* key_txt = TTF_RenderUTF8_Blended(font.large, extra_key, COLOR_DARK_TEXT);
 					SDL_Surface* val_txt = TTF_RenderUTF8_Blended(font.large, extra_val, COLOR_WHITE);
@@ -1587,10 +1571,11 @@ int main (int argc, char *argv[]) {
 				SDL_BlitSurface(version, NULL, screen, &(SDL_Rect){(screen->w-version->w)/2,(screen->h-version->h)/2});
 				
 				// buttons (duped and trimmed from below)
+				// yar_edit
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
+				GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
 			}
 			else {
 				// list
@@ -1603,28 +1588,31 @@ int main (int argc, char *argv[]) {
 						int available_width = (had_thumb && j!=selected_row ? ox : screen->w) - SCALE1(PADDING * 2);
 						if (i==top->start && !(had_thumb && j!=selected_row)) available_width -= ow; // 
 					
-						SDL_Color text_color = COLOR_WHITE;
+						SDL_Color text_color = COLOR_GRAY;
 					
 						trimSortingMeta(&entry_name);
 					
 						char display_name[256];
-						int text_width = GFX_truncateText(font.large, entry_unique ? entry_unique : entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
+						int text_width = GFX_truncateText(font.epic, entry_unique ? entry_unique : entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
 						int max_width = MIN(available_width, text_width);
+
+//yar_edit list selection color didnt changed enithing
+
 						if (j==selected_row) {
-							GFX_blitPill(ASSET_WHITE_PILL, screen, &(SDL_Rect){
+							GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
 								SCALE1(PADDING),
 								SCALE1(PADDING+(j*PILL_SIZE)),
 								max_width,
 								SCALE1(PILL_SIZE)
 							});
-							text_color = COLOR_BLACK;
+							text_color = COLOR_WHITE;
 						}
 						else if (entry->unique) {
 							trimSortingMeta(&entry_unique);
 							char unique_name[256];
-							GFX_truncateText(font.large, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING*2));
+							GFX_truncateText(font.epic, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING*2));
 						
-							SDL_Surface* text = TTF_RenderUTF8_Blended(font.large, unique_name, COLOR_DARK_TEXT);
+							SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, unique_name, COLOR_DARK_TEXT);
 							SDL_BlitSurface(text, &(SDL_Rect){
 								0,
 								0,
@@ -1635,9 +1623,9 @@ int main (int argc, char *argv[]) {
 								SCALE1(PADDING+(j*PILL_SIZE)+4)
 							});
 						
-							GFX_truncateText(font.large, entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
+							GFX_truncateText(font.epic, entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
 						}
-						SDL_Surface* text = TTF_RenderUTF8_Blended(font.large, display_name, text_color);
+						SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, display_name, text_color);
 						SDL_BlitSurface(text, &(SDL_Rect){
 							0,
 							0,
@@ -1652,28 +1640,39 @@ int main (int argc, char *argv[]) {
 				}
 				else {
 					// TODO: for some reason screen's dimensions end up being 0x0 in GFX_blitMessage...
-					GFX_blitMessage(font.large, "Empty folder", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
+					GFX_blitMessage(font.large, "Сохранить", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
 				}
 			
 				// buttons
+
+				//yar_edit buttons edit show and naming
+
+				// if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+				// else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
+				// else GFX_blitButtonGroup((char*[]){ 
+				// 	BTN_SLEEP==BTN_POWER?"POWER":"MENU",
+				// 	BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
+				// 	NULL }, 0, screen, 0);
+
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-				else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
-				else GFX_blitButtonGroup((char*[]){ 
-					BTN_SLEEP==BTN_POWER?"POWER":"MENU",
-					BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
-					NULL }, 0, screen, 0);
+				else {
+					GFX_blitButtonGroup((char*[]){"¤","Вниз", NULL }, 0, screen, 0);
+				}
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
+
+					//yar_edit edit button lable charecter
+
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OPEN", NULL }, 1, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Открыть", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){ "A","OPEN", NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "ǁ","Открыть", NULL }, 0, screen, 1);
 					}
 				}
 			}

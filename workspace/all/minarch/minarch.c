@@ -2992,11 +2992,11 @@ static struct {
 	.preview_exists = 0,
 	
 	.items = {
-		[ITEM_CONT] = "Continue",
-		[ITEM_SAVE] = "Save",
-		[ITEM_LOAD] = "Load",
+		[ITEM_CONT] = "Продолжить",
+		[ITEM_SAVE] = "Сохранить",
+		[ITEM_LOAD] = "Загрузить",
 		[ITEM_OPTS] = "Options",
-		[ITEM_QUIT] = "Quit",
+		[ITEM_QUIT] = "Выйти",
 	}
 };
 
@@ -3107,7 +3107,7 @@ static int Menu_message(char* message, char** pairs) {
 		GFX_startFrame();
 		PAD_poll();
 
-		if (PAD_justPressed(BTN_B) || PAD_justPressed(BTN_X)) break;
+		if (PAD_justPressed(BTN_A) || PAD_justPressed(BTN_B)) break;
 		
 		PWR_update(&dirty, NULL, Menu_beforeSleep, Menu_afterSleep);
 		
@@ -3479,7 +3479,7 @@ static int OptionSaveChanges_onConfirm(MenuList* list, int i) {
 			break;
 		}
 	}
-	Menu_message(message, (char*[]){ "X","Выбрать", NULL });
+	Menu_message(message, (char*[]){ "A","OKAY", NULL });
 	OptionSaveChanges_updateDesc();
 	return MENU_CALLBACK_EXIT;
 }
@@ -3624,10 +3624,10 @@ static int Menu_options(MenuList* list) {
 		}
 		
 		// uint32_t now = SDL_GetTicks();
-		if (PAD_justPressed(BTN_X)) { // || PAD_tappedMenu(now)
+		if (PAD_justPressed(BTN_B)) { // || PAD_tappedMenu(now)
 			show_options = 0;
 		}
-		else if (PAD_justPressed(BTN_B)) {
+		else if (PAD_justPressed(BTN_A)) {
 			MenuItem* item = &items[selected];
 			int result = MENU_CALLBACK_NOP;
 			if (item->on_confirm) result = item->on_confirm(list, selected); // item-specific action, eg. Save for all games
@@ -4269,11 +4269,11 @@ static void Menu_loop(void) {
 			Menu_updateState();
 		}
 		
-		if (PAD_justPressed(BTN_X) || (BTN_WAKE!=BTN_MENU && PAD_tappedMenu(now))) {
+		if (PAD_justPressed(BTN_B) || (BTN_WAKE!=BTN_MENU && PAD_tappedMenu(now))) {
 			status = STATUS_CONT;
 			show_menu = 0;
 		}
-		else if (PAD_justPressed(BTN_B)) {
+		else if (PAD_justPressed(BTN_A)) {
 			switch(selected) {
 				case ITEM_CONT:
 				if (menu.total_discs && rom_disc!=menu.disc) {
@@ -4344,8 +4344,10 @@ static void Menu_loop(void) {
 			int ow = GFX_blitHardwareGroup(screen, show_setting);
 			int max_width = screen->w - SCALE1(PADDING * 2) - ow;
 			
+			//yar_edit changed rom_name with simbol "ƾ"
+
 			char display_name[256];
-			int text_width = GFX_truncateText(font.large, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
+			int text_width = GFX_truncateText(font.epic, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			max_width = MIN(max_width, text_width);
 
 			SDL_Surface* text;
@@ -4366,10 +4368,16 @@ static void Menu_loop(void) {
 				SCALE1(PADDING+4)
 			});
 			SDL_FreeSurface(text);
+
+			//yar_edit Disable Power/Sleep in game menu
 			
-			if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-			else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
-			GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OKAY", NULL }, 1, screen, 1);
+			//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+			//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
+			//GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OKAY", NULL }, 1, screen, 1);
+
+			//yar edit disabled buttons
+
+			//GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Открыть", NULL }, 1, screen, 1);
 			
 			// list
 			oy = (((DEVICE_HEIGHT / FIXED_SCALE) - PADDING * 2) - (MENU_ITEM_COUNT * PILL_SIZE)) / 2;
@@ -4455,11 +4463,14 @@ static void Menu_loop(void) {
 					SDL_FreeSurface(raw_preview);
 					SDL_FreeSurface(bmp);
 				}
+
+				//yae_edit changed Empty Slot with icon
+
 				else {
 					SDL_Rect preview_rect = {ox,oy,hw,hh};
 					SDL_FillRect(screen, &preview_rect, 0);
-					if (menu.save_exists) GFX_blitMessage(font.large, "No Preview", screen, &preview_rect);
-					else GFX_blitMessage(font.large, "Empty Slot", screen, &preview_rect);
+					if (menu.save_exists) GFX_blitMessage(font.large, "¶", screen, &preview_rect);
+					else GFX_blitMessage(font.large, "¶", screen, &preview_rect);
 				}
 				
 				// pagination
