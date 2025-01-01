@@ -1,7 +1,6 @@
-CORES = gambatte gpsp fceumm picodrive snes9x2005_plus
-CORES+= pcsx_rearmed
-CORES+= beetle-pce-fast pokemini race mgba
-# CORES+= mednafen_supafaust beetle-vb fake-08
+CORES = gambatte gpsp fceumm picodrive snes9x2005_plus pcsx_rearmed
+CORES+= mednafen_pce_fast pokemini race mgba
+# CORES+= mednafen_supafaust mednafen_vb fake-08
 
 PLATFORM = gcw0
 
@@ -15,11 +14,8 @@ PLATFORM = gcw0
 # *_MAKEFILE=
 # *_BUILD_PATH=
 
-beetle-pce-fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
-beetle-pce-fast_CORE = mednafen_pce_fast_libretro.so
-
-beetle-vb_REPO = https://github.com/libretro/beetle-vb-libretro
-beetle-vb_CORE = mednafen_vb_libretro.so
+mednafen_pce_fast_REPO = https://github.com/libretro/beetle-pce-fast-libretro
+mednafen_vb_REPO = https://github.com/libretro/beetle-vb-libretro
 
 fake-08_REPO = https://github.com/jtothebell/fake-08
 fake-08_CORE = fake08_libretro.so
@@ -31,10 +27,8 @@ gambatte_REPO = https://github.com/libretro/gambatte-libretro
 
 mednafen_supafaust_REPO = https://github.com/libretro/supafaust
 
-# TODO: no luck with this
-# pcsx_rearmed_REPO = https://github.com/pcercuei/pcsx_rearmed
 pcsx_rearmed_MAKEFILE = Makefile.libretro
-# pcsx_rearmed_HASH = update-lightrec-20231214
+pcsx_rearmed_HASH = 87a0a631
 
 picodrive_REPO = https://github.com/irixxxx/picodrive
 picodrive_MAKEFILE = Makefile.libretro

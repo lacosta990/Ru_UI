@@ -20,6 +20,7 @@
 #include "scaler.h"
 
 int is_cubexx = 0;
+int is_rg34xx = 0;
 int on_hdmi = 0;
 
 ///////////////////////////////
@@ -406,7 +407,9 @@ static int rotate = 0;
 SDL_Surface* PLAT_initVideo(void) {
 	// LOG_info("PLAT_initVideo\n");
 	
-	is_cubexx = exactMatch("RGcubexx", getenv("RGXX_MODEL"));
+	char* model = getenv("RGXX_MODEL");
+	is_cubexx = exactMatch("RGcubexx", model);
+	is_rg34xx = exactMatch("RG34xx", model);
 	
 	// SDL_version compiled;
 	// SDL_version linked;
@@ -540,7 +543,7 @@ void PLAT_quitVideo(void) {
 	SDL_DestroyRenderer(vid.renderer);
 	SDL_DestroyWindow(vid.window);
 
-	// system("cat /dev/zero > /dev/fb0");
+	// system("cat /dev/zero > /dev/fb0 2>/dev/null");
 	SDL_Quit();
 }
 
@@ -925,7 +928,7 @@ void PLAT_powerOff(void) {
 	PWR_quit();
 	GFX_quit();
 
-	// system("cat /dev/zero > /dev/fb0");
+	// system("cat /dev/zero > /dev/fb0 2>/dev/null");
 	// system("shutdown");
 	// while (1) pause(); // lolwat
 	

@@ -1,56 +1,94 @@
 Changes
 
+
 BASE
 
-- tg_040: fixed rtc bug in MinUI.pak
-- all: GB.pak now uses the first/lightest palette color for the Grid effect (SDL2 only) 
+- rg35xxplus: added initial support for RG34xx
+- rg35xxplus: merged RG CubeXX into rg35xxplus
+- rg35xxplus: added independent settings for HDMI
 
 EXTRAS
 
-- tg_040: fixed rtc bug in Clock.pak
-- all: Super Game Boy borders are now optional
+- rg35xxplus: initial support for RG34xx
+- rg40xxcube: removed (merged into rg35xxplus)
 
 ---
 
-gambatte
-	light grid that matches palette
-	proof of concept added to tg5040 with patch for gambatte core
-		added patch
-		need to rebuild all gambatte cores (manually because building cores is disabled locally)
-		need to copy effect color changes to other sdl2 platforms
-			+ magicmini (took longer than expected because of faux-brightness)
-			+ my282
-			+ rg28xx (rotation/resolution is same as my282 but the math isn't adding up here?! fffffuuuuuu)
-			+ rgb30?
-	people are already asking for more
-		light grid for gbc (looks awful)
-		someone will ask for the same for ngp/ngpc
-	this is really entering shader territory...
-		started dabbling in OpenGL and shaders
-		hit a wall
+can I use shared memory to start an SDL OpenGL context 
+	to avoid having to spin up and break down everything on each launch?
+
+all
+	create a nop setterm file in /.system/<device>/bin to silence errors from system() calls
+
+it's time to retire some supported devices
+	devices running SDL1.2 or sub-480
+		gkdpixel (no longer manufactured?)
+		trimuismart
+		rg35xx (og)
+		miyoomini (and plus)
+		m17
+	devices that have been superceded
+		rgb30 (by cubexx)
+		magicmini (by own zero28?)
+	what would this look like if I nuked 32bit archs?
+		h700 has 64bit libs right?
+		
+	finish updating README (don't forget BASE readme!)
+
+rg34xx
+	power button is kinda wonky
+		definitely wonky
+		doesn't always turn off
+		just had it turn off when I tried to wake it from sleep
+			like it got stuck depressed?
+			I've had the screen turn back on after showing the powering off message in menu
+
 	
 minput
 	seems to be designed top,left aligned for 640x480
 
-it's time to retire some supported devices
-	devices running SDL1.2
-		gkdpixel
-		trimuismart
-		rg35xx (non-h700)
-		miyoomini (and plus)
-	devices that have been superceded
-		rgb30
-	finish updating README (don't forget BASE readme!)
+h700
+	video says 64bit system, why is MinUI using 32bit libraries then?
+	create new 64bit toolchain?
+	based on debian bullseye? (base on the magic mini toolchain or old tg5040?)
+
+my282
+	proper way to kill wifi might be
+		/etc/rc.d/S20network down
+		doesn't seem to be working (on brick)
 
 rg_xx
+	gbc runs poorly on the cubexx with patched panel
+		super obvious in Link's Awakening room transitions
+		gamma has a fix https://github.com/TheGammaSqueeze/rgxx_boot_package_mods/tree/rgcubexx
+			but the change is so extreme my patching method can't handle it
+			(because of the simple way I fudge the checksum...)
+	
 	usb controller
 		look into SDL2 controller API
 		stock supports bluetooth right? how?
 			enabling bluetooth via stock breaks wifi on MinUI
+	
+tg_040
+	overclocking during unzipping update had no effect...
+	properly disable wifi/bluetooth on boot (this will break ten's wifi pack without updates)
+		rfkill block bluetooth
+		rfkill block wifi
+		killall udhcpc
+	enable it
+		rfkill unblock wifi
+		/etc/init.d/wpa_supplicant start
+		udhcpc -i wlan0
+	disable it
+		/etc/init.d/wpa_supplicant stop
+		rfkill block wifi
+		killall udhcpc
 
-tg3040
-	- 
-		
+screen scaling + screen effect
+	aspect + grid on cubexx has grid alignment issues
+		even if aspect equals integer
+		probably due to blindly overscaling when integer would suffice
+
 next
 	standard show/say/confirm.elf?
 		sdl2 implementations require a delay arg 
@@ -79,12 +117,17 @@ next
 			only 		only A confirms, none cancel (only OKAY button drawn)
 			wait		nothing confirms or cancels, must be killed (no buttons drawn)
 		
+		there's an issue with this
+			show.elf used during install/update
+				my282
+				miyoomini
+				tg3040
+				tg5040
+				trimuismart
+			where fonts and bunled libs aren't available yet
+		
 	magicmini has no intel toolchain
 	
-	is Developer.pak supposed to be in the tg5040 extras?
-		I didn't think I released that since it's mostly useless to others
-		and even to me now that everything is built out and working...
-		
 	slow buildroot evtest
 		https://discord.com/channels/741895796315914271/1232969624417730630/1284606079614849084
 	
@@ -165,12 +208,9 @@ next
 					might be saving 1-2ms
 				could this slowness be related to vram speed? (DMC?)
 		
-		update all cores
-			call out breaking changes (gpsp save states) in release notes 
 		add Clear Recently Played.pak, copy to all platforms
 			maybe include confirmation?
 			requires show.elf
-		enable SELECT/START+L/R for volume/brightness
 		limit option name replacements based on core lib name
 		noui
 			quit doesn't work as expected on trimuismart
@@ -432,8 +472,6 @@ all
 		prevent binding same MENU+button to control and shortcut at same time
 			reset the newer input to None and show a message, ideal something like:
 				MENU+<button> is already bound to (<name> shortcut|<name> control)
-	clock
-		factor in timezone offset?
 	simple progress animation for installing/updating
 		launch as a daemon with &
 		draws in a corner

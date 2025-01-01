@@ -10,6 +10,8 @@ DEVICE_HEIGHT=480
 if [ "$RGXX_MODEL" = "RGcubexx" ]; then
 	DEVICE_WIDTH=720
 	DEVICE_HEIGHT=720
+elif [ "$RGXX_MODEL" = "RG34xx" ]; then
+	DEVICE_WIDTH=720
 elif [ "$RGXX_MODEL" = "RG28xx" ]; then # rotated
 	TMP_WIDTH=$DEVICE_WIDTH
 	DEVICE_WIDTH=$DEVICE_HEIGHT
@@ -27,7 +29,7 @@ enable_hdmi() {
 	echo 'enabling HDMI'
 	
 	echo 4 > $BLANK_PATH
-	cat /dev/zero > /dev/fb0
+	cat /dev/zero > /dev/fb0 2>/dev/null
 	
 	echo disp0 > $DISP_PATH/name
 	echo switch > $DISP_PATH/command
@@ -41,13 +43,14 @@ enable_hdmi() {
 	echo 0 > $BLANK_PATH
 	
 	echo "export AUDIODEV='hw:2,0'" > $HDMI_EXPORT_PATH
+	echo "export DEVICE=hdmi" >> $HDMI_EXPORT_PATH
 }
 
 disable_hdmi() {
 	echo 'disabling HDMI'
 	
 	echo 4 > $BLANK_PATH
-	cat /dev/zero > /dev/fb0
+	cat /dev/zero > /dev/fb0 2>/dev/null
 	
 	echo disp0 > $DISP_PATH/name
 	echo switch > $DISP_PATH/command
@@ -61,6 +64,11 @@ disable_hdmi() {
 	echo 0 > $BLANK_PATH
 	
 	echo "unset AUDIODEV" > $HDMI_EXPORT_PATH
+	if [ -n "$DEVICE" ]; then
+		echo "export DEVICE=$DEVICE" >> $HDMI_EXPORT_PATH
+	else
+		echo "unset DEVICE" >> $HDMI_EXPORT_PATH
+	fi
 }
 
 HDMI_STATE_PATH="/sys/class/switch/hdmi/cable.0/state"
