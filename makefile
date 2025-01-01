@@ -11,9 +11,7 @@ endif
 endif
 
 ifeq (,$(PLATFORMS))
-# PLATFORMS = rg35xx rg35xxplus
-# PLATFORMS = rg35xx
-PLATFORMS = rg35xxplus
+PLATFORMS = miyoomini trimuismart rg35xx rg35xxplus tg5040 tg3040 rgb30 m17 gkdpixel my282 magicmini
 endif
 
 ###########################################################
@@ -147,11 +145,11 @@ package: tidy
 	cp -R ./build/BOOT/.tmp_update ./build/PAYLOAD/
 	cd ./build/PAYLOAD && zip -r ../BASE/trimui.zip .tmp_update
 	
-	cd ./build/PAYLOAD && zip -r RUUI.zip .system .tmp_update
-	mv ./build/PAYLOAD/RUUI.zip ./build/BASE
+	cd ./build/PAYLOAD && zip -r MinUI.zip .system .tmp_update
+	mv ./build/PAYLOAD/MinUI.zip ./build/BASE
 	
 	# TODO: can I just add everything in BASE to zip?
-	cd ./build/BASE && zip -r ../../releases/$(RELEASE_NAME)-base.zip Bios Roms Saves miyoo miyoo354 trimui rg35xx rg35xxplus gkdpixel em_ui.sh RUUI.zip README.txt
+	cd ./build/BASE && zip -r ../../releases/$(RELEASE_NAME)-base.zip Bios Roms Saves miyoo miyoo354 trimui rg35xx rg35xxplus gkdpixel em_ui.sh MinUI.zip README.txt
 	cd ./build/EXTRAS && zip -r ../../releases/$(RELEASE_NAME)-extras.zip Bios Emus Roms Saves Tools README.txt
 	echo "$(RELEASE_NAME)" > ./build/latest.txt
 	
