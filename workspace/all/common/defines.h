@@ -14,6 +14,7 @@
 #define ROOT_SYSTEM_PATH SDCARD_PATH "/.system/"
 #define SYSTEM_PATH SDCARD_PATH "/.system/" PLATFORM
 #define RES_PATH SDCARD_PATH "/.system/res"
+//ya_edit font change
 #define FONT_PATH RES_PATH "/YaRoboto.otf"
 #define USERDATA_PATH SDCARD_PATH "/.userdata/" PLATFORM
 #define SHARED_USERDATA_PATH SDCARD_PATH "/.userdata/shared"
@@ -23,7 +24,7 @@
 #define AUTO_RESUME_PATH SHARED_USERDATA_PATH "/.minui/auto_resume.txt"
 #define AUTO_RESUME_SLOT 9
 
-#define FAUX_RECENT_PATH SDCARD_PATH "/ƿ Недавние"
+#define FAUX_RECENT_PATH SDCARD_PATH "/Recently Played"
 #define COLLECTIONS_PATH SDCARD_PATH "/Collections"
 
 #define LAST_PATH "/tmp/last.txt" // transient
@@ -40,12 +41,12 @@
 #define TRIAD_LIGHT_TEXT 	0xcc,0xcc,0xcc
 #define TRIAD_DARK_TEXT 	0x66,0x66,0x66
 
-#define COLOR_WHITE				(SDL_Color){TRIAD_WHITE}
-#define COLOR_GRAY				(SDL_Color){TRIAD_GRAY}
-#define COLOR_BLACK				(SDL_Color){TRIAD_BLACK}
-#define COLOR_LIGHT_TEXT		(SDL_Color){TRIAD_LIGHT_TEXT}
-#define COLOR_DARK_TEXT			(SDL_Color){TRIAD_DARK_TEXT}
-#define COLOR_BUTTON_TEXT		(SDL_Color){TRIAD_GRAY}
+#define COLOR_WHITE			(SDL_Color){TRIAD_WHITE}
+#define COLOR_GRAY			(SDL_Color){TRIAD_GRAY}
+#define COLOR_BLACK			(SDL_Color){TRIAD_BLACK}
+#define COLOR_LIGHT_TEXT	(SDL_Color){TRIAD_LIGHT_TEXT}
+#define COLOR_DARK_TEXT		(SDL_Color){TRIAD_DARK_TEXT}
+#define COLOR_BUTTON_TEXT	(SDL_Color){TRIAD_GRAY}
 #define COLOR_BUTTON_TEXT_WHITE	(SDL_Color){TRIAD_WHITE} //yar_edit new color fow w labeles
 
 // all before scale
@@ -63,6 +64,8 @@
 #ifndef PADDING
 #define PADDING 10 // PILL_SIZE / 3 (or non-integer part of the previous calculatiom divided by three)
 #endif
+
+//ya_edit added fot size
 
 #define FONT_EPIC 20	// new
 #define FONT_GREATE 18 	// new

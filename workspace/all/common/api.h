@@ -41,9 +41,13 @@ void LOG_note(int level, const char* fmt, ...);
 
 ///////////////////////////////
 
+//yar_edit totallyblack background in arch menu
+
 #define RGBA_MASK_AUTO	0x0, 0x0, 0x0, 0x0
-#define RGBA_MASK_565	0xF800, 0x07E0, 0x001F, 0x0000
-#define RGBA_MASK_8888	0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000
+#define RGBA_MASK_565	0x0, 0x0, 0x0, 0x0
+#define RGBA_MASK_8888	0x0, 0x0, 0x0, 0x0
+//#define RGBA_MASK_565	0xF800, 0x07E0, 0x001F, 0x0000
+//#define RGBA_MASK_8888	0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000
 
 ///////////////////////////////
 

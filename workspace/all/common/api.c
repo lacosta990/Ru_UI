@@ -170,9 +170,11 @@ SDL_Surface* GFX_init(int mode) {
 	TTF_SetFontStyle(font.small, TTF_STYLE_NORMAL);
 	TTF_SetFontStyle(font.tiny, TTF_STYLE_NORMAL);
 	
-	
 	return gfx.screen;
 }
+
+////yar_edit style addit list
+
 void GFX_quit(void) {
 	TTF_CloseFont(font.epic);
 	TTF_CloseFont(font.greate);
@@ -633,7 +635,7 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 		GFX_blitAsset(ASSET_BUTTON, NULL, dst, dst_rect);
 
 		// label
-		text = TTF_RenderUTF8_Blended(font.epic, button, COLOR_BUTTON_TEXT_WHITE);
+		text = TTF_RenderUTF8_Blended(font.medium, button, COLOR_BUTTON_TEXT);
 		SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){dst_rect->x+(SCALE1(BUTTON_SIZE)-text->w)/2,dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2});
 		ox += SCALE1(BUTTON_SIZE);
 		SDL_FreeSurface(text);
@@ -650,17 +652,20 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 		// text = TTF_RenderUTF8_Blended(special_case ? font.large : font.tiny, button, COLOR_BUTTON_TEXT);
 		// GFX_blitPill(ASSET_BUTTON, dst, &(SDL_Rect){dst_rect->x,dst_rect->y,SCALE1(BUTTON_SIZE)/2+text->w,SCALE1(BUTTON_SIZE)});
 		// ox += SCALE1(BUTTON_SIZE)/4;
-		
-		// int oy = special_case ? SCALE1(-2) : 0;
-		// SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2,text->w,text->h});
-		// ox += text->w;
-		// ox += SCALE1(BUTTON_SIZE)/4;
-		// SDL_FreeSurface(text);
+
+		//int oy = special_case ? SCALE1(-2) : 0;
+		//SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2,text->w,text->h});
+		//ox += text->w;
+		//ox += SCALE1(BUTTON_SIZE)/4;
+		//SDL_FreeSurface(text);
 	}
 	
 	ox += SCALE1(BUTTON_MARGIN);
 
 	// hint text
+
+	//yar_edit COLOR_GRAY
+
 	text = TTF_RenderUTF8_Blended(font.small, hint, COLOR_GRAY);
 	SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){ox+dst_rect->x,dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2,text->w,text->h});
 	SDL_FreeSurface(text);
@@ -1632,8 +1637,14 @@ void PWR_powerOff(void) {
 		gfx.screen = GFX_resize(w,h,p);
 		
 		char* msg;
-		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
-		else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
+
+		//yar_edit changed sutdown message
+
+		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
+		else msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
+		
+		//if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
+		//else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
 		
 		// LOG_info("PWR_powerOff %s (%ix%i)\n", gfx.screen, gfx.screen->w, gfx.screen->h);
 		

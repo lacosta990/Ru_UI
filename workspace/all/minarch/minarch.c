@@ -3046,17 +3046,17 @@ static struct {
 	.preview_exists = 0,
 	
 	.items = {
-		[ITEM_CONT] = "Продолжить",
-		[ITEM_SAVE] = "Сохранить",
-		[ITEM_LOAD] = "Загрузить",
-		[ITEM_OPTS] = "Options",
-		[ITEM_QUIT] = "Выйти",
+		[ITEM_CONT] = "продолжить",
+		[ITEM_SAVE] = "сохранить",
+		[ITEM_LOAD] = "загрузить",
+		[ITEM_OPTS] = "рестарт",
+		[ITEM_QUIT] = "выйти",
 	}
 };
 
 void Menu_init(void) {
 	menu.overlay = SDL_CreateRGBSurface(SDL_SWSURFACE,DEVICE_WIDTH,DEVICE_HEIGHT,FIXED_DEPTH,RGBA_MASK_AUTO);
-	SDLX_SetAlpha(menu.overlay, SDL_SRCALPHA, 0x80);
+	SDLX_SetAlpha(menu.overlay, SDL_SRCALPHA, 0xff);
 	SDL_FillRect(menu.overlay, NULL, 0);
 	
 	char emu_name[256];
@@ -4353,13 +4353,9 @@ static void Menu_loop(void) {
 					show_menu = 0;
 				}
 				break;
+				//yar_edit changed is actions
 				case ITEM_OPTS: {
 					if (simple_mode) {
-						core.reset();
-						status = STATUS_RESET;
-						show_menu = 0;
-					}
-					else {
 						int old_scaling = screen_scaling;
 						Menu_options(&options_menu);
 						if (screen_scaling!=old_scaling) {
@@ -4374,6 +4370,11 @@ static void Menu_loop(void) {
 							Menu_scale(menu.bitmap, backing);
 						}
 						dirty = 1;
+					}
+					else {
+						core.reset();
+						status = STATUS_RESET;
+						show_menu = 0;
 					}
 				}
 				break;
@@ -4397,15 +4398,17 @@ static void Menu_loop(void) {
 			int ox, oy;
 			int ow = GFX_blitHardwareGroup(screen, show_setting);
 			int max_width = screen->w - SCALE1(PADDING * 2) - ow;
-			
-			//yar_edit changed rom_name with simbol "ƾ"
 
+			//yar_edit changed rom_name with simbol "ƾ"
+			
 			char display_name[256];
 			int text_width = GFX_truncateText(font.epic, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			max_width = MIN(max_width, text_width);
 
+			//yar_edit replaced gametitle with a sign and edit size
+
 			SDL_Surface* text;
-			text = TTF_RenderUTF8_Blended(font.large, display_name, COLOR_WHITE);
+			text = TTF_RenderUTF8_Blended(font.epic, display_name, COLOR_WHITE);
 			GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
 				SCALE1(PADDING),
 				SCALE1(PADDING),
@@ -4437,7 +4440,10 @@ static void Menu_loop(void) {
 			oy = (((DEVICE_HEIGHT / FIXED_SCALE) - PADDING * 2) - (MENU_ITEM_COUNT * PILL_SIZE)) / 2;
 			for (int i=0; i<MENU_ITEM_COUNT; i++) {
 				char* item = menu.items[i];
-				SDL_Color text_color = COLOR_WHITE;
+
+				//yar_edit changed list text color from COLOR_WHITE to GRAY and Epic size
+
+				SDL_Color text_color = COLOR_GRAY;
 				
 				if (i==selected) {
 					// disc change
@@ -4448,7 +4454,7 @@ static void Menu_loop(void) {
 							screen->w - SCALE1(PADDING * 2),
 							SCALE1(PILL_SIZE)
 						});
-						text = TTF_RenderUTF8_Blended(font.large, disc_name, COLOR_WHITE);
+						text = TTF_RenderUTF8_Blended(font.epic, disc_name, COLOR_WHITE);
 						SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 							screen->w - SCALE1(PADDING + BUTTON_PADDING) - text->w,
 							SCALE1(oy + PADDING + 4)
@@ -4456,21 +4462,24 @@ static void Menu_loop(void) {
 						SDL_FreeSurface(text);
 					}
 					
-					TTF_SizeUTF8(font.large, item, &ow, NULL);
+					TTF_SizeUTF8(font.epic, item, &ow, NULL);
 					ow += SCALE1(BUTTON_PADDING*2);
 					
 					// pill
-					GFX_blitPill(ASSET_WHITE_PILL, screen, &(SDL_Rect){
+
+					//yar_edit pill and text color
+
+					GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
 						SCALE1(PADDING),
 						SCALE1(oy + PADDING + (i * PILL_SIZE)),
 						ow,
 						SCALE1(PILL_SIZE)
 					});
-					text_color = COLOR_BLACK;
+					text_color = COLOR_WHITE;
 				}
 				else {
 					// shadow
-					text = TTF_RenderUTF8_Blended(font.large, item, COLOR_BLACK);
+					text = TTF_RenderUTF8_Blended(font.epic, item, COLOR_BLACK);
 					SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 						SCALE1(2 + PADDING + BUTTON_PADDING),
 						SCALE1(1 + PADDING + oy + (i * PILL_SIZE) + 4)
@@ -4479,7 +4488,7 @@ static void Menu_loop(void) {
 				}
 				
 				// text
-				text = TTF_RenderUTF8_Blended(font.large, item, text_color);
+				text = TTF_RenderUTF8_Blended(font.epic, item, text_color);
 				SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 					SCALE1(PADDING + BUTTON_PADDING),
 					SCALE1(oy + PADDING + (i * PILL_SIZE) + 4)
@@ -4518,13 +4527,13 @@ static void Menu_loop(void) {
 					SDL_FreeSurface(bmp);
 				}
 
-				//yae_edit changed Empty Slot with icon
+				//yar_edit changed Empty Slot with icon
 
 				else {
 					SDL_Rect preview_rect = {ox,oy,hw,hh};
 					SDL_FillRect(screen, &preview_rect, 0);
-					if (menu.save_exists) GFX_blitMessage(font.large, "¶", screen, &preview_rect);
-					else GFX_blitMessage(font.large, "¶", screen, &preview_rect);
+					if (menu.save_exists) GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
+					else GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
 				}
 				
 				// pagination

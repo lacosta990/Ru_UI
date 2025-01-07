@@ -27,7 +27,7 @@ if [ -f "$UPDATE_PATH" ]; then
 	dd if=/tmp/$ACTION of=/dev/fb0
 	sync
 	
-	# finally unzip RUUI.zip
+	# finally unzip RUnUI.zip
 	unzip -o "$UPDATE_PATH" -d "$SDCARD_PATH"
 	rm -f "$UPDATE_PATH"
 	sync

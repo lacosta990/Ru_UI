@@ -637,8 +637,10 @@ static int hasRoms(char* dir_name) {
 }
 static Array* getRoot(void) {
 	Array* root = Array_new();
+
+	//yar_edit disable recently played
 	
-	if (hasRecents()) Array_push(root, Entry_new(FAUX_RECENT_PATH, ENTRY_DIR));
+	//if (hasRecents()) Array_push(root, Entry_new(FAUX_RECENT_PATH, ENTRY_DIR));
 	
 	Array* entries = Array_new();
 	DIR* dh = opendir(ROMS_PATH);
@@ -1534,7 +1536,7 @@ int main (int argc, char *argv[]) {
 					// TODO: not sure if I want bare PLAT_* calls here
 					//char* extra_key = "Model";
 					//char* extra_val = PLAT_getModel(); 
-
+					
 					//yar_edit 
 
 					char* extra_key = "Автор";
@@ -1583,7 +1585,9 @@ int main (int argc, char *argv[]) {
 				SDL_BlitSurface(version, NULL, screen, &(SDL_Rect){(screen->w-version->w)/2,(screen->h-version->h)/2});
 				
 				// buttons (duped and trimmed from below)
+
 				// yar_edit
+
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
@@ -1599,7 +1603,9 @@ int main (int argc, char *argv[]) {
 						char* entry_unique = entry->unique;
 						int available_width = (had_thumb && j!=selected_row ? ox : screen->w) - SCALE1(PADDING * 2);
 						if (i==top->start && !(had_thumb && j!=selected_row)) available_width -= ow; // 
-					
+						
+						//yar_edit changed list color to gray
+
 						SDL_Color text_color = COLOR_GRAY;
 					
 						trimSortingMeta(&entry_name);
@@ -1608,7 +1614,7 @@ int main (int argc, char *argv[]) {
 						int text_width = GFX_truncateText(font.epic, entry_unique ? entry_unique : entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
 						int max_width = MIN(available_width, text_width);
 
-//yar_edit list selection color didnt changed enithing
+						//yar_edit list selection color ASSET_BLACK_PILL
 
 						if (j==selected_row) {
 							GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
@@ -1622,6 +1628,7 @@ int main (int argc, char *argv[]) {
 						else if (entry->unique) {
 							trimSortingMeta(&entry_unique);
 							char unique_name[256];
+							//yar_edit changed font size
 							GFX_truncateText(font.epic, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING*2));
 						
 							SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, unique_name, COLOR_DARK_TEXT);
@@ -1652,19 +1659,19 @@ int main (int argc, char *argv[]) {
 				}
 				else {
 					// TODO: for some reason screen's dimensions end up being 0x0 in GFX_blitMessage...
+
+					//yar_edit Сохранить
 					GFX_blitMessage(font.large, "Сохранить", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
 				}
 			
 				// buttons
 
-				//yar_edit buttons edit show and naming
-
-				// if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-				// else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
-				// else GFX_blitButtonGroup((char*[]){ 
-				// 	BTN_SLEEP==BTN_POWER?"POWER":"MENU",
-				// 	BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
-				// 	NULL }, 0, screen, 0);
+				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+				//else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
+				//else GFX_blitButtonGroup((char*[]){ 
+				//	BTN_SLEEP==BTN_POWER?"POWER":"MENU",
+				//	BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
+				//	NULL }, 0, screen, 0);
 
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				else {
@@ -1673,7 +1680,7 @@ int main (int argc, char *argv[]) {
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
