@@ -1,6 +1,6 @@
 # RUUI
 
-MinUI is a focused, custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
+RUUI is a custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
 
 <img src="github/RUUI-main.png" width=320 /> <img src="RUUI-game-menu.png" width=320 /> 
 
