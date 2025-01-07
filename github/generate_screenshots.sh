@@ -2,7 +2,7 @@
 
 pushd "$(dirname "$0")" >> /dev/null
 
-files=$(ls *.jpg)
+files=$(ls *.png)
 screenshotText="# RUUI screenshots\n\n"
 
 for file in $files; do
