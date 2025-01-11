@@ -1641,7 +1641,7 @@ void PWR_powerOff(void) {
 		//yar_edit changed sutdown message
 
 		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
-		else msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
+		else msg = exists(AUTO_RESUME_PATH) ? "ƕ\nƔ" : "Ɣ";
 		
 		//if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
 		//else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
