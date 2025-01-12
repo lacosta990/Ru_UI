@@ -1,8 +1,8 @@
-# MinUI
+# RUUI Hardcore
 
 MinUI is a focused, custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
 
-<img src="github/minui-main.png" width=320 /> <img src="github/minui-menu-gbc.png" width=320 /> 
+<img src="github/bootlogo.png" width=320 /> <img src="github/RUUI-main.png" width=320 /> <img src="github/RUUI-main-1.png" width=320 /> 
 
 ## Features
 
