@@ -28,22 +28,19 @@ You can [grab the latest version here](https://github.com/shauninman/MinUI/relea
 
 ## Supported consoles
 
-Base:
-
 - Sony PlayStation
-- TurboGrafx-16 (and TurboGrafx-CD)
+- TurboGrafx-16 / CD
 - Sega Genesis
 - SNES
 - NES
 - Game Boy Advance
 - Game Boy Color
 - Game Boy
-- Pico-8
+- Pico-8 / not all games
 
-Extras:
+Also supported, but not listed correctly in order
 
-- Neo Geo Pocket (and Color)
-- Pico-8
+- Neo Geo Pocket / Color
 - Pokémon mini
 - Sega Game Gear
 - Sega Master System
@@ -52,26 +49,18 @@ Extras:
 
 ## Supported Devices
 
-- Anbernic RG28xx 
-- Anbernic RG35xx 
-- Anbernic RG35xx Plus
-- Anbernic RG35xxH
-- Anbernic RG35xxSP
-- Anbernic RG40xxH
-- Anbernic RG40xxV
-- Anbernic RG CubeXX
+| Anbernic RG28xx | |
+| Anbernic RG35xx  | tested|
+| Anbernic RG35xx Plus | tested|
+| Anbernic RG35xxH | |
+| Anbernic RG35xxSP | |
+| Anbernic RG40xxH | |
+| Anbernic RG40xxV | tested|
+| Anbernic RG CubeXX | |
 
 
-> [!NOTE]
-> **Active** actively working on compatibility and improvements specific to this device  
-> **Maintained** inheriting improvements to common functionality  
-> **Deprecated** will be retired in a future update  
-> **Retired** removed from repo, no longer updated or packaged with new releases  
-
-## Legacy versions
-
-The original Trimui Model S version of MinUI (2021/04/03-2021/08/06) has been archived [here](https://github.com/shauninman/MinUI-Legacy-Trimui-Model-S).
-
-The sequel, MiniUI for the Miyoo Mini (2022/04/20-2022/10/23), has been archived [here](https://github.com/shauninman/MiniUI-Legacy-Miyoo-Mini).
-
-The return of MinUI for the original Anbernic RG35XX (2023/02/26-2023/03/26) has been archived [here](https://github.com/shauninman/MinUI-Legacy-RG35XX).
+> NOTE
+If you dont need any platfom just make it empty
+The builde comes with some homebrew and demo titles of each platform
+>
+> Platform order in a list is set modified "invisible" letters in a font.
