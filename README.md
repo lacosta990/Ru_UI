@@ -1,16 +1,14 @@
-# RUUI
+# MinUI
 
-RUUI is a most minimalistic custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
+MinUI is a focused, custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
 
-<img src="github/RUUI-main.png" width=320 /> <img src="github/RUUI-main-2.png" width=320 /> 
-<img src="github/RUUI-game-menu.png" width=320 /> <img src="github/RUUI-main-children.png" width=320 /> 
-
+<img src="github/minui-main.png" width=320 /> <img src="github/minui-menu-gbc.png" width=320 /> 
 
 ## Features
 
 - Simple launcher, simple SD card
-- No settings or configuration,
-  no boxart or themes
+- No settings or configuration
+- No boxart, themes, or distractions
 - Automatically hides hidden files
   and extension and region/version 
   cruft in display names
@@ -34,6 +32,8 @@ RUUI is a most minimalistic custom launcher and libretro frontend for [a variety
   multiple devices from different
   manufacturers
 
+You can [grab the latest version here](https://github.com/shauninman/MinUI/releases).
+
 > Devices with a physical power switch
 > use MENU to sleep and wake instead of
 > POWER. Once asleep the device can safely
@@ -42,13 +42,14 @@ RUUI is a most minimalistic custom launcher and libretro frontend for [a variety
 ## Supported consoles
 
 Base:
-- Sony PlayStation
-- Sega Mega Drive
-- SNES
-- Famicom
-- Game Boy Advance
-- Game Boy Color
+
 - Game Boy
+- Game Boy Color
+- Game Boy Advance
+- Nintendo Entertainment System
+- Super Nintendo Entertainment System
+- Sega Genesis
+- PlayStation
 
 Extras:
 
@@ -89,3 +90,11 @@ Extras:
 > **Maintained** inheriting improvements to common functionality  
 > **Deprecated** will be retired in a future update  
 > **Retired** removed from repo, no longer updated or packaged with new releases  
+
+## Legacy versions
+
+The original Trimui Model S version of MinUI (2021/04/03-2021/08/06) has been archived [here](https://github.com/shauninman/MinUI-Legacy-Trimui-Model-S).
+
+The sequel, MiniUI for the Miyoo Mini (2022/04/20-2022/10/23), has been archived [here](https://github.com/shauninman/MiniUI-Legacy-Miyoo-Mini).
+
+The return of MinUI for the original Anbernic RG35XX (2023/02/26-2023/03/26) has been archived [here](https://github.com/shauninman/MinUI-Legacy-RG35XX).

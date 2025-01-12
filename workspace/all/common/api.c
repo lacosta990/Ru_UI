@@ -730,7 +730,7 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 		ow = SCALE1(PILL_SIZE + SETTINGS_WIDTH + 10 + 4);
 		ox = dst->w - SCALE1(PADDING) - ow;
 		oy = SCALE1(PADDING);
-		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_DARK_GRAY_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
+		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_BLACK_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
 			ox,
 			oy,
 			ow,
@@ -809,11 +809,11 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 void GFX_blitHardwareHints(SDL_Surface* dst, int show_setting) {
 	if (BTN_MOD_VOLUME==BTN_SELECT && BTN_MOD_BRIGHTNESS==BTN_START) {
 		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "SELECT","VOLUME",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "START","Яркость",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "START","BRIGHTNESS",  NULL }, 0, dst, 0);
 	}
 	else {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ BRIGHTNESS_BUTTON_LABEL,"Яркость",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "¤","Вниз",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "•","BRIGHTNESS",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "•","VOLUME",  NULL }, 0, dst, 0);
 	}
 	
 }
@@ -1641,7 +1641,7 @@ void PWR_powerOff(void) {
 		//yar_edit changed sutdown message
 
 		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
-		else msg = exists(AUTO_RESUME_PATH) ? "ƕ\nƔ" : "Ɣ";
+		else msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
 		
 		//if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
 		//else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";

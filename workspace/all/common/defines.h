@@ -15,7 +15,7 @@
 #define SYSTEM_PATH SDCARD_PATH "/.system/" PLATFORM
 #define RES_PATH SDCARD_PATH "/.system/res"
 //ya_edit font change
-#define FONT_PATH RES_PATH "/YaRoboto.otf"
+#define FONT_PATH RES_PATH "/YaRobotoHardcore.otf"
 #define USERDATA_PATH SDCARD_PATH "/.userdata/" PLATFORM
 #define SHARED_USERDATA_PATH SDCARD_PATH "/.userdata/shared"
 #define PAKS_PATH SYSTEM_PATH "/paks"
@@ -71,7 +71,7 @@
 #define FONT_GREATE 18 	// new
 #define FONT_LARGE 16 	// menu
 #define FONT_MEDIUM 14 	// single char button label
-#define FONT_SMALL 12 	// button hint
+#define FONT_SMALL 6 	// button hint
 #define FONT_TINY 10  	// multi char button label
 
 ///////////////////////////////

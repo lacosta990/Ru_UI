@@ -1539,13 +1539,13 @@ int main (int argc, char *argv[]) {
 					
 					//yar_edit 
 
-					char* extra_key = "Автор";
-					char* extra_val = "Yaremko.ru"; 
+					char* extra_key = "AUTHOR";
+					char* extra_val = "YAREMKO.RU"; 
 					
-					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Платформа", COLOR_DARK_TEXT);
-					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "Фаренгейт", COLOR_WHITE);
-					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Модель", COLOR_DARK_TEXT);
-					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "451", COLOR_WHITE);
+					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "PLATFORM", COLOR_DARK_TEXT);
+					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "FAHRENHEIT", COLOR_WHITE);
+					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "MODEL", COLOR_DARK_TEXT);
+					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "451 a", COLOR_WHITE);
 					
 					SDL_Surface* key_txt = TTF_RenderUTF8_Blended(font.large, extra_key, COLOR_DARK_TEXT);
 					SDL_Surface* val_txt = TTF_RenderUTF8_Blended(font.large, extra_val, COLOR_WHITE);
@@ -1591,7 +1591,7 @@ int main (int argc, char *argv[]) {
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
+				//GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
 			}
 			else {
 				// list
@@ -1675,12 +1675,12 @@ int main (int argc, char *argv[]) {
 
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				else {
-					GFX_blitButtonGroup((char*[]){"¤","Вниз", NULL }, 0, screen, 0);
+					GFX_blitButtonGroup((char*[]){"•","RUUI Hardcore edition", NULL }, 0, screen, 0);
 				}
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ " "," ",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
@@ -1688,10 +1688,10 @@ int main (int argc, char *argv[]) {
 					//yar_edit edit button lable charecter
 
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Открыть", NULL }, 1, screen, 1);
+						GFX_blitButtonGroup((char*[]){ " "," ", " "," ", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){ "ǁ","Открыть", NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ " "," ", NULL }, 0, screen, 1);
 					}
 				}
 			}

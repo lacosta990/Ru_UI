@@ -10,7 +10,7 @@ echo 0 > /sys/devices/virtual/vtconsole/vtcon1/bind
 
 SDCARD_PATH=/media/roms
 SYSTEM_PATH=$SDCARD_PATH/.system/gkdpixel
-UPDATE_PATH=$SDCARD_PATH/RUUI.zip
+UPDATE_PATH=$SDCARD_PATH/RUUIhardcore.zip
 
 # is there an update available?
 if [ -f $UPDATE_PATH ]; then
