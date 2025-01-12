@@ -49,14 +49,18 @@ Also supported, but not listed correctly in order
 
 ## Supported Devices
 
-| Anbernic RG28xx | |
-| Anbernic RG35xx  | tested|
-| Anbernic RG35xx Plus | tested|
-| Anbernic RG35xxH | |
-| Anbernic RG35xxSP | |
-| Anbernic RG40xxH | |
-| Anbernic RG40xxV | tested|
-| Anbernic RG CubeXX | |
+| Device | Added | 
+| -- | -- |
+| Anbernic RG28xx |   |
+| Anbernic RG35xx | Tested |
+| Anbernic RG35xx Plus | Tested |
+| Anbernic RG35xxH | Tested |
+| Anbernic RG35xxSP |   |
+| Anbernic RG40xxH |   |
+| Anbernic RG40xxV | Tested |
+| Anbernic RG CubeXX |   |
+
+
 
 
 > NOTE
