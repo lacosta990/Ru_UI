@@ -3,7 +3,7 @@
 RUUI Hardcore is ultra-minimalistic custom launcher that gives clear gameplay how it was meant to be. 
 True nastalgia with no cheats with morert savestates that ruines challange. 
 
-<img src="github/bootlogo.png" width=320 /> <img src="github/RUUI-main.png" width=320 /> <img src="github/RUUI-main-1.png" width=320 /> 
+<img src="github/bootlogo.png" width=320 /> <img src="github/RUUI-main-hero.png" width=320 /> <img src="github/RUUI-ingame.png" width=320 /> 
 
 ## Features
 
