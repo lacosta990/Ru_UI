@@ -3050,7 +3050,7 @@ static struct {
 		//[ITEM_SAVE] = "сохранить",
 		//[ITEM_LOAD] = "загрузить",
 		[ITEM_OPTS] = "RESET",
-		[ITEM_QUIT] = "QUITE",
+		[ITEM_QUIT] = "QUIT",
 	}
 };
 
