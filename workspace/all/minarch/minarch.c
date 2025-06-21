@@ -3001,13 +3001,13 @@ void Core_close(void) {
 
 ///////////////////////////////////////
 
-#define MENU_ITEM_COUNT 3
+#define MENU_ITEM_COUNT 5
 #define MENU_SLOT_COUNT 8
 
 enum {
 	ITEM_CONT,
-	//ITEM_SAVE,
-	//ITEM_LOAD,
+	ITEM_SAVE,
+	ITEM_LOAD,
 	ITEM_OPTS,
 	ITEM_QUIT,
 };
@@ -3046,11 +3046,11 @@ static struct {
 	.preview_exists = 0,
 	
 	.items = {
-		[ITEM_CONT] = "CONTINUE",
-		//[ITEM_SAVE] = "сохранить",
-		//[ITEM_LOAD] = "загрузить",
-		[ITEM_OPTS] = "RESET",
-		[ITEM_QUIT] = "QUIT",
+		[ITEM_CONT] = "продолжить",
+		[ITEM_SAVE] = "сохранить",
+		[ITEM_LOAD] = "загрузить",
+		[ITEM_OPTS] = "рестарт",
+		[ITEM_QUIT] = "выйти",
 	}
 };
 
@@ -4299,11 +4299,11 @@ static void Menu_loop(void) {
 				dirty = 1;
 				sprintf(disc_name, "Disc %i", menu.disc+1);
 			}
-			// else if (selected==ITEM_SAVE || selected==ITEM_LOAD) {
-			// 	menu.slot -= 1;
-			// 	if (menu.slot<0) menu.slot += MENU_SLOT_COUNT;
-			// 	dirty = 1;
-			// }
+			else if (selected==ITEM_SAVE || selected==ITEM_LOAD) {
+				menu.slot -= 1;
+				if (menu.slot<0) menu.slot += MENU_SLOT_COUNT;
+				dirty = 1;
+			}
 		}
 		else if (PAD_justPressed(BTN_RIGHT)) {
 			if (menu.total_discs>1 && selected==ITEM_CONT) {
@@ -4312,16 +4312,16 @@ static void Menu_loop(void) {
 				dirty = 1;
 				sprintf(disc_name, "Disc %i", menu.disc+1);
 			}
-			// else if (selected==ITEM_SAVE || selected==ITEM_LOAD) {
-			// 	menu.slot += 1;
-			// 	if (menu.slot>=MENU_SLOT_COUNT) menu.slot -= MENU_SLOT_COUNT;
-			// 	dirty = 1;
-			// }
+			else if (selected==ITEM_SAVE || selected==ITEM_LOAD) {
+				menu.slot += 1;
+				if (menu.slot>=MENU_SLOT_COUNT) menu.slot -= MENU_SLOT_COUNT;
+				dirty = 1;
+			}
 		}
 		
-		// if (dirty && (selected==ITEM_SAVE || selected==ITEM_LOAD)) {
-		// 	Menu_updateState();
-		// }
+		if (dirty && (selected==ITEM_SAVE || selected==ITEM_LOAD)) {
+			Menu_updateState();
+		}
 		
 		if (PAD_justPressed(BTN_B) || (BTN_WAKE!=BTN_MENU && PAD_tappedMenu(now))) {
 			status = STATUS_CONT;
@@ -4341,18 +4341,18 @@ static void Menu_loop(void) {
 					show_menu = 0;
 				break;
 				
-				// case ITEM_SAVE: {
-				// 	Menu_saveState();
-				// 	status = STATUS_SAVE;
-				// 	show_menu = 0;
-				// }
-				// break;
-				// case ITEM_LOAD: {
-				// 	Menu_loadState();
-				// 	status = STATUS_LOAD;
-				// 	show_menu = 0;
-				// }
-				//break;
+				case ITEM_SAVE: {
+					Menu_saveState();
+					status = STATUS_SAVE;
+					show_menu = 0;
+				}
+				break;
+				case ITEM_LOAD: {
+					Menu_loadState();
+					status = STATUS_LOAD;
+					show_menu = 0;
+				}
+				break;
 				//yar_edit changed is actions
 				case ITEM_OPTS: {
 					if (simple_mode) {
@@ -4402,7 +4402,7 @@ static void Menu_loop(void) {
 			//yar_edit changed rom_name with simbol "ƾ"
 			
 			char display_name[256];
-			int text_width = GFX_truncateText(font.epic, " ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
+			int text_width = GFX_truncateText(font.epic, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			max_width = MIN(max_width, text_width);
 
 			//yar_edit replaced gametitle with a sign and edit size
@@ -4497,53 +4497,53 @@ static void Menu_loop(void) {
 			}
 			
 			// slot preview
-			// if (selected==ITEM_SAVE || selected==ITEM_LOAD) {
-			// 	#define WINDOW_RADIUS 4 // TODO: this logic belongs in blitRect?
-			// 	#define PAGINATION_HEIGHT 6
-			// 	// unscaled
-			// 	int hw = DEVICE_WIDTH / 2;
-			// 	int hh = DEVICE_HEIGHT / 2;
-			// 	int pw = hw + SCALE1(WINDOW_RADIUS*2);
-			// 	int ph = hh + SCALE1(WINDOW_RADIUS*2 + PAGINATION_HEIGHT + WINDOW_RADIUS);
-			// 	ox = DEVICE_WIDTH - pw - SCALE1(PADDING);
-			// 	oy = (DEVICE_HEIGHT - ph) / 2;
+			if (selected==ITEM_SAVE || selected==ITEM_LOAD) {
+				#define WINDOW_RADIUS 4 // TODO: this logic belongs in blitRect?
+				#define PAGINATION_HEIGHT 6
+				// unscaled
+				int hw = DEVICE_WIDTH / 2;
+				int hh = DEVICE_HEIGHT / 2;
+				int pw = hw + SCALE1(WINDOW_RADIUS*2);
+				int ph = hh + SCALE1(WINDOW_RADIUS*2 + PAGINATION_HEIGHT + WINDOW_RADIUS);
+				ox = DEVICE_WIDTH - pw - SCALE1(PADDING);
+				oy = (DEVICE_HEIGHT - ph) / 2;
 				
-			// 	// window
-			// 	GFX_blitRect(ASSET_STATE_BG, screen, &(SDL_Rect){ox,oy,pw,ph});
-			// 	ox += SCALE1(WINDOW_RADIUS);
-			// 	oy += SCALE1(WINDOW_RADIUS);
+				// window
+				GFX_blitRect(ASSET_STATE_BG, screen, &(SDL_Rect){ox,oy,pw,ph});
+				ox += SCALE1(WINDOW_RADIUS);
+				oy += SCALE1(WINDOW_RADIUS);
 				
-			// 	if (menu.preview_exists) { // has save, has preview
-			// 		// lotta memory churn here
-			// 		SDL_Surface* bmp = IMG_Load(menu.bmp_path);
-			// 		SDL_Surface* raw_preview = SDL_ConvertSurface(bmp, screen->format, SDL_SWSURFACE);
+				if (menu.preview_exists) { // has save, has preview
+					// lotta memory churn here
+					SDL_Surface* bmp = IMG_Load(menu.bmp_path);
+					SDL_Surface* raw_preview = SDL_ConvertSurface(bmp, screen->format, SDL_SWSURFACE);
 					
-			// 		// LOG_info("raw_preview %ix%i\n", raw_preview->w,raw_preview->h);
+					// LOG_info("raw_preview %ix%i\n", raw_preview->w,raw_preview->h);
 					
-			// 		SDL_FillRect(preview, NULL, 0);
-			// 		Menu_scale(raw_preview, preview);
-			// 		SDL_BlitSurface(preview, NULL, screen, &(SDL_Rect){ox,oy});
-			// 		SDL_FreeSurface(raw_preview);
-			// 		SDL_FreeSurface(bmp);
-			// 	}
+					SDL_FillRect(preview, NULL, 0);
+					Menu_scale(raw_preview, preview);
+					SDL_BlitSurface(preview, NULL, screen, &(SDL_Rect){ox,oy});
+					SDL_FreeSurface(raw_preview);
+					SDL_FreeSurface(bmp);
+				}
 
-			// 	//yar_edit changed Empty Slot with icon
+				//yar_edit changed Empty Slot with icon
 
-			// 	else {
-			// 		SDL_Rect preview_rect = {ox,oy,hw,hh};
-			// 		SDL_FillRect(screen, &preview_rect, 0);
-			// 		if (menu.save_exists) GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
-			// 		else GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
-			// 	}
+				else {
+					SDL_Rect preview_rect = {ox,oy,hw,hh};
+					SDL_FillRect(screen, &preview_rect, 0);
+					if (menu.save_exists) GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
+					else GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
+				}
 				
-			// 	// pagination
-			// 	ox += (pw-SCALE1(15*MENU_SLOT_COUNT))/2;
-			// 	oy += hh+SCALE1(WINDOW_RADIUS);
-			// 	for (int i=0; i<MENU_SLOT_COUNT; i++) {
-			// 		if (i==menu.slot)GFX_blitAsset(ASSET_PAGE, NULL, screen, &(SDL_Rect){ox+SCALE1(i*15),oy});
-			// 		else GFX_blitAsset(ASSET_DOT, NULL, screen, &(SDL_Rect){ox+SCALE1(i*15)+4,oy+SCALE1(2)});
-			// 	}
-			// }
+				// pagination
+				ox += (pw-SCALE1(15*MENU_SLOT_COUNT))/2;
+				oy += hh+SCALE1(WINDOW_RADIUS);
+				for (int i=0; i<MENU_SLOT_COUNT; i++) {
+					if (i==menu.slot)GFX_blitAsset(ASSET_PAGE, NULL, screen, &(SDL_Rect){ox+SCALE1(i*15),oy});
+					else GFX_blitAsset(ASSET_DOT, NULL, screen, &(SDL_Rect){ox+SCALE1(i*15)+4,oy+SCALE1(2)});
+				}
+			}
 	
 			GFX_flip(screen);
 			dirty = 0;

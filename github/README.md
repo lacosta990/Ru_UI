@@ -1,3 +1,3 @@
 # RUUI screenshots
 
-<img src="bootlogo.png" width=320 /> <img src="RUUI-main-hero.png" width=320 /> <img src="RUUI-ingame.png" width=320 />
+<img src="RUUI-main.png" width=320 /> <img src="RUUI-main-2.png" width=320 /> <img src="RUUI-main-children.png" width=320 /> <img src="RUUI-game-menu.png" width=320 />

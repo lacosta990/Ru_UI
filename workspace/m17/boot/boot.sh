@@ -4,7 +4,7 @@
 
 PLATFORM="m17"
 SDCARD_PATH="/sdcard"
-UPDATE_PATH="$SDCARD_PATH/RUUIhardcore.zip"
+UPDATE_PATH="$SDCARD_PATH/RUUI.zip"
 SYSTEM_PATH="$SDCARD_PATH/.system"
 
 # install/update
@@ -27,7 +27,7 @@ if [ -f "$UPDATE_PATH" ]; then
 	dd if=/tmp/$ACTION of=/dev/fb0
 	sync
 	
-	# finally unzip RUUIhardcore.zip
+	# finally unzip RUnUI.zip
 	unzip -o "$UPDATE_PATH" -d "$SDCARD_PATH"
 	rm -f "$UPDATE_PATH"
 	sync

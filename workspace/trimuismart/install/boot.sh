@@ -3,7 +3,7 @@
 
 PLATFORM="trimuismart"
 SDCARD_PATH="/mnt/SDCARD"
-UPDATE_PATH="$SDCARD_PATH/RUUIhardcore.zip"
+UPDATE_PATH="$SDCARD_PATH/RUUI.zip"
 SYSTEM_PATH="$SDCARD_PATH/.system"
 
 CPU_PATH=/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
