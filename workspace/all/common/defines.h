@@ -10,12 +10,14 @@
 
 #define MAX_PATH 512
 
-#define ROMS_PATH SDCARD_PATH "/Roms"
+//yar_edit change directory name
+#define ROMS_PATH SDCARD_PATH "/Games"
+//#define ROMS_PATH SDCARD_PATH "/Roms"
 #define ROOT_SYSTEM_PATH SDCARD_PATH "/.system/"
 #define SYSTEM_PATH SDCARD_PATH "/.system/" PLATFORM
 #define RES_PATH SDCARD_PATH "/.system/res"
 //ya_edit font change
-#define FONT_PATH RES_PATH "/YaRoboto.otf"
+#define FONT_PATH RES_PATH "/Strington.otf"
 #define USERDATA_PATH SDCARD_PATH "/.userdata/" PLATFORM
 #define SHARED_USERDATA_PATH SDCARD_PATH "/.userdata/shared"
 #define PAKS_PATH SYSTEM_PATH "/paks"

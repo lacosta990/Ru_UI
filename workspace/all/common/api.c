@@ -136,7 +136,8 @@ SDL_Surface* GFX_init(int mode) {
 	asset_rgbs[ASSET_OPTION]		= RGB_DARK_GRAY;
 	asset_rgbs[ASSET_BUTTON]		= RGB_WHITE;
 	asset_rgbs[ASSET_PAGE_BG]		= RGB_WHITE;
-	asset_rgbs[ASSET_STATE_BG]		= RGB_WHITE;
+	//yar-edit changed save/lod state background to black
+	asset_rgbs[ASSET_STATE_BG]		= RGB_BLACK;
 	asset_rgbs[ASSET_PAGE]			= RGB_BLACK;
 	asset_rgbs[ASSET_BAR]			= RGB_WHITE;
 	asset_rgbs[ASSET_BAR_BG]		= RGB_BLACK;
@@ -730,7 +731,8 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 		ow = SCALE1(PILL_SIZE + SETTINGS_WIDTH + 10 + 4);
 		ox = dst->w - SCALE1(PADDING) - ow;
 		oy = SCALE1(PADDING);
-		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_DARK_GRAY_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
+		//yar_edit changed ASSET_DARK_GRAY_PILL to ASSET_BLACK_PILL on first
+		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_BLACK_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
 			ox,
 			oy,
 			ow,
@@ -782,7 +784,8 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 
 		ox = dst->w - SCALE1(PADDING) - ow;
 		oy = SCALE1(PADDING);
-		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_DARK_GRAY_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
+		//yar_edit changed ASEET_DARK_GRAY_PILL to ASSET_BLACK_PILL on first 
+		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_BLACK_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
 			ox,
 			oy,
 			ow,
@@ -813,7 +816,7 @@ void GFX_blitHardwareHints(SDL_Surface* dst, int show_setting) {
 	}
 	else {
 		if (show_setting==1) GFX_blitButtonGroup((char*[]){ BRIGHTNESS_BUTTON_LABEL,"Яркость",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "¤","Вниз",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "¤"," Вниз",  NULL }, 0, dst, 0);
 	}
 	
 }

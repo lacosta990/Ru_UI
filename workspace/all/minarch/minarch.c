@@ -3047,9 +3047,9 @@ static struct {
 	
 	.items = {
 		[ITEM_CONT] = "продолжить",
-		[ITEM_SAVE] = "сохранить",
 		[ITEM_LOAD] = "загрузить",
-		[ITEM_OPTS] = "рестарт",
+		[ITEM_SAVE] = "сохранить",
+		[ITEM_OPTS] = "заново",
 		[ITEM_QUIT] = "выйти",
 	}
 };
@@ -3066,7 +3066,7 @@ void Menu_init(void) {
 
 	sprintf(menu.slot_path, "%s/%s.txt", menu.minui_dir, game.name);
 	
-	if (simple_mode) menu.items[ITEM_OPTS] = "Reset";
+	if (simple_mode) menu.items[ITEM_OPTS] = "настройки";
 	
 	if (game.m3u_path[0]) {
 		char* tmp;
@@ -4434,14 +4434,15 @@ static void Menu_loop(void) {
 
 			//yar edit disabled buttons
 
-			//GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Открыть", NULL }, 1, screen, 1);
+			GFX_blitButtonGroup((char*[]){ "ǁ","Выбрать",  NULL }, 0, screen, 1);
+			//GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Выбрать", NULL }, 1, screen, 1);
 			
 			// list
 			oy = (((DEVICE_HEIGHT / FIXED_SCALE) - PADDING * 2) - (MENU_ITEM_COUNT * PILL_SIZE)) / 2;
 			for (int i=0; i<MENU_ITEM_COUNT; i++) {
 				char* item = menu.items[i];
 
-				//yar_edit changed list text color from COLOR_WHITE to GRAY and Epic size
+				//yar_edit changed list text color from COLOR_WHITE to GRAY and Epic/large size
 
 				SDL_Color text_color = COLOR_GRAY;
 				
@@ -4454,7 +4455,7 @@ static void Menu_loop(void) {
 							screen->w - SCALE1(PADDING * 2),
 							SCALE1(PILL_SIZE)
 						});
-						text = TTF_RenderUTF8_Blended(font.epic, disc_name, COLOR_WHITE);
+						text = TTF_RenderUTF8_Blended(font.large, disc_name, COLOR_WHITE);
 						SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 							screen->w - SCALE1(PADDING + BUTTON_PADDING) - text->w,
 							SCALE1(oy + PADDING + 4)
@@ -4462,7 +4463,7 @@ static void Menu_loop(void) {
 						SDL_FreeSurface(text);
 					}
 					
-					TTF_SizeUTF8(font.epic, item, &ow, NULL);
+					TTF_SizeUTF8(font.large, item, &ow, NULL);
 					ow += SCALE1(BUTTON_PADDING*2);
 					
 					// pill
@@ -4479,7 +4480,7 @@ static void Menu_loop(void) {
 				}
 				else {
 					// shadow
-					text = TTF_RenderUTF8_Blended(font.epic, item, COLOR_BLACK);
+					text = TTF_RenderUTF8_Blended(font.large, item, COLOR_BLACK);
 					SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 						SCALE1(2 + PADDING + BUTTON_PADDING),
 						SCALE1(1 + PADDING + oy + (i * PILL_SIZE) + 4)
@@ -4488,7 +4489,7 @@ static void Menu_loop(void) {
 				}
 				
 				// text
-				text = TTF_RenderUTF8_Blended(font.epic, item, text_color);
+				text = TTF_RenderUTF8_Blended(font.large, item, text_color);
 				SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 					SCALE1(PADDING + BUTTON_PADDING),
 					SCALE1(oy + PADDING + (i * PILL_SIZE) + 4)

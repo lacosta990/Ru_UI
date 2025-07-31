@@ -1666,21 +1666,24 @@ int main (int argc, char *argv[]) {
 			
 				// buttons
 
-				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-				//else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
-				//else GFX_blitButtonGroup((char*[]){ 
-				//	BTN_SLEEP==BTN_POWER?"POWER":"MENU",
-				//	BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
-				//	NULL }, 0, screen, 0);
+				//yar_edit buttons off hide buttons
+
+				// if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+				// else if (can_resume) GFX_blitButtonGroup((char*[]){ "X","RESUME",  NULL }, 0, screen, 0);
+				// else GFX_blitButtonGroup((char*[]){ 
+				// 	BTN_SLEEP==BTN_POWER?"POWER":"MENU",
+				// 	BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
+				// 	NULL }, 0, screen, 0);
 
 				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				else {
-					GFX_blitButtonGroup((char*[]){"¤","Вниз", NULL }, 0, screen, 0);
+					
+					GFX_blitButtonGroup((char*[]){"¤"," Вниз", NULL }, 0, screen, 0);
 				}
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "B","BACK",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
@@ -1691,7 +1694,7 @@ int main (int argc, char *argv[]) {
 						GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Открыть", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){ "ǁ","Открыть", NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "ǁ","Выбрать", NULL }, 0, screen, 1);
 					}
 				}
 			}
