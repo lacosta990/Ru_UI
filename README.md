@@ -2,9 +2,9 @@
 
 RUUI is a most minimalistic custom launcher and libretro frontend for retro handhelds.
 
-<img src="github/RUUI_main.png" width=320 /> <img src="github/RUUI_save_load.png" width=320 /> 
+<img src="github/RUUI_main.png" width=320 /> <img src="github/RUUI_save_load.jpg" width=320 /> 
 <img src="github/RUUI_main_kids.png" width=320 /> <img src="github/RUUI_main_kids.png" width=320 /> 
-<img src="github/RUUI_options.png" width=320 /> 
+<img src="github/RUUI_options.jpg" width=320 /> 
 
 ## Features
 
