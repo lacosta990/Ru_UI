@@ -1,6 +1,6 @@
 # RUUI
 
-RUUI is a most minimalistic custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
+RUUI is a most minimalistic custom launcher and libretro frontend for retro handhelds.
 
 <img src="github/RUUI_main.png" width=320 /> <img src="github/RUUI_save_load.png" width=320 /> 
 <img src="github/RUUI_main_kids.png" width=320 /> <img src="github/RUUI_main_kids.png" width=320 /> 
@@ -34,4 +34,4 @@ Page on [DTF](https://dtf.ru/id2373120)
 Global edition [RUUI_Hardcore](https://github.com/lacosta990/Ru_UI/releases/tag/v1.0.0)
 
 > [!NOTE]
-> **Licence** font Strington is undeer copywright. You can use it for personal purpose only and not for a commersial use whithout licence
+> **Licence** Font Strington is undeer copywright. You can use it for personal purpose only and not for a commersial use whithout licence
