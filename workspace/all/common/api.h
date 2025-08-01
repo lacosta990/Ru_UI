@@ -92,6 +92,8 @@ enum {
 	ASSET_SCROLL_DOWN,
 	
 	ASSET_WIFI,
+	
+	ASSET_COUNT,
 };
 
 //yar_edit added 2 fonts 
@@ -212,6 +214,17 @@ typedef struct SND_Frame {
 void SND_init(double sample_rate, double frame_rate);
 size_t SND_batchSamples(const SND_Frame* frames, size_t frame_count);
 void SND_quit(void);
+
+///////////////////////////////
+
+typedef struct LID_Context {
+	int has_lid;
+	int is_open;
+} LID_Context;
+extern LID_Context lid;
+
+void PLAT_initLid(void);
+int PLAT_lidChanged(int* state);
 
 ///////////////////////////////
 

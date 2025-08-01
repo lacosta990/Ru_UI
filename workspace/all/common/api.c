@@ -63,36 +63,7 @@ static struct GFX_Context {
 	int vsync;
 } gfx;
 
-static SDL_Rect asset_rects[] = {
-	[ASSET_WHITE_PILL]		= {SCALE4( 1, 1,30,30)},
-	[ASSET_BLACK_PILL]		= {SCALE4(33, 1,30,30)},
-	[ASSET_DARK_GRAY_PILL]	= {SCALE4(65, 1,30,30)},
-	[ASSET_OPTION]			= {SCALE4(97, 1,20,20)},
-	[ASSET_BUTTON]			= {SCALE4( 1,33,20,20)},
-	[ASSET_PAGE_BG]			= {SCALE4(64,33,15,15)},
-	[ASSET_STATE_BG]		= {SCALE4(23,54, 8, 8)},
-	[ASSET_PAGE]			= {SCALE4(39,54, 6, 6)},
-	[ASSET_BAR]				= {SCALE4(33,58, 4, 4)},
-	[ASSET_BAR_BG]			= {SCALE4(15,55, 4, 4)},
-	[ASSET_BAR_BG_MENU]		= {SCALE4(85,56, 4, 4)},
-	[ASSET_UNDERLINE]		= {SCALE4(85,51, 3, 3)},
-	[ASSET_DOT]				= {SCALE4(33,54, 2, 2)},
-	
-	[ASSET_BRIGHTNESS]		= {SCALE4(23,33,19,19)},
-	[ASSET_VOLUME_MUTE]		= {SCALE4(44,33,10,16)},
-	[ASSET_VOLUME]			= {SCALE4(44,33,18,16)},
-	[ASSET_BATTERY]			= {SCALE4(47,51,17,10)},
-	[ASSET_BATTERY_LOW]		= {SCALE4(66,51,17,10)},
-	[ASSET_BATTERY_FILL]	= {SCALE4(81,33,12, 6)},
-	[ASSET_BATTERY_FILL_LOW]= {SCALE4( 1,55,12, 6)},
-	[ASSET_BATTERY_BOLT]	= {SCALE4(81,41,12, 6)},
-	
-	[ASSET_SCROLL_UP]		= {SCALE4(97,23,24, 6)},
-	[ASSET_SCROLL_DOWN]		= {SCALE4(97,31,24, 6)},
-
-	[ASSET_WIFI]			= {SCALE4(95,39,14,10)},
-	[ASSET_HOLE]			= {SCALE4( 1,63,20,20)},
-};
+static SDL_Rect asset_rects[ASSET_COUNT];
 static uint32_t asset_rgbs[ASSET_COLORS];
 GFX_Fonts font;
 
@@ -120,6 +91,10 @@ static struct PWR_Context {
 static int _;
 
 SDL_Surface* GFX_init(int mode) {
+	// TODO: this doesn't really belong here...
+	// tried adding to PWR_init() but that was no good (not sure why)
+	PLAT_initLid();
+	
 	gfx.screen = PLAT_initVideo();
 	gfx.vsync = VSYNC_STRICT;
 	gfx.mode = mode;
@@ -145,6 +120,32 @@ SDL_Surface* GFX_init(int mode) {
 	asset_rgbs[ASSET_UNDERLINE]		= RGB_GRAY;
 	asset_rgbs[ASSET_DOT]			= RGB_LIGHT_GRAY;
 	asset_rgbs[ASSET_HOLE]			= RGB_BLACK;
+	
+	asset_rects[ASSET_WHITE_PILL]		= (SDL_Rect){SCALE4( 1, 1,30,30)};
+	asset_rects[ASSET_BLACK_PILL]		= (SDL_Rect){SCALE4(33, 1,30,30)};
+	asset_rects[ASSET_DARK_GRAY_PILL]	= (SDL_Rect){SCALE4(65, 1,30,30)};
+	asset_rects[ASSET_OPTION]			= (SDL_Rect){SCALE4(97, 1,20,20)};
+	asset_rects[ASSET_BUTTON]			= (SDL_Rect){SCALE4( 1,33,20,20)};
+	asset_rects[ASSET_PAGE_BG]			= (SDL_Rect){SCALE4(64,33,15,15)};
+	asset_rects[ASSET_STATE_BG]			= (SDL_Rect){SCALE4(23,54, 8, 8)};
+	asset_rects[ASSET_PAGE]				= (SDL_Rect){SCALE4(39,54, 6, 6)};
+	asset_rects[ASSET_BAR]				= (SDL_Rect){SCALE4(33,58, 4, 4)};
+	asset_rects[ASSET_BAR_BG]			= (SDL_Rect){SCALE4(15,55, 4, 4)};
+	asset_rects[ASSET_BAR_BG_MENU]		= (SDL_Rect){SCALE4(85,56, 4, 4)};
+	asset_rects[ASSET_UNDERLINE]		= (SDL_Rect){SCALE4(85,51, 3, 3)};
+	asset_rects[ASSET_DOT]				= (SDL_Rect){SCALE4(33,54, 2, 2)};
+	asset_rects[ASSET_BRIGHTNESS]		= (SDL_Rect){SCALE4(23,33,19,19)};
+	asset_rects[ASSET_VOLUME_MUTE]		= (SDL_Rect){SCALE4(44,33,10,16)};
+	asset_rects[ASSET_VOLUME]			= (SDL_Rect){SCALE4(44,33,18,16)};
+	asset_rects[ASSET_BATTERY]			= (SDL_Rect){SCALE4(47,51,17,10)};
+	asset_rects[ASSET_BATTERY_LOW]		= (SDL_Rect){SCALE4(66,51,17,10)};
+	asset_rects[ASSET_BATTERY_FILL]		= (SDL_Rect){SCALE4(81,33,12, 6)};
+	asset_rects[ASSET_BATTERY_FILL_LOW]	= (SDL_Rect){SCALE4( 1,55,12, 6)};
+	asset_rects[ASSET_BATTERY_BOLT]		= (SDL_Rect){SCALE4(81,41,12, 6)};
+	asset_rects[ASSET_SCROLL_UP]		= (SDL_Rect){SCALE4(97,23,24, 6)};
+	asset_rects[ASSET_SCROLL_DOWN]		= (SDL_Rect){SCALE4(97,31,24, 6)};
+	asset_rects[ASSET_WIFI]				= (SDL_Rect){SCALE4(95,39,14,10)};
+	asset_rects[ASSET_HOLE]				= (SDL_Rect){SCALE4( 1,63,20,20)};
 	
 	char asset_path[MAX_PATH];
 	sprintf(asset_path, RES_PATH "/assets@%ix.png", FIXED_SCALE);
@@ -987,6 +988,7 @@ static void SND_audioCallback(void* userdata, uint8_t* stream, int len) { // pla
 	
 	int16_t *out = (int16_t *)stream;
 	len /= (sizeof(int16_t) * 2);
+	// int full_len = len;
 	
 	// if (snd.frame_out!=snd.frame_in) LOG_info("%8i consuming samples (%i frames)\n", ms(), len);
 	
@@ -1004,7 +1006,7 @@ static void SND_audioCallback(void* userdata, uint8_t* stream, int len) { // pla
 	
 	int zero = len>0 && len==SAMPLES;
 	if (zero) return (void)memset(out,0,len*(sizeof(int16_t) * 2));
-	// else if (len>=5) LOG_info("%8i BUFFER UNDERRUN (%i frames)\n", ms(), len);
+	// else if (len>=5) LOG_info("%8i BUFFER UNDERRUN (%i/%i frames)\n", ms(), len,full_len);
 
 	int16_t *in = out-1;
 	while (len>0) {
@@ -1016,6 +1018,9 @@ static void SND_audioCallback(void* userdata, uint8_t* stream, int len) { // pla
 static void SND_resizeBuffer(void) { // plat_sound_resize_buffer
 	snd.frame_count = snd.buffer_seconds * snd.sample_rate_in / snd.frame_rate;
 	if (snd.frame_count==0) return;
+	
+	// LOG_info("frame_count: %i (%i * %i / %f)\n", snd.frame_count, snd.buffer_seconds, snd.sample_rate_in, snd.frame_rate);
+	// snd.frame_count *= 2; // no help
 	
 	SDL_LockAudio();
 	
@@ -1148,6 +1153,16 @@ void SND_quit(void) { // plat_sound_finish
 		snd.buffer = NULL;
 	}
 }
+
+///////////////////////////////
+
+LID_Context lid = {
+	.has_lid = 0,
+	.is_open = 1,
+};
+
+FALLBACK_IMPLEMENTATION void PLAT_initLid(void) {  }
+FALLBACK_IMPLEMENTATION int PLAT_lidChanged(int* state) { return 0; }
 
 ///////////////////////////////
 
@@ -1364,19 +1379,29 @@ FALLBACK_IMPLEMENTATION void PLAT_pollInput(void) {
 			pad.repeat_at[id]	= tick + PAD_REPEAT_DELAY;
 		}
 	}
+	
+	if (lid.has_lid && PLAT_lidChanged(NULL)) pad.just_released |= BTN_SLEEP;
 }
 FALLBACK_IMPLEMENTATION int PLAT_shouldWake(void) {
+	int lid_open = 1; // assume open by default
+	if (lid.has_lid && PLAT_lidChanged(&lid_open) && lid_open) return 1;
+	
+	
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		if (event.type==SDL_KEYUP) {
 			uint8_t code = event.key.keysym.scancode;
 			if ((BTN_WAKE==BTN_POWER && code==CODE_POWER) || (BTN_WAKE==BTN_MENU && (code==CODE_MENU || code==CODE_MENU_ALT))) {
+				// ignore input while lid is closed
+				if (lid.has_lid && !lid.is_open) return 0;  // do it here so we eat the input
 				return 1;
 			}
 		}
 		else if (event.type==SDL_JOYBUTTONUP) {
 			uint8_t joy = event.jbutton.button;
 			if ((BTN_WAKE==BTN_POWER && joy==JOY_POWER) || (BTN_WAKE==BTN_MENU && (joy==JOY_MENU || joy==JOY_MENU_ALT))) {
+				// ignore input while lid is closed
+				if (lid.has_lid && !lid.is_open) return 0;  // do it here so we eat the input
 				return 1;
 			}
 		} 
@@ -1737,4 +1762,5 @@ int PLAT_setDateTime(int y, int m, int d, int h, int i, int s) {
 	char cmd[512];
 	sprintf(cmd, "date -s '%d-%d-%d %d:%d:%d'; hwclock --utc -w", y,m,d,h,i,s);
 	system(cmd);
+	return 0; // why does this return an int?
 }

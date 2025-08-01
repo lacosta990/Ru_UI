@@ -18,6 +18,8 @@
 
 #include "scaler.h"
 
+int is_brick = 0;
+
 ///////////////////////////////
 
 static SDL_Joystick *joystick;
@@ -54,37 +56,41 @@ static int device_height;
 static int device_pitch;
 
 SDL_Surface* PLAT_initVideo(void) {
+	char* device = getenv("DEVICE");
+	is_brick = exactMatch("brick", device);
+	// LOG_info("DEVICE: %s is_brick: %i\n", device, is_brick);
+	
 	SDL_InitSubSystem(SDL_INIT_VIDEO);
 	SDL_ShowCursor(0);
 	
-	SDL_version compiled;
-	SDL_version linked;
-	SDL_VERSION(&compiled);
-	SDL_GetVersion(&linked);
-	LOG_info("Compiled SDL version %d.%d.%d ...\n", compiled.major, compiled.minor, compiled.patch);
-	LOG_info("Linked SDL version %d.%d.%d.\n", linked.major, linked.minor, linked.patch);
-	
-	LOG_info("Available video drivers:\n");
-	for (int i=0; i<SDL_GetNumVideoDrivers(); i++) {
-		LOG_info("- %s\n", SDL_GetVideoDriver(i));
-	}
-	LOG_info("Current video driver: %s\n", SDL_GetCurrentVideoDriver());
-	
-	LOG_info("Available render drivers:\n");
-	for (int i=0; i<SDL_GetNumRenderDrivers(); i++) {
-		SDL_RendererInfo info;
-		SDL_GetRenderDriverInfo(i,&info);
-		LOG_info("- %s\n", info.name);
-	}
-	
-	LOG_info("Available display modes:\n");
-	SDL_DisplayMode mode;
-	for (int i=0; i<SDL_GetNumDisplayModes(0); i++) {
-		SDL_GetDisplayMode(0, i, &mode);
-		LOG_info("- %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
-	}
-	SDL_GetCurrentDisplayMode(0, &mode);
-	LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
+	// SDL_version compiled;
+	// SDL_version linked;
+	// SDL_VERSION(&compiled);
+	// SDL_GetVersion(&linked);
+	// LOG_info("Compiled SDL version %d.%d.%d ...\n", compiled.major, compiled.minor, compiled.patch);
+	// LOG_info("Linked SDL version %d.%d.%d.\n", linked.major, linked.minor, linked.patch);
+	//
+	// LOG_info("Available video drivers:\n");
+	// for (int i=0; i<SDL_GetNumVideoDrivers(); i++) {
+	// 	LOG_info("- %s\n", SDL_GetVideoDriver(i));
+	// }
+	// LOG_info("Current video driver: %s\n", SDL_GetCurrentVideoDriver());
+	//
+	// LOG_info("Available render drivers:\n");
+	// for (int i=0; i<SDL_GetNumRenderDrivers(); i++) {
+	// 	SDL_RendererInfo info;
+	// 	SDL_GetRenderDriverInfo(i,&info);
+	// 	LOG_info("- %s\n", info.name);
+	// }
+	//
+	// LOG_info("Available display modes:\n");
+	// SDL_DisplayMode mode;
+	// for (int i=0; i<SDL_GetNumDisplayModes(0); i++) {
+	// 	SDL_GetDisplayMode(0, i, &mode);
+	// 	LOG_info("- %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
+	// }
+	// SDL_GetCurrentDisplayMode(0, &mode);
+	// LOG_info("Current display mode: %ix%i (%s)\n", mode.w,mode.h, SDL_GetPixelFormatName(mode.format));
 	
 	int w = FIXED_WIDTH;
 	int h = FIXED_HEIGHT;
@@ -92,9 +98,9 @@ SDL_Surface* PLAT_initVideo(void) {
 	vid.window   = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, w,h, SDL_WINDOW_SHOWN);
 	vid.renderer = SDL_CreateRenderer(vid.window,-1,SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
 	
-	SDL_RendererInfo info;
-	SDL_GetRendererInfo(vid.renderer, &info);
-	LOG_info("Current render driver: %s\n", info.name);
+	// SDL_RendererInfo info;
+	// SDL_GetRendererInfo(vid.renderer, &info);
+	// LOG_info("Current render driver: %s\n", info.name);
 	
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,"0");
 	vid.texture = SDL_CreateTexture(vid.renderer,SDL_PIXELFORMAT_RGB565, SDL_TEXTUREACCESS_STREAMING, w,h);
@@ -488,19 +494,27 @@ void PLAT_getBatteryStatus(int* is_charging, int* charge) {
 	online = prefixMatch("up", status);
 }
 
-#define LED_PATH "/sys/class/led_anim/max_scale"
+#define LED_PATH1 "/sys/class/led_anim/max_scale"
+#define LED_PATH2 "/sys/class/led_anim/max_scale_lr"
+#define LED_PATH3 "/sys/class/led_anim/max_scale_f1f2" // front facing
 void PLAT_enableBacklight(int enable) {
 	if (enable) {
+		if (is_brick) SetRawBrightness(8);
 		SetBrightness(GetBrightness());
-		putInt(LED_PATH,0);
+		putInt(LED_PATH1,0);
+		if (is_brick) putInt(LED_PATH2,0);
+		if (is_brick) putInt(LED_PATH3,0);
 	}
 	else {
 		SetRawBrightness(0);
-		putInt(LED_PATH,52); // 52 seems to be the max brightness
+		putInt(LED_PATH1,60);
+		if (is_brick) putInt(LED_PATH2,60);
+		if (is_brick) putInt(LED_PATH3,60);
 	}
 }
 
 void PLAT_powerOff(void) {
+	system("rm -f /tmp/minui_exec && sync");
 	sleep(2);
 
 	SetRawVolume(MUTE_VOLUME_RAW);
@@ -510,9 +524,13 @@ void PLAT_powerOff(void) {
 	PWR_quit();
 	GFX_quit();
 	
+	system("ifconfig wlan0 down");
+	system("killall -15 wpa_supplicant");
+	system("killall -9 udhcpc");
 	system("cat /dev/zero > /dev/fb0 2>/dev/null");
 	system("poweroff");
-	while (1) pause(); // lolwat
+	exit(0);
+	// while (1) pause(); // lolwat
 }
 
 ///////////////////////////////
@@ -539,6 +557,8 @@ int PLAT_pickSampleRate(int requested, int max) {
 }
 
 char* PLAT_getModel(void) {
+	char* model = getenv("TRIMUI_MODEL");
+	if (model) return model;
 	return "Trimui Smart Pro";
 }
 
