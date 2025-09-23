@@ -1,8 +1,10 @@
 # RUUI
 
-RUUI is a most minimalistic custom launcher for retro handhelds.
+RUUI is a most minimalistic custom launcher for retro handhelds. Now with boxart. Art by [Filipe Bello / RetroRama](https://github.com/lipebello/es-theme-retrorama-ce)
 
 You can grab the version for Anbernic devices based on h700 [here](https://github.com/lacosta990/Ru_UI/releases).
+
+Download fullgame collection [here](https://github.com/lacosta990/Ru_UI/releases).
 
 <img src="github/RUUI console.png" width=320 /> <img src="github/RUUI game list.jpg" width=320 /> 
 <img src="github/RUUI genre list.png" width=320 /> <img src="github/RUUI in game menu.png" width=320 />
