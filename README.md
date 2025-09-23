@@ -1,6 +1,7 @@
 # RUUI
 
-MinUI is a focused, custom launcher and libretro frontend for [a variety of retro handhelds](#supported-devices).
+RUUI is a most minimalistic custom launcher for retro handhelds.
+You can [grab the version for Anbernic devices based on h700 here](https://github.com/lacosta990/Ru_UI/releases).
 
 <img src="github/RUUI console.png" width=320 /> <img src="github/RUUI game list.jpg" width=320 /> 
 <img src="github/RUUI genre list.png" width=320 /> <img src="github/RUUI in game menu.png" width=320 />
@@ -33,77 +34,45 @@ MinUI is a focused, custom launcher and libretro frontend for [a variety of retr
   multiple devices from different
   manufacturers
 
-You can [grab the latest version here](https://github.com/shauninman/MinUI/releases).
-
-> Devices with a physical power switch
-> use MENU to sleep and wake instead of
-> POWER. Once asleep the device can safely
-> be powered off manually with the switch.
 
 ## Supported consoles
 
-Base:
-
-- Game Boy
-- Game Boy Color
-- Game Boy Advance
-- Nintendo Entertainment System
-- Super Nintendo Entertainment System
-- Sega Genesis
 - PlayStation
-
-Extras:
-
-- Neo Geo Pocket (and Color)
-- Pico-8
-- Pokémon mini
-- Sega Game Gear
+- TurboGrafx-16 / TurboGrafx-CD
+- Sega Genesis
+- Super Nintendo Entertainment System
+- Nintendo Entertainment System
 - Sega Master System
-- Super Game Boy
-- TurboGrafx-16 (and TurboGrafx-CD)
-- Virtual Boy
+- Sega Game Gear
+- Game Boy Advance
+- Game Boy Color
+- Game Boy
+- Pico-8
 
 ## Supported Devices
 
-| Device | Added | Status |
-| -- | -- | -- |
-| Anbernic RG28xx | MinUI-20240429b-2 | Maintained |
-| Anbernic RG34xx | MinUI-20241227-0 | Maintained |
-| Anbernic RG35xx | MinUI-20230922b-2 | Deprecated |
-| Anbernic RG35xx Plus | MinUI-20240106b-0 | Maintained |
-| Anbernic RG35xxH | MinUI-20240120b-1 | Maintained |
-| Anbernic RG35xxSP | MinUI-20240525-0 | Maintained |
-| Anbernic RG40xxH | MinUI-20240717-1 | Maintained |
-| Anbernic RG40xxV | MinUI-20240831-0 | Maintained | 
-| Anbernic RG CubeXX | MinUI-202401028-0 | Active | 
-| GKD Pixel | MinUI-20240120b-1 | Deprecated |
-| M17 | MinUI-20231126b-2 | Deprecated |
-| MagicX XU Mini M | MinUI-20240831-0 | Deprecated | 
-| MagicX Mini Zero 28 | MinUI-20250111-0 | Active |
-| Miyoo A30 | MinUI-20240705-0 | Maintained |
-| Miyoo Flip | MinUI-20250111-0 | Active |
-| Miyoo Mini | MinUI-20230922b-2 | Deprecated |
-| Miyoo Mini Plus | MinUI-20230922b-2 | Deprecated |
-| Powkiddy RGB30 | MinUI-20231014b-1 | Deprecated |
-| Trimui Brick | MinUI-20241028-0 | Active |
-| Trimui Smart | MinUI-20230922b-2 | Deprecated |
-| Trimui Smart Pro | MinUI-20231111b-2 | Maintained |
+| Device | Status |
+| -- | -- |
+| Anbernic RG28xx | Not tested |
+| Anbernic RG34xx | Not tested |
+| Anbernic RG35xx | Tested |
+| Anbernic RG35xx Plus | Tested |
+| Anbernic RG35xxH | Not tested |
+| Anbernic RG35xxSP | Not tested |
+| Anbernic RG40xxH | Tested |
+| Anbernic RG40xxV | Tested | 
+| Anbernic RG CubeXX | Not tested | 
 
-> [!NOTE]
-> **Active** actively working on compatibility and improvements specific to this device  
-> **Maintained** inheriting improvements to common functionality  
-> **Deprecated** will be retired in a future update  
-> **Retired** removed from repo, no longer updated or packaged with new releases  
 
-## Legacy versions
 
-The original Trimui Model S version of MinUI (2021/04/03-2021/08/06) has been archived [here](https://github.com/shauninman/MinUI-Legacy-Trimui-Model-S).
+## Links
 
-The sequel, MiniUI for the Miyoo Mini (2022/04/20-2022/10/23), has been archived [here](https://github.com/shauninman/MiniUI-Legacy-Miyoo-Mini).
+Official [website](https://yaremko.ru/fahrenheit)
 
-The return of MinUI for the original Anbernic RG35XX (2023/02/26-2023/03/26) has been archived [here](https://github.com/shauninman/MinUI-Legacy-RG35XX).
+Telegram [channel](https://t.me/tsztsr)
 
-The current MinUI which introduced support for multiple devices starting with the Trimui Smart, Miyoo Mini (and Plus), and the original Anbernic RG35XX was released on [2023/09/22][init-release] with the initial functional commit 6 months earlier on [2023/03/27][init-commit].
+Game collections on [itch.io](https://tsztsr.itch.io/)
 
-[init-release]:https://github.com/shauninman/MinUI/releases/tag/v20230922b-2
-[init-commit]:https://github.com/shauninman/MinUI/commit/53e0296ea5a2794290fb5783765af6cee0063445#diff-b993e61ab6e66a19b67c88cfb98261aa9267d250de8bb56463662f67aae1a558
+Page on [DTF](https://dtf.ru/id2373120)
+
+Global edition [RUUI_Hardcore](https://github.com/lacosta990/Ru_UI/releases/tag/v1.0.0)
