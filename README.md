@@ -1,7 +1,8 @@
 # RUUI
 
 RUUI is a most minimalistic custom launcher for retro handhelds.
-You can [grab the version for Anbernic devices based on h700 here](https://github.com/lacosta990/Ru_UI/releases).
+
+You can grab the version for Anbernic devices based on h700 [here](https://github.com/lacosta990/Ru_UI/releases).
 
 <img src="github/RUUI console.png" width=320 /> <img src="github/RUUI game list.jpg" width=320 /> 
 <img src="github/RUUI genre list.png" width=320 /> <img src="github/RUUI in game menu.png" width=320 />
@@ -9,30 +10,26 @@ You can [grab the version for Anbernic devices based on h700 here](https://githu
 ## Features
 
 - Simple launcher, simple SD card
-- No settings or configuration
-- No boxart, themes, or distractions
-- Automatically hides hidden files
-  and extension and region/version 
-  cruft in display names
-- Consistent in-emulator menu with
-  quick access to save states, disc
-  changing, and emulator options
-- Automatically sleeps after 30 seconds 
-  or press POWER to sleep (and wake)
-- Automatically powers off while asleep
-  after two minutes or hold POWER for
-  one second
-- Automatically resumes right where
-  you left off if powered off while
-  in-game, manually or while asleep
-- Resume from manually created, last 
-  used save state by pressing X in 
-  the launcher instead of A
-- Streamlined emulator frontend 
-  (minarch + libretro cores)
-- Single SD card compatible with
-  multiple devices from different
-  manufacturers
+- Hidden settings for emulators
+- Boxart for Consoles, Genres and games (you can change it or add covers to .res folders)
+- Automatically sleeps after 30 seconds
+- Automatically powers off while asleep after two minutes or hold POWER for one second
+- Automatically resumes right where you left off if powered off while in-game, manually or while asleep
+
+## Catalog
+
+- You can order folder in any way you like by addind numbers in the beggining of the folders name
+- Filder name doesn't shows in a list. UI use cover.png instead placed in .res folder
+- You can organize your labruary by Consolse and Genres
+- Same Genre folders with different extenshions will be combined in ove
+- if you'll have same title name for different consols like .sms and .nes file extention will be shown
+- Automatically hides hidden files and extension and region/version cruft in display names
+- Resume from manually created, last used save state by pressing X in the launcher instead of A (hidden option)
+
+## Menu
+
+- Consistent in-emulator menu with quick access to save states, disc changing, and emulator options
+- Load option goes first, so its easyer to path throught hard game moments not getting saves after death
 
 
 ## Supported consoles
