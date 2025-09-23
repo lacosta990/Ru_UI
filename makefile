@@ -11,16 +11,18 @@ endif
 endif
 
 ifeq (,$(PLATFORMS))
-# PLATFORMS = miyoomini trimuismart rg35xx rg35xxplus tg5040 tg3040 rgb30 m17 gkdpixel my282 magicmini
-PLATFORMS = rg35xx rg35xxplus
+PLATFORMS = rg35xxplus 
+#my355 tg5040 zero28 rgb30 m17 gkdpixel my282 magicmini
 endif
 
 ###########################################################
 
+# yar_edit changed zip name to RUUI
+
 BUILD_HASH:=$(shell git rev-parse --short HEAD)
 RELEASE_TIME:=$(shell TZ=GMT date +%Y%m%d)
 RELEASE_BETA=
-RELEASE_BASE=MinUI-$(RELEASE_TIME)$(RELEASE_BETA)
+RELEASE_BASE=RUUI-$(RELEASE_TIME)$(RELEASE_BETA)
 RELEASE_DOT:=$(shell find -E ./releases/. -regex ".*/${RELEASE_BASE}-[0-9]+-base\.zip" | wc -l | sed 's/ //g')
 RELEASE_NAME=$(RELEASE_BASE)-$(RELEASE_DOT)
 
@@ -112,22 +114,32 @@ done:
 	say "done" 2>/dev/null || true
 
 special:
-	# setup miyoomini/trimui family .tmp_update in BOOT
+	# setup miyoomini/trimui/magicx family .tmp_update in BOOT
 	mv ./build/BOOT/common ./build/BOOT/.tmp_update
 	mv ./build/BOOT/miyoo ./build/BASE/
 	mv ./build/BOOT/trimui ./build/BASE/
+	mv ./build/BOOT/magicx ./build/BASE/
 	cp -R ./build/BOOT/.tmp_update ./build/BASE/miyoo/app/
 	cp -R ./build/BOOT/.tmp_update ./build/BASE/trimui/app/
+	cp -R ./build/BOOT/.tmp_update ./build/BASE/magicx/
 	cp -R ./build/BASE/miyoo ./build/BASE/miyoo354
+	cp -R ./build/BASE/miyoo ./build/BASE/miyoo355
+ifneq (,$(findstring my355, $(PLATFORMS)))
+	cp -R ./workspace/my355/init ./build/BASE/miyoo355/app/my355
+	cp -r ./workspace/my355/other/squashfs/output/* ./build/BASE/miyoo355/app/my355/payload/
+endif
 
 tidy:
 	# ----------------------------------------------------
-	# copy update from rg35xxplus to old rg40xxcube bin so old cards update properly
+	# copy update from merged platform to old pre-merge platform bin so old cards update properly
+ifneq (,$(findstring rg35xxplus, $(PLATFORMS)))
 	mkdir -p ./build/SYSTEM/rg40xxcube/bin/
 	cp ./build/SYSTEM/rg35xxplus/bin/install.sh ./build/SYSTEM/rg40xxcube/bin/
-
-	# remove various detritus
-	rm -rf ./build/EXTRAS/Tools/tg5040/Developer.pak
+endif
+ifneq (,$(findstring tg5040, $(PLATFORMS)))
+	mkdir -p ./build/SYSTEM/tg3040/paks/MinUI.pak/
+	cp ./build/SYSTEM/tg5040/bin/install.sh ./build/SYSTEM/tg3040/paks/MinUI.pak/launch.sh
+endif
 
 package: tidy
 	# ----------------------------------------------------
@@ -144,13 +156,12 @@ package: tidy
 	mkdir -p ./build/PAYLOAD
 	mv ./build/SYSTEM ./build/PAYLOAD/.system
 	cp -R ./build/BOOT/.tmp_update ./build/PAYLOAD/
-	cd ./build/PAYLOAD && zip -r ../BASE/trimui.zip .tmp_update
 	
 	cd ./build/PAYLOAD && zip -r RUUI.zip .system .tmp_update
 	mv ./build/PAYLOAD/RUUI.zip ./build/BASE
 	
 	# TODO: can I just add everything in BASE to zip?
-	cd ./build/BASE && zip -r ../../releases/$(RELEASE_NAME)-base.zip Bios Roms Saves miyoo miyoo354 trimui rg35xx rg35xxplus gkdpixel em_ui.sh RUUI.zip README.txt
+	cd ./build/BASE && zip -r ../../releases/$(RELEASE_NAME)-base.zip Bios Roms Saves miyoo miyoo354 trimui rg35xx rg35xxplus gkdpixel miyoo355 magicx em_ui.sh RUUI.zip README.txt
 	cd ./build/EXTRAS && zip -r ../../releases/$(RELEASE_NAME)-extras.zip Bios Emus Roms Saves Tools README.txt
 	echo "$(RELEASE_NAME)" > ./build/latest.txt
 	

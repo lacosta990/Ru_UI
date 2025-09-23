@@ -6,7 +6,7 @@ cat /dev/zero > /dev/fb0
 
 PLATFORM="my355"
 SDCARD_PATH="/mnt/SDCARD"
-UPDATE_PATH="$SDCARD_PATH/MinUI.zip"
+UPDATE_PATH="$SDCARD_PATH/RUUI.zip"
 SYSTEM_PATH="$SDCARD_PATH/.system"
 
 CPU_PATH=/sys/devices/system/cpu/cpufreq/policy0/scaling_governor

@@ -113,6 +113,7 @@ SDL_Surface* GFX_init(int mode) {
 	asset_rgbs[ASSET_PAGE_BG]		= RGB_WHITE;
 	//yar-edit changed save/lod state background to black
 	asset_rgbs[ASSET_STATE_BG]		= RGB_BLACK;
+	//asset_rgbs[ASSET_STATE_BG]		= RGB_WHITE;
 	asset_rgbs[ASSET_PAGE]			= RGB_BLACK;
 	asset_rgbs[ASSET_BAR]			= RGB_WHITE;
 	asset_rgbs[ASSET_BAR_BG]		= RGB_BLACK;
@@ -152,17 +153,18 @@ SDL_Surface* GFX_init(int mode) {
 	if (!exists(asset_path)) LOG_info("missing assets, you're about to segfault dummy!\n");
 	gfx.assets = IMG_Load(asset_path);
 	
-	TTF_Init();
-
 	//yar_edit added greatte and epic 
+
+	TTF_Init();
 
 	font.epic 	= TTF_OpenFont(FONT_PATH, SCALE1(FONT_EPIC));
 	font.greate = TTF_OpenFont(FONT_PATH, SCALE1(FONT_GREATE));
+
 	font.large 	= TTF_OpenFont(FONT_PATH, SCALE1(FONT_LARGE));
 	font.medium = TTF_OpenFont(FONT_PATH, SCALE1(FONT_MEDIUM));
 	font.small 	= TTF_OpenFont(FONT_PATH, SCALE1(FONT_SMALL));
 	font.tiny 	= TTF_OpenFont(FONT_PATH, SCALE1(FONT_TINY));
-
+	
 	//yar_edit TTF_STYLE_BOLD to TTF_STYLE_NORMAL
 
 	TTF_SetFontStyle(font.epic, TTF_STYLE_NORMAL);
@@ -171,15 +173,21 @@ SDL_Surface* GFX_init(int mode) {
 	TTF_SetFontStyle(font.medium, TTF_STYLE_NORMAL);
 	TTF_SetFontStyle(font.small, TTF_STYLE_NORMAL);
 	TTF_SetFontStyle(font.tiny, TTF_STYLE_NORMAL);
+
+	// TTF_SetFontStyle(font.large, TTF_STYLE_BOLD);
+	// TTF_SetFontStyle(font.medium, TTF_STYLE_BOLD);
+	// TTF_SetFontStyle(font.small, TTF_STYLE_BOLD);
+	// TTF_SetFontStyle(font.tiny, TTF_STYLE_BOLD);
 	
 	return gfx.screen;
 }
-
-////yar_edit style addit list
-
 void GFX_quit(void) {
+
+	//yar_edit added greatte and epic
+
 	TTF_CloseFont(font.epic);
 	TTF_CloseFont(font.greate);
+
 	TTF_CloseFont(font.large);
 	TTF_CloseFont(font.medium);
 	TTF_CloseFont(font.small);
@@ -628,10 +636,6 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 	
 	int special_case = !strcmp(button,BRIGHTNESS_BUTTON_LABEL); // TODO: oof
 	
-	//yar_edit_buttonswhite
-	//here i can change round button
-	//the labele comes up on it
-
 	// button
 	if (strlen(button)==1) {
 		GFX_blitAsset(ASSET_BUTTON, NULL, dst, dst_rect);
@@ -646,7 +650,7 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 
 		//yar_edit disables font scaling that helps catch fix round button
 
-		text = TTF_RenderUTF8_Blended(font.epic, button, COLOR_BUTTON_TEXT_WHITE);
+		text = TTF_RenderUTF8_Blended(font.large, button, COLOR_BUTTON_TEXT_WHITE);
 		SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){dst_rect->x+(SCALE1(BUTTON_SIZE)-text->w)/2,dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2});
 		ox += SCALE1(BUTTON_SIZE);
 		SDL_FreeSurface(text);
@@ -654,21 +658,18 @@ void GFX_blitButton(char* hint, char*button, SDL_Surface* dst, SDL_Rect* dst_rec
 		// text = TTF_RenderUTF8_Blended(special_case ? font.large : font.tiny, button, COLOR_BUTTON_TEXT);
 		// GFX_blitPill(ASSET_BUTTON, dst, &(SDL_Rect){dst_rect->x,dst_rect->y,SCALE1(BUTTON_SIZE)/2+text->w,SCALE1(BUTTON_SIZE)});
 		// ox += SCALE1(BUTTON_SIZE)/4;
-
-		//int oy = special_case ? SCALE1(-2) : 0;
-		//SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2,text->w,text->h});
-		//ox += text->w;
-		//ox += SCALE1(BUTTON_SIZE)/4;
-		//SDL_FreeSurface(text);
+		
+		// int oy = special_case ? SCALE1(-2) : 0;
+		// SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){ox+dst_rect->x,oy+dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2,text->w,text->h});
+		// ox += text->w;
+		// ox += SCALE1(BUTTON_SIZE)/4;
+		// SDL_FreeSurface(text);
 	}
 	
 	ox += SCALE1(BUTTON_MARGIN);
 
 	// hint text
-
-	//yar_edit COLOR_GRAY
-
-	text = TTF_RenderUTF8_Blended(font.small, hint, COLOR_GRAY);
+	text = TTF_RenderUTF8_Blended(font.small, hint, COLOR_WHITE);
 	SDL_BlitSurface(text, NULL, dst, &(SDL_Rect){ox+dst_rect->x,dst_rect->y+(SCALE1(BUTTON_SIZE)-text->h)/2,text->w,text->h});
 	SDL_FreeSurface(text);
 }
@@ -732,8 +733,7 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 		ow = SCALE1(PILL_SIZE + SETTINGS_WIDTH + 10 + 4);
 		ox = dst->w - SCALE1(PADDING) - ow;
 		oy = SCALE1(PADDING);
-		//yar_edit changed ASSET_DARK_GRAY_PILL to ASSET_BLACK_PILL on first
-		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_BLACK_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
+		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_DARK_GRAY_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
 			ox,
 			oy,
 			ow,
@@ -785,7 +785,6 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 
 		ox = dst->w - SCALE1(PADDING) - ow;
 		oy = SCALE1(PADDING);
-		//yar_edit changed ASEET_DARK_GRAY_PILL to ASSET_BLACK_PILL on first 
 		GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_BLACK_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
 			ox,
 			oy,
@@ -807,17 +806,14 @@ int GFX_blitHardwareGroup(SDL_Surface* dst, int show_setting) {
 	
 	return ow;
 }
-
-//yar_edit brightness
-
 void GFX_blitHardwareHints(SDL_Surface* dst, int show_setting) {
 	if (BTN_MOD_VOLUME==BTN_SELECT && BTN_MOD_BRIGHTNESS==BTN_START) {
 		if (show_setting==1) GFX_blitButtonGroup((char*[]){ "SELECT","VOLUME",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "START","Яркость",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "START","BRIGHTNESS",  NULL }, 0, dst, 0);
 	}
 	else {
-		if (show_setting==1) GFX_blitButtonGroup((char*[]){ BRIGHTNESS_BUTTON_LABEL,"Яркость",  NULL }, 0, dst, 0);
-		else GFX_blitButtonGroup((char*[]){ "¤"," Вниз",  NULL }, 0, dst, 0);
+		if (show_setting==1) GFX_blitButtonGroup((char*[]){ BRIGHTNESS_BUTTON_LABEL,"BRIGHTNESS",  NULL }, 0, dst, 0);
+		else GFX_blitButtonGroup((char*[]){ "MENU","BRIGHTNESS",  NULL }, 0, dst, 0);
 	}
 	
 }
@@ -853,18 +849,17 @@ int GFX_blitButtonGroup(char** pairs, int primary, SDL_Surface* dst, int align_r
 		h += 1;
 		ow += SCALE1(BUTTON_MARGIN) + w;
 	}
-	
 	ow += SCALE1(BUTTON_MARGIN);
 	if (align_right) ox -= ow;
 
-	//yar_edit color where text bg pill ASSET_DARK_GRAY_PILL to ASSET_BLACK_PILL
+	//yar_edit_2 this function fill pill in bottom buttons group
 
-	GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_BLACK_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
-		ox,
-		oy,
-		ow,
-		SCALE1(PILL_SIZE)
-	});
+	// GFX_blitPill(gfx.mode==MODE_MAIN ? ASSET_DARK_GRAY_PILL : ASSET_BLACK_PILL, dst, &(SDL_Rect){
+	// 	ox,
+	// 	oy,
+	// 	ow,
+	// 	SCALE1(PILL_SIZE)
+	// });
 	
 	ox += SCALE1(BUTTON_MARGIN);
 	oy += SCALE1(BUTTON_MARGIN);
@@ -1664,15 +1659,15 @@ void PWR_powerOff(void) {
 		}
 		gfx.screen = GFX_resize(w,h,p);
 		
+		//yar_edit changed powering off messeges
+
 		char* msg;
+		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "③,\n④" : "④";
+		else msg = exists(AUTO_RESUME_PATH) ? "③,\n④" : "④";
 
-		//yar_edit changed sutdown message
-
-		if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "ƕ,\nƔ" : "Ɣ";
-		else msg = exists(AUTO_RESUME_PATH) ? "ƕ\nƔ" : "Ɣ";
-		
-		//if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
-		//else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
+		// char* msg;
+		// if (HAS_POWER_BUTTON || HAS_POWEROFF_BUTTON) msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npowering off" : "Powering off";
+		// else msg = exists(AUTO_RESUME_PATH) ? "Quicksave created,\npower off now" : "Power off now";
 		
 		// LOG_info("PWR_powerOff %s (%ix%i)\n", gfx.screen, gfx.screen->w, gfx.screen->h);
 		

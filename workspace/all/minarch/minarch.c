@@ -3008,10 +3008,11 @@ void Core_close(void) {
 #define MENU_ITEM_COUNT 5
 #define MENU_SLOT_COUNT 8
 
+//yar_edit_2 changed list position
 enum {
 	ITEM_CONT,
-	ITEM_SAVE,
 	ITEM_LOAD,
+	ITEM_SAVE,
 	ITEM_OPTS,
 	ITEM_QUIT,
 };
@@ -3049,18 +3050,34 @@ static struct {
 	.save_exists = 0,
 	.preview_exists = 0,
 	
+	//yar_edit change Rest and Options 
+	//yar_etit_localization
+
+	// .items = {
+	// 	[ITEM_CONT] = "Продолжить",
+	// 	[ITEM_SAVE] = "Созранить",
+	// 	[ITEM_LOAD] = "Загрузить",
+	// 	[ITEM_OPTS] = "Заново",
+	// 	[ITEM_QUIT] = "Выйти",
+	// }
+
 	.items = {
-		[ITEM_CONT] = "продолжить",
-		[ITEM_LOAD] = "загрузить",
-		[ITEM_SAVE] = "сохранить",
-		[ITEM_OPTS] = "заново",
-		[ITEM_QUIT] = "выйти",
+		[ITEM_CONT] = "CONTINUE",
+		[ITEM_SAVE] = "SAVE",
+		[ITEM_LOAD] = "LOAD",
+		[ITEM_OPTS] = "RESET",
+		[ITEM_QUIT] = "QUIT",
 	}
 };
 
 void Menu_init(void) {
 	menu.overlay = SDL_CreateRGBSurface(SDL_SWSURFACE,DEVICE_WIDTH,DEVICE_HEIGHT,FIXED_DEPTH,RGBA_MASK_AUTO);
+	
+	//yar_edit fon mask color total black
+	
 	SDLX_SetAlpha(menu.overlay, SDL_SRCALPHA, 0xff);
+	//SDLX_SetAlpha(menu.overlay, SDL_SRCALPHA, 0x80);
+	
 	SDL_FillRect(menu.overlay, NULL, 0);
 	
 	char emu_name[256];
@@ -3069,8 +3086,14 @@ void Menu_init(void) {
 	mkdir(menu.minui_dir, 0755);
 
 	sprintf(menu.slot_path, "%s/%s.txt", menu.minui_dir, game.name);
+
+	//yar_edit change Rest and Options
+	//yar_etit_localization
 	
-	if (simple_mode) menu.items[ITEM_OPTS] = "настройки";
+	if (simple_mode) menu.items[ITEM_OPTS] = "OPTIONS";
+	//if (simple_mode) menu.items[ITEM_OPTS] = "Настройки";
+
+	//if (simple_mode) menu.items[ITEM_OPTS] = "Reset";
 	
 	if (game.m3u_path[0]) {
 		char* tmp;
@@ -4357,7 +4380,9 @@ static void Menu_loop(void) {
 					show_menu = 0;
 				}
 				break;
-				//yar_edit changed is actions
+
+				//yar_edit simple mode enabled
+
 				case ITEM_OPTS: {
 					if (simple_mode) {
 						int old_scaling = screen_scaling;
@@ -4381,6 +4406,31 @@ static void Menu_loop(void) {
 						show_menu = 0;
 					}
 				}
+
+				// case ITEM_OPTS: {
+				// 	if (simple_mode) {
+				// 		core.reset();
+				// 		status = STATUS_RESET;
+				// 		show_menu = 0;
+				// 	}
+				// 	else {
+				// 		int old_scaling = screen_scaling;
+				// 		Menu_options(&options_menu);
+				// 		if (screen_scaling!=old_scaling) {
+				// 			selectScaler(renderer.true_w,renderer.true_h,renderer.src_p);
+						
+				// 			restore_w = screen->w;
+				// 			restore_h = screen->h;
+				// 			restore_p = screen->pitch;
+				// 			screen = GFX_resize(DEVICE_WIDTH,DEVICE_HEIGHT,DEVICE_PITCH);
+						
+				// 			SDL_FillRect(backing, NULL, 0);
+				// 			Menu_scale(menu.bitmap, backing);
+				// 		}
+				// 		dirty = 1;
+				// 	}
+				// }
+
 				break;
 				case ITEM_QUIT:
 					status = STATUS_QUIT;
@@ -4404,14 +4454,20 @@ static void Menu_loop(void) {
 			int max_width = screen->w - SCALE1(PADDING * 2) - ow;
 
 			//yar_edit changed rom_name with simbol "ƾ"
+			//yar_edit changed font size
 			
 			char display_name[256];
+			
 			int text_width = GFX_truncateText(font.epic, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
+			
+			//int text_width = GFX_truncateText(font.large, rom_name, display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			max_width = MIN(max_width, text_width);
 
-			//yar_edit replaced gametitle with a sign and edit size
-
 			SDL_Surface* text;
+
+			//yar_edit changed font size
+			//text = TTF_RenderUTF8_Blended(font.large, display_name, COLOR_WHITE);
+
 			text = TTF_RenderUTF8_Blended(font.epic, display_name, COLOR_WHITE);
 			GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
 				SCALE1(PADDING),
@@ -4432,14 +4488,14 @@ static void Menu_loop(void) {
 
 			//yar_edit Disable Power/Sleep in game menu
 			
-			//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-			//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
-			//GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OKAY", NULL }, 1, screen, 1);
+			// if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
+			// else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
+			
+			//yar_etit_localization
 
-			//yar edit disabled buttons
-
-			GFX_blitButtonGroup((char*[]){ "ǁ","Выбрать",  NULL }, 0, screen, 1);
-			//GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Выбрать", NULL }, 1, screen, 1);
+			GFX_blitButtonGroup((char*[]){ "⑥","OKAY",  NULL }, 0, screen, 1);
+			//GFX_blitButtonGroup((char*[]){ "B","BACK", "⑥","OKAY", NULL }, 1, screen, 1);
+			//GFX_blitButtonGroup((char*[]){ "B","Назад", "A","Выбрать", NULL }, 1, screen, 1);
 			
 			// list
 			oy = (((DEVICE_HEIGHT / FIXED_SCALE) - PADDING * 2) - (MENU_ITEM_COUNT * PILL_SIZE)) / 2;
@@ -4447,8 +4503,9 @@ static void Menu_loop(void) {
 				char* item = menu.items[i];
 
 				//yar_edit changed list text color from COLOR_WHITE to GRAY and Epic/large size
-
-				SDL_Color text_color = COLOR_GRAY;
+				
+				SDL_Color text_color = COLOR_DARK_TEXT;
+				//SDL_Color text_color = COLOR_WHITE;
 				
 				if (i==selected) {
 					// disc change
@@ -4459,6 +4516,7 @@ static void Menu_loop(void) {
 							screen->w - SCALE1(PADDING * 2),
 							SCALE1(PILL_SIZE)
 						});
+						//yar_edit text side
 						text = TTF_RenderUTF8_Blended(font.large, disc_name, COLOR_WHITE);
 						SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 							screen->w - SCALE1(PADDING + BUTTON_PADDING) - text->w,
@@ -4466,12 +4524,13 @@ static void Menu_loop(void) {
 						});
 						SDL_FreeSurface(text);
 					}
-					
+
+					//yar_edit text size
+
 					TTF_SizeUTF8(font.large, item, &ow, NULL);
 					ow += SCALE1(BUTTON_PADDING*2);
 					
 					// pill
-
 					//yar_edit pill and text color
 
 					GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
@@ -4484,7 +4543,8 @@ static void Menu_loop(void) {
 				}
 				else {
 					// shadow
-					text = TTF_RenderUTF8_Blended(font.large, item, COLOR_BLACK);
+					//yar_edit text size
+					text = TTF_RenderUTF8_Blended(font.epic, item, COLOR_BLACK);
 					SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 						SCALE1(2 + PADDING + BUTTON_PADDING),
 						SCALE1(1 + PADDING + oy + (i * PILL_SIZE) + 4)
@@ -4493,7 +4553,8 @@ static void Menu_loop(void) {
 				}
 				
 				// text
-				text = TTF_RenderUTF8_Blended(font.large, item, text_color);
+				//yar_edit text size
+				text = TTF_RenderUTF8_Blended(font.epic, item, text_color);
 				SDL_BlitSurface(text, NULL, screen, &(SDL_Rect){
 					SCALE1(PADDING + BUTTON_PADDING),
 					SCALE1(oy + PADDING + (i * PILL_SIZE) + 4)
@@ -4533,13 +4594,22 @@ static void Menu_loop(void) {
 				}
 
 				//yar_edit changed Empty Slot with icon
+				//yar_edit text size
+				//yar_edit changed slot icon
 
 				else {
 					SDL_Rect preview_rect = {ox,oy,hw,hh};
 					SDL_FillRect(screen, &preview_rect, 0);
-					if (menu.save_exists) GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
-					else GFX_blitMessage(font.epic, "¶", screen, &preview_rect);
+					if (menu.save_exists) GFX_blitMessage(font.epic, "No Preview", screen, &preview_rect);
+					else GFX_blitMessage(font.epic, "③", screen, &preview_rect);
 				}
+
+				// else {
+				// 	SDL_Rect preview_rect = {ox,oy,hw,hh};
+				// 	SDL_FillRect(screen, &preview_rect, 0);
+				// 	if (menu.save_exists) GFX_blitMessage(font.large, "No Preview", screen, &preview_rect);
+				// 	else GFX_blitMessage(font.epic, "Empty Slot", screen, &preview_rect);
+				// }
 				
 				// pagination
 				ox += (pw-SCALE1(15*MENU_SLOT_COUNT))/2;

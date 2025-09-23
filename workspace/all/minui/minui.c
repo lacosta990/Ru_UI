@@ -11,7 +11,7 @@
 #include "api.h"
 #include "utils.h"
 
-///////////////////////////////////////
+//////////////////////////////////////////
 
 typedef struct Array {
 	int count;
@@ -1494,31 +1494,73 @@ int main (int argc, char *argv[]) {
 			// simple thumbnail support a thumbnail for a file or folder named NAME.EXT needs a corresponding /.res/NAME.EXT.png 
 			// that is no bigger than platform FIXED_HEIGHT x FIXED_HEIGHT
 			int had_thumb = 0;
-			if (!show_version && total>0) {
-				Entry* entry = top->entries->items[top->selected];
-				char res_path[MAX_PATH];
-				
-				char res_root[MAX_PATH];
-				strcpy(res_root, entry->path);
-				
-				char tmp_path[MAX_PATH];
-				strcpy(tmp_path, entry->path);
-				char* res_name = strrchr(tmp_path, '/') + 1;
+			if (!show_version && total > 0) {
+			    Entry* entry = top->entries->items[top->selected];
+			    char res_path[MAX_PATH];
 
-				char* tmp = strrchr(res_root, '/');
-				tmp[0] = '\0';
-				
-				sprintf(res_path, "%s/.res/%s.png", res_root, res_name);
-				LOG_info("res_path: %s\n", res_path);
-				if (exists(res_path)) {
-					had_thumb = 1;
-					SDL_Surface* thumb = IMG_Load(res_path);
-					ox = MAX(FIXED_WIDTH - FIXED_HEIGHT, (FIXED_WIDTH - thumb->w));
-					oy = (FIXED_HEIGHT - thumb->h) / 2;
-					SDL_BlitSurface(thumb, NULL, screen, &(SDL_Rect){ox,oy});
-					SDL_FreeSurface(thumb);
-				}
+			    // Проверяем, является ли текущий элемент не папкой (stack->count > 1)
+			    int isnt_folder = (stack->count > 1);
+
+			    if (isnt_folder) {
+			        char tmp_path[MAX_PATH];
+			        strcpy(tmp_path, entry->path);
+			        char* res_name = strrchr(tmp_path, '/') + 1;
+
+			        char res_root[MAX_PATH];
+			        strcpy(res_root, entry->path);
+			        char* tmp = strrchr(res_root, '/');
+			        tmp[0] = '\0';
+
+			        sprintf(res_path, "%s/.res/%s.png", res_root, res_name);
+			    } else {
+			    	sprintf(res_path, "%s/.res/cover.png", entry->path);			        
+			    }
+
+			    LOG_info("res_path: %s\n", res_path);
+			    if (exists(res_path)) {
+			        had_thumb = 1;
+			        SDL_Surface* thumb = IMG_Load(res_path);
+
+			        if (isnt_folder) {
+			        	ox = MAX(FIXED_WIDTH - FIXED_HEIGHT, (FIXED_WIDTH - thumb->w));
+						} else {
+							ox = FIXED_WIDTH - thumb->w;
+							}
+
+			        //ox = FIXED_WIDTH - thumb->w;
+			        oy = (FIXED_HEIGHT - thumb->h) / 2;
+			        SDL_BlitSurface(thumb, NULL, screen, &(SDL_Rect){ox, oy});
+			        SDL_FreeSurface(thumb);
+			    }
 			}
+
+
+			// if (!show_version && total>0) {
+			// 	Entry* entry = top->entries->items[top->selected];
+			// 	char res_path[MAX_PATH];
+				
+			// 	char res_root[MAX_PATH];
+			// 	strcpy(res_root, entry->path);
+				
+			// 	char tmp_path[MAX_PATH];
+			// 	strcpy(tmp_path, entry->path);
+			// 	char* res_name = strrchr(tmp_path, '/') + 1;
+
+			// 	char* tmp = strrchr(res_root, '/');
+			// 	tmp[0] = '\0';
+				
+			// 	sprintf(res_path, "%s/.res/%s.png", res_root, res_name);
+			// 	LOG_info("res_path: %s\n", res_path);
+			// 	if (exists(res_path)) {
+			// 		had_thumb = 1;
+			// 		SDL_Surface* thumb = IMG_Load(res_path);
+			// 		ox = FIXED_WIDTH - thumb->w;
+			// 		//ox = MAX(FIXED_WIDTH - FIXED_HEIGHT, (FIXED_WIDTH - thumb->w));
+			// 		oy = (FIXED_HEIGHT - thumb->h) / 2;
+			// 		SDL_BlitSurface(thumb, NULL, screen, &(SDL_Rect){ox,oy});
+			// 		SDL_FreeSurface(thumb);
+			// 	}
+			// }
 			
 			int ow = GFX_blitHardwareGroup(screen, show_setting);
 			
@@ -1534,19 +1576,24 @@ int main (int argc, char *argv[]) {
 					tmp = strchr(release, '\n');
 					tmp[0] = '\0';
 					
-					// TODO: not sure if I want bare PLAT_* calls here
-					//char* extra_key = "Model";
-					//char* extra_val = PLAT_getModel(); 
-					
 					//yar_edit 
 
-					char* extra_key = "Автор";
-					char* extra_val = "Yaremko.ru"; 
+					char* extra_key = "Art by";
+					char* extra_val = "Retrorama"; 
+
+					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "RUUI", COLOR_DARK_TEXT);
+					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "v 4.1", COLOR_WHITE);
+					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Author", COLOR_DARK_TEXT);
+					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "Yaremko.ru", COLOR_WHITE);
+
+					// TODO: not sure if I want bare PLAT_* calls here
+					// char* extra_key = "Model";
+					// char* extra_val = PLAT_getModel(); 
 					
-					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Платформа", COLOR_DARK_TEXT);
-					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "Фаренгейт", COLOR_WHITE);
-					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Модель", COLOR_DARK_TEXT);
-					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "451", COLOR_WHITE);
+					// SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "Release", COLOR_DARK_TEXT);
+					// SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, release, COLOR_WHITE);
+					// SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Commit", COLOR_DARK_TEXT);
+					// SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, commit, COLOR_WHITE);
 					
 					SDL_Surface* key_txt = TTF_RenderUTF8_Blended(font.large, extra_key, COLOR_DARK_TEXT);
 					SDL_Surface* val_txt = TTF_RenderUTF8_Blended(font.large, extra_val, COLOR_WHITE);
@@ -1585,84 +1632,149 @@ int main (int argc, char *argv[]) {
 				}
 				SDL_BlitSurface(version, NULL, screen, &(SDL_Rect){(screen->w-version->w)/2,(screen->h-version->h)/2});
 				
-				// buttons (duped and trimmed from below)
-
 				// yar_edit
 
+				// buttons (duped and trimmed from below)
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
+				GFX_blitButtonGroup((char*[]){ "⑤","BACK",  NULL }, 0, screen, 1);
 			}
 			else {
 				// list
-				if (total>0) {
-					int selected_row = top->selected - top->start;
-					for (int i=top->start,j=0; i<top->end; i++,j++) {
-						Entry* entry = top->entries->items[i];
-						char* entry_name = entry->name;
-						char* entry_unique = entry->unique;
-						int available_width = (had_thumb && j!=selected_row ? ox : screen->w) - SCALE1(PADDING * 2);
-						if (i==top->start && !(had_thumb && j!=selected_row)) available_width -= ow; // 
-						
-						//yar_edit changed list color to gray
 
-						SDL_Color text_color = COLOR_GRAY;
+				// if (total>0) {
+				// 	int selected_row = top->selected - top->start;
+				// 	for (int i=top->start,j=0; i<top->end; i++,j++) {
+				// 		Entry* entry = top->entries->items[i];
+				// 		char* entry_name = entry->name;
+				// 		char* entry_unique = entry->unique;
+				// 		int available_width = (had_thumb && j!=selected_row ? ox : screen->w) - SCALE1(PADDING * 2);
+				// 		if (i==top->start && !(had_thumb && j!=selected_row)) available_width -= ow; // 
 					
-						trimSortingMeta(&entry_name);
+				// 		SDL_Color text_color = COLOR_WHITE;
 					
-						char display_name[256];
-						int text_width = GFX_truncateText(font.epic, entry_unique ? entry_unique : entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
-						int max_width = MIN(available_width, text_width);
-
-						//yar_edit list selection color ASSET_BLACK_PILL
-
-						if (j==selected_row) {
-							GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
-								SCALE1(PADDING),
-								SCALE1(PADDING+(j*PILL_SIZE)),
-								max_width,
-								SCALE1(PILL_SIZE)
-							});
-							text_color = COLOR_WHITE;
-						}
-						else if (entry->unique) {
-							trimSortingMeta(&entry_unique);
-							char unique_name[256];
-							//yar_edit changed font size
-							GFX_truncateText(font.epic, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING*2));
+				// 		trimSortingMeta(&entry_name);
+					
+				// 		char display_name[256];
+				// 		int text_width = GFX_truncateText(font.large, entry_unique ? entry_unique : entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
+				// 		int max_width = MIN(available_width, text_width);
+				// 		if (j==selected_row) {
+				// 			GFX_blitPill(ASSET_WHITE_PILL, screen, &(SDL_Rect){
+				// 				SCALE1(PADDING),
+				// 				SCALE1(PADDING+(j*PILL_SIZE)),
+				// 				max_width,
+				// 				SCALE1(PILL_SIZE)
+				// 			});
+				// 			text_color = COLOR_BLACK;
+				// 		}
+				// 		else if (entry->unique) {
+				// 			trimSortingMeta(&entry_unique);
+				// 			char unique_name[256];
+				// 			GFX_truncateText(font.large, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING*2));
 						
-							SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, unique_name, COLOR_DARK_TEXT);
-							SDL_BlitSurface(text, &(SDL_Rect){
-								0,
-								0,
-								max_width-SCALE1(BUTTON_PADDING*2),
-								text->h
-							}, screen, &(SDL_Rect){
-								SCALE1(PADDING+BUTTON_PADDING),
-								SCALE1(PADDING+(j*PILL_SIZE)+4)
-							});
+				// 			SDL_Surface* text = TTF_RenderUTF8_Blended(font.large, unique_name, COLOR_DARK_TEXT);
+				// 			SDL_BlitSurface(text, &(SDL_Rect){
+				// 				0,
+				// 				0,
+				// 				max_width-SCALE1(BUTTON_PADDING*2),
+				// 				text->h
+				// 			}, screen, &(SDL_Rect){
+				// 				SCALE1(PADDING+BUTTON_PADDING),
+				// 				SCALE1(PADDING+(j*PILL_SIZE)+4)
+				// 			});
 						
-							GFX_truncateText(font.epic, entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
-						}
-						SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, display_name, text_color);
-						SDL_BlitSurface(text, &(SDL_Rect){
-							0,
-							0,
-							max_width-SCALE1(BUTTON_PADDING*2),
-							text->h
-						}, screen, &(SDL_Rect){
-							SCALE1(PADDING+BUTTON_PADDING),
-							SCALE1(PADDING+(j*PILL_SIZE)+4)
-						});
-						SDL_FreeSurface(text);
-					}
+				// 			GFX_truncateText(font.large, entry_name, display_name, available_width, SCALE1(BUTTON_PADDING*2));
+				// 		}
+				// 		SDL_Surface* text = TTF_RenderUTF8_Blended(font.large, display_name, text_color);
+				// 		SDL_BlitSurface(text, &(SDL_Rect){
+				// 			0,
+				// 			0,
+				// 			max_width-SCALE1(BUTTON_PADDING*2),
+				// 			text->h
+				// 		}, screen, &(SDL_Rect){
+				// 			SCALE1(PADDING+BUTTON_PADDING),
+				// 			SCALE1(PADDING+(j*PILL_SIZE)+4)
+				// 		});
+				// 		SDL_FreeSurface(text);
+				// 	}
+				// }
+
+				//yar_edit_2 invisible folders
+
+				if (total > 0) {
+				    int selected_row = top->selected - top->start;
+				    for (int i = top->start, j = 0; i < top->end; i++, j++) {
+				        Entry* entry = top->entries->items[i];
+				        char* entry_name = entry->name;
+				        char* entry_unique = entry->unique;
+				        int available_width = (had_thumb && j != selected_row ? ox : screen->w) - SCALE1(PADDING * 2);
+				        if (i == top->start && !(had_thumb && j != selected_row)) available_width -= ow;
+
+				        //yar_edit changed list color to gray
+				        //SDL_Color text_color = COLOR_WHITE;
+
+				        SDL_Color text_color = COLOR_GRAY;
+
+				        trimSortingMeta(&entry_name);
+
+				        char display_name[256];
+
+				        // Отображать текст только если stack->count > 1 — то есть внутри папки
+				        if (stack->count > 1) {
+				            int text_width = GFX_truncateText(font.epic, entry_unique ? entry_unique : entry_name, display_name, available_width, SCALE1(BUTTON_PADDING * 2));
+				            int max_width = MIN(available_width, text_width);
+
+				            if (j == selected_row) {
+				            	//yar_edit list selection color ASSET_BLACK_PILL
+				            	GFX_blitPill(ASSET_BLACK_PILL, screen, &(SDL_Rect){
+				                    // SCALE1(PADDING),
+				                    // SCALE1(PADDING + (j * PILL_SIZE)),
+				                    // max_width,
+				                    // SCALE1(PILL_SIZE)
+				                });
+				            	text_color = COLOR_WHITE;
+				                //text_color = COLOR_BLACK;
+				            } else if (entry_unique) {
+				                trimSortingMeta(&entry_unique);
+				                char unique_name[256];
+				                //yar_edit changed font size
+				                //GFX_truncateText(font.large, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING * 2));
+				                GFX_truncateText(font.epic, entry_unique, unique_name, available_width, SCALE1(BUTTON_PADDING * 2));
+
+				                SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, unique_name, COLOR_DARK_TEXT);
+				                SDL_BlitSurface(text, &(SDL_Rect){
+				                    0,
+				                    0,
+				                    max_width - SCALE1(BUTTON_PADDING * 2),
+				                    text->h
+				                }, screen, &(SDL_Rect){
+				                    SCALE1(PADDING + BUTTON_PADDING),
+				                    SCALE1(PADDING + (j * PILL_SIZE) + 4)
+				                });
+				                SDL_FreeSurface(text);
+
+				                GFX_truncateText(font.epic, entry_name, display_name, available_width, SCALE1(BUTTON_PADDING * 2));
+				            }
+				            SDL_Surface* text = TTF_RenderUTF8_Blended(font.epic, display_name, text_color);
+				            SDL_BlitSurface(text, &(SDL_Rect){
+				                0,
+				                0,
+				                max_width - SCALE1(BUTTON_PADDING * 2),
+				                text->h
+				            }, screen, &(SDL_Rect){
+				                SCALE1(PADDING + BUTTON_PADDING),
+				                SCALE1(PADDING + (j * PILL_SIZE) + 4)
+				            });
+				            SDL_FreeSurface(text);
+				        }
+				        // Если stack->count <= 1, текст не рисуется, но записи остаются в списке
+				    }
 				}
+
 				else {
 					// TODO: for some reason screen's dimensions end up being 0x0 in GFX_blitMessage...
-
-					//yar_edit Сохранить
-					GFX_blitMessage(font.large, "Сохранить", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
+					GFX_blitMessage(font.large, "Empty folder", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
 				}
 			
 				// buttons
@@ -1675,27 +1787,24 @@ int main (int argc, char *argv[]) {
 				// 	BTN_SLEEP==BTN_POWER?"POWER":"MENU",
 				// 	BTN_SLEEP==BTN_POWER||simple_mode?"SLEEP":"INFO",  
 				// 	NULL }, 0, screen, 0);
-
-				if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
-				else {
-					
-					GFX_blitButtonGroup((char*[]){"¤"," Вниз", NULL }, 0, screen, 0);
-				}
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "ǂ","Назад",  NULL }, 0, screen, 1);
+						GFX_blitButtonGroup((char*[]){ "⑤","BACK",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
-
-					//yar_edit edit button lable charecter
-
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "ǂ","Назад", "ǁ","Открыть", NULL }, 1, screen, 1);
+						//yar_edit changed symbol ⑥
+						//yar_edit localization
+
+						GFX_blitButtonGroup((char*[]){ "⑤","BACK", "⑥","RUN ", NULL }, 1, screen, 1);
+						//GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OPEN", NULL }, 1, screen, 1);
 					}
 					else {
-						GFX_blitButtonGroup((char*[]){ "ǁ","Выбрать", NULL }, 0, screen, 1);
+
+						GFX_blitButtonGroup((char*[]){ "⑥","OPEN", NULL }, 0, screen, 1);
+						//GFX_blitButtonGroup((char*[]){ "A","OPEN", NULL }, 0, screen, 1);
 					}
 				}
 			}

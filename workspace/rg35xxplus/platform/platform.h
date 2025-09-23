@@ -128,7 +128,9 @@ extern int on_hdmi;
 
 ///////////////////////////////
 
-#define MAIN_ROW_COUNT (is_cubexx||on_hdmi?8:6)
+//yar_edit_2 number of list strokes
+
+#define MAIN_ROW_COUNT (is_cubexx||on_hdmi?8:7)
 #define PADDING (is_cubexx||on_hdmi?40:10)
 
 ///////////////////////////////

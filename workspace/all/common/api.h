@@ -46,8 +46,10 @@ void LOG_note(int level, const char* fmt, ...);
 #define RGBA_MASK_AUTO	0x0, 0x0, 0x0, 0x0
 #define RGBA_MASK_565	0x0, 0x0, 0x0, 0x0
 #define RGBA_MASK_8888	0x0, 0x0, 0x0, 0x0
-//#define RGBA_MASK_565	0xF800, 0x07E0, 0x001F, 0x0000
-//#define RGBA_MASK_8888	0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000
+
+// #define RGBA_MASK_AUTO	0x0, 0x0, 0x0, 0x0
+// #define RGBA_MASK_565	0xF800, 0x07E0, 0x001F, 0x0000
+// #define RGBA_MASK_8888	0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000
 
 ///////////////////////////////
 
@@ -96,11 +98,13 @@ enum {
 	ASSET_COUNT,
 };
 
-//yar_edit added 2 fonts 
+//yar_edit added greatte and epic 
 
 typedef struct GFX_Fonts {
+
 	TTF_Font* epic;		// new
 	TTF_Font* greate;	// new
+
 	TTF_Font* large; 	// menu
 	TTF_Font* medium; 	// single char button label
 	TTF_Font* small; 	// button hint
@@ -274,7 +278,7 @@ void VIB_setStrength(int strength);
 	
 ///////////////////////////////
 
-#define BRIGHTNESS_BUTTON_LABEL "+" // ew
+#define BRIGHTNESS_BUTTON_LABEL "+ -" // ew
 
 typedef void (*PWR_callback_t)(void);
 void PWR_init(void);
