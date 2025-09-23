@@ -4,9 +4,9 @@ RUUI is a most minimalistic custom launcher for retro handhelds. Now with boxart
 
 RUUI is ready to go project and have a game collection inside. Downlod an archive and drop files to your flash card TF1 in Roms partition. 
 
-You can grab the version for Anbernic devices based on h700 [here]([https://github.com/lacosta990/Ru_UI/releases](https://drive.google.com/file/d/19q-Em_exBBMY4EulD47aZzsdbgM0PDC3/view?usp=sharing)).
+You can grab the version for Anbernic devices based on h700 [here](https://drive.google.com/file/d/19q-Em_exBBMY4EulD47aZzsdbgM0PDC3/view?usp=sharing).
 
-Download fullgame collection [here](https://github.com/lacosta990/Ru_UI/releases).
+
 
 <img src="github/RUUI console.png" width=320 /> <img src="github/RUUI game list.jpg" width=320 /> 
 <img src="github/RUUI genre list.png" width=320 /> <img src="github/RUUI in game menu.png" width=320 />
