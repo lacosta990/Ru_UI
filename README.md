@@ -1,6 +1,5 @@
 # RUUI
 <img src="github/RUUI.png" width=100% />
-<img src="github/RUUI.png" width=320 />
 
 RUUI is a most minimalistic custom launcher for retro handhelds. Now with boxart / art by [Filipe Bello / RetroRama](https://github.com/lipebello/es-theme-retrorama-ce)
 
