@@ -1,6 +1,9 @@
 # RUUI
 <img src="github/RUUI.png" width=100% />
 
+RUUI is a ready-to-play solution that includes custom launcher RUUI 4.0 for retro handhelds and a collection of over 100 games. We also have a [web library](http://yaremko.ru/ruui-games) of homebrew titles that are completely legal to download, play, share, and stream.
+
+
 RUUI is a most minimalistic custom launcher for retro handhelds. Now with boxart / art by [Filipe Bello / RetroRama](https://github.com/lipebello/es-theme-retrorama-ce)
 
 RUUI is ready to go project and have a game collection inside. Downlod an archive and drop files to your flash card TF1 in Roms partition. 
