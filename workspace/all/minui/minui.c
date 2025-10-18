@@ -1493,7 +1493,69 @@ int main (int argc, char *argv[]) {
 			
 			// simple thumbnail support a thumbnail for a file or folder named NAME.EXT needs a corresponding /.res/NAME.EXT.png 
 			// that is no bigger than platform FIXED_HEIGHT x FIXED_HEIGHT
+
 			int had_thumb = 0;
+			// if (!show_version && total > 0) {
+			//     Entry* entry = top->entries->items[top->selected];
+			//     char res_path[MAX_PATH];
+
+			//     // Проверяем, является ли текущий элемент не папкой (stack->count > 1)
+			//     int isnt_folder = (stack->count > 1);
+
+			//     if (isnt_folder) {
+			//         char tmp_path[MAX_PATH];
+			//         strcpy(tmp_path, entry->path);
+			//         char* res_name = strrchr(tmp_path, '/') + 1;
+
+			//         char res_root[MAX_PATH];
+			//         strcpy(res_root, entry->path);
+			//         char* tmp = strrchr(res_root, '/');
+			//         tmp[0] = '\0';
+
+			//         sprintf(res_path, "%s/.res/%s.png", res_root, res_name);
+			//     } else {
+			//     	sprintf(res_path, "%s/.res/cover.png", entry->path);			        
+			//     }
+
+			//     LOG_info("res_path: %s\n", res_path);
+
+			//     if (exists(res_path)) {
+			//         had_thumb = 1;
+			//         SDL_Surface* thumb = IMG_Load(res_path);
+
+			//         if (isnt_folder) {
+			//         	ox = MAX(FIXED_WIDTH - FIXED_HEIGHT, (FIXED_WIDTH - thumb->w));
+			// 			} else {
+			// 				ox = FIXED_WIDTH - thumb->w;
+			// 			}
+
+			//         //ox = FIXED_WIDTH - thumb->w;
+			//         oy = (FIXED_HEIGHT - thumb->h) / 2;
+			//         SDL_BlitSurface(thumb, NULL, screen, &(SDL_Rect){ox, oy});
+
+			//         // Добавлено: отрисовка over.png только для файлов
+			//                 if (isnt_folder) {
+			//                     char over_path[MAX_PATH];
+			//                     strcpy(over_path, res_path);
+			//                     char* last_slash = strrchr(over_path, '/');
+			//                     if (last_slash) {
+			//                         strcpy(last_slash + 1, "over.png");
+			//                     }
+
+			//                     if (exists(over_path)) {
+			//                         SDL_Surface* over_img = IMG_Load(over_path);
+			//                         if (over_img) {
+			//                             SDL_BlitSurface(over_img, NULL, screen, &(SDL_Rect){ox, oy});
+			//                             SDL_FreeSurface(over_img);
+			//                         }
+			//                     }
+			//                 }
+
+
+			//         SDL_FreeSurface(thumb);
+			//     }
+			// }
+
 			if (!show_version && total > 0) {
 			    Entry* entry = top->entries->items[top->selected];
 			    char res_path[MAX_PATH];
@@ -1513,26 +1575,118 @@ int main (int argc, char *argv[]) {
 
 			        sprintf(res_path, "%s/.res/%s.png", res_root, res_name);
 			    } else {
-			    	sprintf(res_path, "%s/.res/cover.png", entry->path);			        
+			        sprintf(res_path, "%s/.res/cover.png", entry->path);
 			    }
 
 			    LOG_info("res_path: %s\n", res_path);
+
 			    if (exists(res_path)) {
 			        had_thumb = 1;
 			        SDL_Surface* thumb = IMG_Load(res_path);
 
 			        if (isnt_folder) {
-			        	ox = MAX(FIXED_WIDTH - FIXED_HEIGHT, (FIXED_WIDTH - thumb->w));
-						} else {
-							ox = FIXED_WIDTH - thumb->w;
-							}
+			            ox = 360;
+			            //ox = MAX(FIXED_WIDTH - FIXED_HEIGHT, (FIXED_WIDTH - thumb->w));
+			        } else {
+			            ox = FIXED_WIDTH - thumb->w;
+			        }
 
-			        //ox = FIXED_WIDTH - thumb->w;
 			        oy = (FIXED_HEIGHT - thumb->h) / 2;
 			        SDL_BlitSurface(thumb, NULL, screen, &(SDL_Rect){ox, oy});
+
+			        // Отрисовка over.png только для файлов
+			        if (isnt_folder) {
+			            char over_path[MAX_PATH];
+			            strcpy(over_path, res_path);
+			            char* last_slash = strrchr(over_path, '/');
+			            if (last_slash) {
+			                strcpy(last_slash + 1, "over.png");
+			            }
+
+			            if (exists(over_path)) {
+			                SDL_Surface* over_img = IMG_Load(over_path);
+			                if (over_img) {
+			                    SDL_BlitSurface(over_img, NULL, screen, &(SDL_Rect){ox, oy});
+			                    SDL_FreeSurface(over_img);
+			                }
+			            }
+			        }
+
+			        SDL_FreeSurface(thumb);
+
+			    } 
+			}
+
+			if (!show_version && total > 0) {
+			    Entry* entry = top->entries->items[top->selected];
+			    char res_path[MAX_PATH];
+			    char nocover_path[MAX_PATH];
+
+			    // Проверяем, является ли текущий элемент не папкой (stack->count > 1)
+			    int isnt_folder = (stack->count > 1);
+
+			    if (isnt_folder) {
+			        char tmp_path[MAX_PATH];
+			        strcpy(tmp_path, entry->path);
+			        char* res_name = strrchr(tmp_path, '/') + 1;
+
+			        char res_root[MAX_PATH];
+			        strcpy(res_root, entry->path);
+			        char* tmp = strrchr(res_root, '/');
+			        if (tmp) tmp[0] = '\0';
+
+			        sprintf(res_path, "%s/.res/%s.png", res_root, res_name);
+			        sprintf(nocover_path, "%s/.res/nocover.png", res_root);
+			    } else {
+			        sprintf(res_path, "%s/.res/cover.png", entry->path);
+			        sprintf(nocover_path, "%s/.res/nocover.png", entry->path);
+			    }
+
+			    LOG_info("res_path: %s\n", res_path);
+
+			    SDL_Surface* thumb = NULL;
+
+			    if (exists(res_path)) {
+			        thumb = IMG_Load(res_path);
+			    } else if (exists(nocover_path)) {
+			        thumb = IMG_Load(nocover_path);
+			    }
+
+			    if (thumb) {
+			        had_thumb = 1;
+
+			        if (isnt_folder) {
+			            ox = 360;
+			        } else {
+			            ox = FIXED_WIDTH - thumb->w;
+			        }
+			        oy = (FIXED_HEIGHT - thumb->h) / 2;
+			        SDL_BlitSurface(thumb, NULL, screen, &(SDL_Rect){ox, oy});
+
+			        // Отрисовка over.png только для файлов
+			        if (isnt_folder) {
+			            char over_path[MAX_PATH];
+			            strcpy(over_path, res_path);
+			            char* last_slash = strrchr(over_path, '/');
+			            if (last_slash) {
+			                strcpy(last_slash + 1, "over.png");
+			            }
+
+			            if (exists(over_path)) {
+			                SDL_Surface* over_img = IMG_Load(over_path);
+			                if (over_img) {
+			                    SDL_BlitSurface(over_img, NULL, screen, &(SDL_Rect){ox, oy});
+			                    SDL_FreeSurface(over_img);
+			                }
+			            }
+			        }
+
 			        SDL_FreeSurface(thumb);
 			    }
 			}
+
+
+
 
 
 			// if (!show_version && total>0) {
@@ -1578,12 +1732,12 @@ int main (int argc, char *argv[]) {
 					
 					//yar_edit 
 
-					char* extra_key = "Art by";
-					char* extra_val = "Retrorama"; 
+					char* extra_key = " ";
+					char* extra_val = " "; 
 
 					SDL_Surface* release_txt = TTF_RenderUTF8_Blended(font.large, "RUUI", COLOR_DARK_TEXT);
-					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "v 4.1", COLOR_WHITE);
-					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, "Author", COLOR_DARK_TEXT);
+					SDL_Surface* version_txt = TTF_RenderUTF8_Blended(font.large, "v 4.2", COLOR_WHITE);
+					SDL_Surface* commit_txt = TTF_RenderUTF8_Blended(font.large, " ", COLOR_DARK_TEXT);
 					SDL_Surface* hash_txt = TTF_RenderUTF8_Blended(font.large, "Yaremko.ru", COLOR_WHITE);
 
 					// TODO: not sure if I want bare PLAT_* calls here
@@ -1638,7 +1792,7 @@ int main (int argc, char *argv[]) {
 				//if (show_setting && !GetHDMI()) GFX_blitHardwareHints(screen, show_setting);
 				//else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP",  NULL }, 0, screen, 0);
 				
-				GFX_blitButtonGroup((char*[]){ "⑤","BACK",  NULL }, 0, screen, 1);
+				//GFX_blitButtonGroup((char*[]){ "⑤","BACK",  NULL }, 0, screen, 1);
 			}
 			else {
 				// list
@@ -1774,7 +1928,10 @@ int main (int argc, char *argv[]) {
 
 				else {
 					// TODO: for some reason screen's dimensions end up being 0x0 in GFX_blitMessage...
-					GFX_blitMessage(font.large, "Empty folder", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
+
+					//yar_edit localization
+					GFX_blitMessage(font.large, "--//--", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
+					//GFX_blitMessage(font.large, "Empty folder", screen, &(SDL_Rect){0,0,screen->w,screen->h}); //, NULL);
 				}
 			
 				// buttons
@@ -1790,7 +1947,10 @@ int main (int argc, char *argv[]) {
 			
 				if (total==0) {
 					if (stack->count>1) {
-						GFX_blitButtonGroup((char*[]){ "⑤","BACK",  NULL }, 0, screen, 1);
+						//yar_edit localization
+
+						GFX_blitButtonGroup((char*[]){ "⑤"," ",  NULL }, 0, screen, 1);
+						//GFX_blitButtonGroup((char*[]){ "⑤","BACK",  NULL }, 0, screen, 1);
 					}
 				}
 				else {
@@ -1798,12 +1958,12 @@ int main (int argc, char *argv[]) {
 						//yar_edit changed symbol ⑥
 						//yar_edit localization
 
-						GFX_blitButtonGroup((char*[]){ "⑤","BACK", "⑥","RUN ", NULL }, 1, screen, 1);
+						//GFX_blitButtonGroup((char*[]){ "⑤","BACK", "⑥","RUN ", NULL }, 1, screen, 1);
 						//GFX_blitButtonGroup((char*[]){ "B","BACK", "A","OPEN", NULL }, 1, screen, 1);
 					}
 					else {
 
-						GFX_blitButtonGroup((char*[]){ "⑥","OPEN", NULL }, 0, screen, 1);
+						//GFX_blitButtonGroup((char*[]){ "⑥","OPEN", NULL }, 0, screen, 1);
 						//GFX_blitButtonGroup((char*[]){ "A","OPEN", NULL }, 0, screen, 1);
 					}
 				}

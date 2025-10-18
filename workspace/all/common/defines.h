@@ -19,7 +19,7 @@
 
 //ya_edit font change
 
-#define FONT_PATH RES_PATH "/Oswald-Regular.otf"
+#define FONT_PATH RES_PATH "/Font-Regular.otf"
 //#define FONT_PATH RES_PATH "/BPreplayBold-unhinted.otf"
 
 #define USERDATA_PATH SDCARD_PATH "/.userdata/" PLATFORM

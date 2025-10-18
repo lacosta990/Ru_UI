@@ -1,6 +1,6 @@
 MINUI                     HASH      DATE        USER/REPO
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 
 TOOLCHAINS
 ----------------------------------------------------------------
@@ -14,7 +14,7 @@ LIBRETRO
 RG35XX
 ----------------------------------------------------------------
 - DinguxCommander         2b8b2904  2023-02-13  shauninman/DinguxCommander
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
 - fake-08                 0d26fd59  2024-09-02  jtothebell/fake-08
 - fceumm                  3544ff56  2025-05-02  libretro/libretro-fceumm
@@ -32,91 +32,91 @@ CORES
 
 MIYOOMINI
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 TRIMUISMART
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 RGB30
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 TG5040
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 M17
 ----------------------------------------------------------------
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 RG35XXPLUS
 ----------------------------------------------------------------
@@ -142,23 +142,23 @@ CORES
 GKDPIXEL
 ----------------------------------------------------------------
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 MY282
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
 - fake-08                 0d26fd59  2024-09-02  jtothebell/fake-08
 - fceumm                  3544ff56  2025-05-02  libretro/libretro-fceumm
@@ -176,57 +176,57 @@ CORES
 
 MAGICMINI
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 ZERO28
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 MY355
 ----------------------------------------------------------------
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
 CORES
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- build                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- github                  1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- releases                1e455854  2025-08-01  lacosta990/Ru_UI
-- skeleton                1e455854  2025-08-01  lacosta990/Ru_UI
-- Ru_UI                   1e455854  2025-08-01  lacosta990/Ru_UI
-- toolchains              1e455854  2025-08-01  lacosta990/Ru_UI
-- workspace               1e455854  2025-08-01  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- build                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- github                  1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- releases                1e21332a  2025-09-25  lacosta990/Ru_UI
+- skeleton                1e21332a  2025-09-25  lacosta990/Ru_UI
+- Ru_UI                   1e21332a  2025-09-25  lacosta990/Ru_UI
+- toolchains              1e21332a  2025-09-25  lacosta990/Ru_UI
+- workspace               1e21332a  2025-09-25  lacosta990/Ru_UI
 
 CHECK
 ----------------------------------------------------------------

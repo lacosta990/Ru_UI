@@ -3031,6 +3031,7 @@ enum {
 static struct {
 	SDL_Surface* bitmap;
 	SDL_Surface* overlay;
+	SDL_Surface* screen;
 	char* items[MENU_ITEM_COUNT];
 	char* disc_paths[9]; // up to 9 paths, Arc the Lad Collection is 7 discs
 	char minui_dir[256];
@@ -3061,14 +3062,23 @@ static struct {
 	// 	[ITEM_QUIT] = "Выйти",
 	// }
 
+	// .items = {
+	// 	[ITEM_CONT] = "CONTINUE",
+	// 	[ITEM_SAVE] = "SAVE",
+	// 	[ITEM_LOAD] = "LOAD",
+	// 	[ITEM_OPTS] = "RESET",
+	// 	[ITEM_QUIT] = "QUIT",
+	// }
+
 	.items = {
-		[ITEM_CONT] = "CONTINUE",
-		[ITEM_SAVE] = "SAVE",
-		[ITEM_LOAD] = "LOAD",
-		[ITEM_OPTS] = "RESET",
-		[ITEM_QUIT] = "QUIT",
+		[ITEM_CONT] = "继续游戏",
+		[ITEM_SAVE] = "保存状态",
+		[ITEM_LOAD] = "加载状态",
+		[ITEM_OPTS] = "重新开始",
+		[ITEM_QUIT] = "关闭游戏",
 	}
 };
+
 
 void Menu_init(void) {
 	menu.overlay = SDL_CreateRGBSurface(SDL_SWSURFACE,DEVICE_WIDTH,DEVICE_HEIGHT,FIXED_DEPTH,RGBA_MASK_AUTO);
@@ -3077,8 +3087,9 @@ void Menu_init(void) {
 	
 	SDLX_SetAlpha(menu.overlay, SDL_SRCALPHA, 0xff);
 	//SDLX_SetAlpha(menu.overlay, SDL_SRCALPHA, 0x80);
-	
 	SDL_FillRect(menu.overlay, NULL, 0);
+
+	
 	
 	char emu_name[256];
 	getEmuName(game.path, emu_name);
@@ -3092,7 +3103,6 @@ void Menu_init(void) {
 	
 	if (simple_mode) menu.items[ITEM_OPTS] = "OPTIONS";
 	//if (simple_mode) menu.items[ITEM_OPTS] = "Настройки";
-
 	//if (simple_mode) menu.items[ITEM_OPTS] = "Reset";
 	
 	if (game.m3u_path[0]) {
@@ -3129,6 +3139,9 @@ void Menu_init(void) {
 		}
 	}
 }
+
+
+
 void Menu_quit(void) {
 	SDL_FreeSurface(menu.overlay);
 }
@@ -4458,7 +4471,7 @@ static void Menu_loop(void) {
 			
 			char display_name[256];
 			
-			int text_width = GFX_truncateText(font.epic, "ƾ", display_name, max_width, SCALE1(BUTTON_PADDING*2));
+			int text_width = GFX_truncateText(font.epic, "①", display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			
 			//int text_width = GFX_truncateText(font.large, rom_name, display_name, max_width, SCALE1(BUTTON_PADDING*2));
 			max_width = MIN(max_width, text_width);
@@ -4492,8 +4505,11 @@ static void Menu_loop(void) {
 			// else GFX_blitButtonGroup((char*[]){ BTN_SLEEP==BTN_POWER?"POWER":"MENU","SLEEP", NULL }, 0, screen, 0);
 			
 			//yar_etit_localization
+			
+			//GFX_blitButtonGroup((char*[]){ "⑥","OKAY",  NULL }, 0, screen, 1);
+			GFX_blitButtonGroup((char*[]){ "⑥","确定",  NULL }, 0, screen, 1);
+			// GFX_blitButtonGroup((char*[]){ "⑥","Выбрать",  NULL }, 0, screen, 1);
 
-			GFX_blitButtonGroup((char*[]){ "⑥","OKAY",  NULL }, 0, screen, 1);
 			//GFX_blitButtonGroup((char*[]){ "B","BACK", "⑥","OKAY", NULL }, 1, screen, 1);
 			//GFX_blitButtonGroup((char*[]){ "B","Назад", "A","Выбрать", NULL }, 1, screen, 1);
 			

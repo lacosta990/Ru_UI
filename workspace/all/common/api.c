@@ -147,6 +147,8 @@ SDL_Surface* GFX_init(int mode) {
 	asset_rects[ASSET_SCROLL_DOWN]		= (SDL_Rect){SCALE4(97,31,24, 6)};
 	asset_rects[ASSET_WIFI]				= (SDL_Rect){SCALE4(95,39,14,10)};
 	asset_rects[ASSET_HOLE]				= (SDL_Rect){SCALE4( 1,63,20,20)};
+	//yar_edit added new asset for menu shadow
+	asset_rects[ASSET_MENUSHADOW]		= (SDL_Rect){SCALE4(128,0,640,480)};
 	
 	char asset_path[MAX_PATH];
 	sprintf(asset_path, RES_PATH "/assets@%ix.png", FIXED_SCALE);

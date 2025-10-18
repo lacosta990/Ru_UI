@@ -41,7 +41,7 @@ void LOG_note(int level, const char* fmt, ...);
 
 ///////////////////////////////
 
-//yar_edit totallyblack background in arch menu
+//yar_edit totallyblack background in arch menu - no need to do it here
 
 #define RGBA_MASK_AUTO	0x0, 0x0, 0x0, 0x0
 #define RGBA_MASK_565	0x0, 0x0, 0x0, 0x0
@@ -96,6 +96,9 @@ enum {
 	ASSET_WIFI,
 	
 	ASSET_COUNT,
+
+	//yar_edit added new asset
+	ASSET_MENUSHADOW
 };
 
 //yar_edit added greatte and epic 
