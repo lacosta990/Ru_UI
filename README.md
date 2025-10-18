@@ -8,6 +8,7 @@ RUUI features a minimalist launcher design, now enhanced with box art and visual
 To get started, simply download the archive and copy the files to the "Roms" partition on your flash card with a stock os (TF1).
 
 Version 4.2 China Edition fof H700 devices is available on [Google Drive](https://drive.google.com/drive/folders/1o7rYRJ1TUMeus3oV2buZzHP7kPsczQ_6?usp=drive_link)
+
 Version 4.1 tailored for Anbernic devices based on the H700 platform is available [here](https://drive.google.com/file/d/19q-Em_exBBMY4EulD47aZzsdbgM0PDC3/view?usp=sharing).
 
 <img src="github/RUUI console.png" width=320 /> <img src="github/RUUI game list.jpg" width=320 /> 
